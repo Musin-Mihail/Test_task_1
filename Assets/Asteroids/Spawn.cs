@@ -5,23 +5,18 @@ using UnityEngine;
 public class Spawn : MonoBehaviour
 {
     public GameObject _sphereBig;
-    public GameObject _sphereMedium;
-    public GameObject _sphereSmall;
-    public Vector3 _spavnVector = new Vector3(11,11,0);
-    public Vector3 _zeroVector = new Vector3(0,0,0);
-    Vector2 min;
-    Vector2 max;
+    public GameObject _field;
+    Vector3 _spavnVector;
+    public static Vector2 _minVector2;
+    public static Vector2 _maxVector2;
     void Start()
     {
-        min = Camera.main.ViewportToWorldPoint (new Vector2 (0,0)); // bottom-left corner
-        max = Camera.main.ViewportToWorldPoint (new Vector2 (1,1)); // top-right corner
-        // Debug.Log(min);
-        // Debug.Log(max);
+        _minVector2 = Camera.main.ViewportToWorldPoint (new Vector2 (0,0));
+        _maxVector2 = Camera.main.ViewportToWorldPoint (new Vector2 (1,1));
+        float _sumX = _maxVector2.x + -_minVector2.x;
+        float _sumY = _maxVector2.y + -_minVector2.y;
+        _field.transform.localScale = new Vector3(_sumX - 0.5f,_sumY - 0.5f, 2);
         StartCoroutine(SpawnWhile());
-    }
-    void Update()
-    {
-        
     }
     IEnumerator SpawnWhile()
     {
@@ -33,27 +28,26 @@ public class Spawn : MonoBehaviour
     }
     void SpawnSphere()
     {
-        int _side = Random.Range(1,5); // 1 лево, 2 вверх, 3 право, 4 низ
+        int _side = Random.Range(1,5);
         float _random = Random.Range(11.0f,-11.0f);
         if(_side == 1)
         {
-            _spavnVector = new Vector3(min.x-1,_random, 0);
+            _spavnVector = new Vector3(_minVector2.x-1,_random, 0);
         }
         else if(_side == 2)
         {
-            _spavnVector = new Vector3(_random,max.y+1, 0);
+            _spavnVector = new Vector3(_random,_maxVector2.y+1, 0);
         }
         else if(_side == 3)
         {
-            _spavnVector = new Vector3(max.x+1,_random, 0);
+            _spavnVector = new Vector3(_maxVector2.x+1,_random, 0);
         }
         else if(_side == 4)
         {
-            _spavnVector = new Vector3(_random,min.y-1, 0);
+            _spavnVector = new Vector3(_random,_minVector2.y-1, 0);
         }
         GameObject _sphere = Instantiate(_sphereBig, _spavnVector, Quaternion.identity);
-        // Debug.Log(_side + " - " + _spavnVector);
-        Vector3 _jumpDirection = ( Vector3.zero - _sphere.transform.position).normalized;
+        Vector3 _jumpDirection = (Vector3.zero - _sphere.transform.position).normalized;
         _sphere.GetComponent<Rigidbody>().AddForce(_jumpDirection*2, ForceMode.Impulse);
     }
 }
