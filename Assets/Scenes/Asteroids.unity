@@ -267,10 +267,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 50
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -315,4 +315,5 @@ MonoBehaviour:
   _sphereBig: {fileID: 6631590434697862757, guid: 4820d4cdfd5fb814d9dcead29678f2db, type: 3}
   _sphereMedium: {fileID: 3924769951429019960, guid: 2b953ae0289f7274fb936372c7686b40, type: 3}
   _sphereSmall: {fileID: 2956181906000217556, guid: 354e6e528ad196945b704a67ea250cfd, type: 3}
-  _SpavnVector: {x: 11, y: 11, z: 0}
+  _spavnVector: {x: 11, y: 11, z: 0}
+  _zeroVector: {x: 0, y: 0, z: 0}
