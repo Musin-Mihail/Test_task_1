@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Sphere
   - Bullet
+  - SphereBig
+  - SphereMedium
+  - SphereSmall
   layers:
   - Default
   - TransparentFX

@@ -8,11 +8,13 @@ public class Player : MonoBehaviour
     public GameObject _bulletPrefab;
     static Rigidbody _rigidbody;
     List<GameObject> _bulletsList;
-    Vector2 _newVector;
-    float _second;
+    MeshRenderer _meshRenderer;
     int _numberBullets;
+    public static int _immortality;
     void Start()
     {
+        _meshRenderer = GetComponent<MeshRenderer>();
+        _immortality = 2;
         _numberBullets = 3;
         _bulletsList = new List<GameObject>();
         for (int i = 0; i < 40; i++)
@@ -22,9 +24,15 @@ public class Player : MonoBehaviour
            _b.transform.parent = _bullets.transform;
         }
         _rigidbody = GetComponent<Rigidbody>();
+        
     }
     void Update()
     {
+        if(_immortality == 2)
+        {
+            _immortality = 1;
+            StartCoroutine(Immortality());
+        }
         if(Input.GetKey(KeyCode.W))
         {
             if(_rigidbody.velocity.magnitude > 6)
@@ -55,7 +63,7 @@ public class Player : MonoBehaviour
                         item.SetActive(true);
                         item.transform.position = transform.position + transform.up;
                         item.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                        item.GetComponent<Rigidbody>().AddForce(transform.up*4, ForceMode.Impulse);
+                        item.GetComponent<Rigidbody>().AddForce(transform.up*6, ForceMode.Impulse);
                         _numberBullets--;
                         Invoke("Reloading", 1.0f);
                         break;
@@ -67,5 +75,22 @@ public class Player : MonoBehaviour
     void Reloading()
     {
         _numberBullets++;
+    }
+    public IEnumerator Immortality()
+    {
+        int test = 0;
+        while(test != 3)
+        {
+            yield return new WaitForSeconds(0.25f);
+            _meshRenderer.enabled = false;
+            yield return new WaitForSeconds(0.25f);
+            _meshRenderer.enabled = true;
+            yield return new WaitForSeconds(0.25f);
+            _meshRenderer.enabled = false;
+            yield return new WaitForSeconds(0.25f);
+            _meshRenderer.enabled = true;
+            test++;
+        }
+        _immortality = 0;
     }
 }

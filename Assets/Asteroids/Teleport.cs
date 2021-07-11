@@ -5,24 +5,7 @@ using UnityEngine;
 public class Teleport : MonoBehaviour
 {
     Vector2 _newVector;
-    float _border;
-    void Start() 
-    {
-        float _max;
-        if (transform.localScale.x > transform.localScale.y)
-        {
-            _max = transform.localScale.x;
-        }
-        else
-        {
-            _max = transform.localScale.y;
-        }
-        _border = _max-1;
-        if (_border < 0)
-        {
-            _border =_border - _border*2;
-        }
-    }
+    public float _border;
     void OnTriggerExit(Collider other) 
     {
         if(other.gameObject.name == "Field" )

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SphereMedium : MonoBehaviour
+public class Sphere : MonoBehaviour
 {
     Rigidbody _rigidbody;
     void Start() 
@@ -11,16 +11,33 @@ public class SphereMedium : MonoBehaviour
     }
     void OnTriggerEnter(Collider other) 
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.tag == "Player" && Player._immortality == 0)
         {
             Spawn._spheresLeft--;
+            Vector2 _newVector = new Vector2(Random.Range(Spawn._maxVector2.x, Spawn._minVector2.x), Random.Range(Spawn._maxVector2.y, Spawn._minVector2.y));
+            other.gameObject.transform.position = _newVector;
+            other.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            Player._immortality = 2;
             gameObject.SetActive(false);
         }
         else if(other.gameObject.tag == "Bullet" )
         {
             Spawn._spheresLeft--;
+            if(gameObject.tag == "SphereBig")
+            {
+                SearchSphere(Spawn._spheresMediumList);
+            }
+            else if(gameObject.tag == "SphereMedium")
+            {
+                SearchSphere(Spawn._spheresSmallList);
+            }
+            other.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+        }
+        void SearchSphere(List<GameObject> _list)
+        {
             float _speed = _rigidbody.velocity.magnitude;
-            foreach (var item in Spawn._spheresSmallList)
+            foreach (var item in _list)
             {
                 if(!item.activeSelf)
                 {
@@ -34,7 +51,7 @@ public class SphereMedium : MonoBehaviour
                     break;
                 }
             }
-            foreach (var item in Spawn._spheresSmallList)
+            foreach (var item in _list)
             {
                 if(!item.activeSelf)
                 {
@@ -48,8 +65,7 @@ public class SphereMedium : MonoBehaviour
                     break;
                 }
             }
-            other.gameObject.SetActive(false);
-            gameObject.SetActive(false);
+
         }
     }
 }
