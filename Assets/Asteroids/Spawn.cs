@@ -18,6 +18,7 @@ public class Spawn : MonoBehaviour
     List<GameObject> _spheresList;
     public static List<GameObject> _spheresMediumList;
     public static List<GameObject> _spheresSmallList;
+    public GameObject _asteroids;
     void Start()
     {
         _spheresList = new List<GameObject>();
@@ -25,15 +26,21 @@ public class Spawn : MonoBehaviour
         _spheresSmallList = new List<GameObject>();
         for (int i = 0; i < 20; i++)
         {
-            _spheresList.Add(Instantiate(_sphereBig, transform.position, Quaternion.identity));
+            GameObject _a = Instantiate(_sphereBig, transform.position, Quaternion.identity);
+            _spheresList.Add(_a);
+            _a.transform.parent = _asteroids.transform;
         }
         for (int i = 0; i < 20; i++)
         {
-            _spheresMediumList.Add(Instantiate(_sphereMedium, transform.position, Quaternion.identity));
+            GameObject _a = Instantiate(_sphereMedium, transform.position, Quaternion.identity);
+            _spheresMediumList.Add(_a);
+            _a.transform.parent = _asteroids.transform;
         }
         for (int i = 0; i < 20; i++)
         {
-            _spheresSmallList.Add(Instantiate(_sphereSmall, transform.position, Quaternion.identity));
+            GameObject _a = Instantiate(_sphereSmall, transform.position, Quaternion.identity);
+            _spheresSmallList.Add(_a);
+            _a.transform.parent = _asteroids.transform;
         }
         check = 0;
         _maxSpheres = 2;
@@ -54,7 +61,7 @@ public class Spawn : MonoBehaviour
     }
     void Update()
     {
-        if(_spheresLeft == 0 && check == 1)
+        if(_spheresLeft <= 0 && check == 1)
         {
             check = 0;
             Spawn._maxSpheres++;
@@ -98,10 +105,10 @@ public class Spawn : MonoBehaviour
         {
             _spavnVector = new Vector3(_random,_minVector2.y-1, 0);
         }
-        _sphere.SetActive(true);
         _sphere.transform.position = _spavnVector;
         _sphere.GetComponent<Rigidbody>().velocity = Vector3.zero;
         _sphere.transform.LookAt(Vector3.zero);
+        _sphere.SetActive(true);
         _sphere.GetComponent<Rigidbody>().AddForce(_sphere.transform.forward*Random.Range(1.0f,3.0f), ForceMode.Impulse);
         _spheresLeft++;
     }

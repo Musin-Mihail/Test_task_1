@@ -9,6 +9,7 @@ TagManager:
   - SphereBig
   - SphereMedium
   - SphereSmall
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX
