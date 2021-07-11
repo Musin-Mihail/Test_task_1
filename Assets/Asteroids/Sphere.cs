@@ -11,5 +11,11 @@ public class Sphere : MonoBehaviour
             Spawn._spheresLeft--;
             Destroy(gameObject);
         }
+        else if(other.gameObject.tag == "Bullet" )
+        {
+            Spawn._spheresLeft--;
+            other.gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
     }
 }

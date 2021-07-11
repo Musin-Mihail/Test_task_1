@@ -11,6 +11,7 @@ public class Spawn : MonoBehaviour
     public static Vector2 _maxVector2;
     public static int _maxSpheres;
     public static int _spheresLeft;
+    public static float _maxDistans;
     int check;
     void Start()
     {
@@ -20,6 +21,14 @@ public class Spawn : MonoBehaviour
         _maxVector2 = Camera.main.ViewportToWorldPoint (new Vector2 (1,1));
         float _sumX = _maxVector2.x + -_minVector2.x;
         float _sumY = _maxVector2.y + -_minVector2.y;
+        if(_sumX > _sumY)
+        {
+            _maxDistans = _sumX;
+        }
+        else
+        {
+            _maxDistans = _sumY;
+        }
         _field.transform.localScale = new Vector3(_sumX - 0.5f,_sumY - 0.5f, 2);
         StartCoroutine(SpawnWhile(_maxSpheres));
     }
