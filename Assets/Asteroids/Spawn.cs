@@ -5,6 +5,8 @@ using UnityEngine;
 public class Spawn : MonoBehaviour
 {
     public GameObject _sphereBig;
+    public GameObject _sphereMedium;
+    public GameObject _sphereSmall;
     public GameObject _field;
     Vector3 _spavnVector;
     public static Vector2 _minVector2;
@@ -13,8 +15,26 @@ public class Spawn : MonoBehaviour
     public static int _spheresLeft;
     public static float _maxDistans;
     int check;
+    List<GameObject> _spheresList;
+    public static List<GameObject> _spheresMediumList;
+    public static List<GameObject> _spheresSmallList;
     void Start()
     {
+        _spheresList = new List<GameObject>();
+        _spheresMediumList = new List<GameObject>();
+        _spheresSmallList = new List<GameObject>();
+        for (int i = 0; i < 20; i++)
+        {
+            _spheresList.Add(Instantiate(_sphereBig, transform.position, Quaternion.identity));
+        }
+        for (int i = 0; i < 20; i++)
+        {
+            _spheresMediumList.Add(Instantiate(_sphereMedium, transform.position, Quaternion.identity));
+        }
+        for (int i = 0; i < 20; i++)
+        {
+            _spheresSmallList.Add(Instantiate(_sphereSmall, transform.position, Quaternion.identity));
+        }
         check = 0;
         _maxSpheres = 2;
         _minVector2 = Camera.main.ViewportToWorldPoint (new Vector2 (0,0));
@@ -45,13 +65,20 @@ public class Spawn : MonoBehaviour
     {
         while(_numberspheres != 0)
         {
-            _numberspheres--;
             yield return new WaitForSeconds(1.0f);
-            SpawnSphere();
+            foreach (var item in _spheresList)
+            {
+                if(!item.activeSelf)
+                {
+                    SpawnSphere(item);
+                    _numberspheres--;
+                    break;
+                }
+            }
         }
         check = 1;
     }
-    void SpawnSphere()
+    void SpawnSphere(GameObject _sphere)
     {
         int _side = Random.Range(1,5);
         float _random = Random.Range(11.0f,-11.0f);
@@ -71,9 +98,11 @@ public class Spawn : MonoBehaviour
         {
             _spavnVector = new Vector3(_random,_minVector2.y-1, 0);
         }
-        GameObject _sphere = Instantiate(_sphereBig, _spavnVector, Quaternion.identity);
-        Vector3 _jumpDirection = (Vector3.zero - _sphere.transform.position).normalized;
+        _sphere.SetActive(true);
+        _sphere.transform.position = _spavnVector;
+        _sphere.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        _sphere.transform.LookAt(Vector3.zero);
+        _sphere.GetComponent<Rigidbody>().AddForce(_sphere.transform.forward*Random.Range(1.0f,3.0f), ForceMode.Impulse);
         _spheresLeft++;
-        _sphere.GetComponent<Rigidbody>().AddForce(_jumpDirection*2, ForceMode.Impulse);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public GameObject _gun;
+    public GameObject _bullets;
     public GameObject _bulletPrefab;
     static Rigidbody _rigidbody;
     List<GameObject> _bulletsList;
@@ -15,9 +15,11 @@ public class Player : MonoBehaviour
     {
         _numberBullets = 3;
         _bulletsList = new List<GameObject>();
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 40; i++)
         {
-            _bulletsList.Add(Instantiate(_bulletPrefab, transform.position, Quaternion.identity));
+            GameObject _b = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
+            _bulletsList.Add(_b);
+           _b.transform.parent = _bullets.transform;
         }
         _rigidbody = GetComponent<Rigidbody>();
     }

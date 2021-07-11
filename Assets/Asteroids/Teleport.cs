@@ -5,7 +5,7 @@ using UnityEngine;
 public class Teleport : MonoBehaviour
 {
     Vector2 _newVector;
-    public float _border;
+    float _border;
     void Start() 
     {
         float _max;
