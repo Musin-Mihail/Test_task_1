@@ -4,17 +4,11 @@ using UnityEngine;
 
 public class Sphere : MonoBehaviour
 {
-    void OnTriggerExit(Collider other) 
-    {
-        if(other.gameObject.name == "Field" )
-        {
-            Destroy(gameObject);
-        }
-    }
     void OnTriggerEnter(Collider other) 
     {
-        if(other.gameObject.tag == "Sphere" || other.gameObject.tag == "Player")
+        if(other.gameObject.tag == "Player")
         {
+            Spawn._spheresLeft--;
             Destroy(gameObject);
         }
     }

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6631590434697862755}
   - component: {fileID: 6631590434697862754}
   - component: {fileID: 7380264882118137606}
+  - component: {fileID: -2415210268074099240}
   m_Layer: 6
   m_Name: SphereBig
   m_TagString: Sphere
@@ -54,6 +55,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -123,5 +125,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70dd8db3eef329c4db78dfb2fcf7e884, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-2415210268074099240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6631590434697862757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b3fbfec646b72a4db1491bb443644c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
