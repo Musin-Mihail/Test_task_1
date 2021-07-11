@@ -21,6 +21,7 @@ public class Sphere : MonoBehaviour
         {
             other.gameObject.GetComponent<UFO>().Death();
             gameObject.SetActive(false);
+            Spawn._spheresLeft--;
         }
         else if(other.gameObject.tag == "Bullet" )
         {

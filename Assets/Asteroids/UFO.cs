@@ -15,7 +15,7 @@ public class UFO : MonoBehaviour
     void Start()
     {
         _bulletsList = new List<GameObject>();
-        for (int i = 0; i < 40; i++)
+        for (int i = 0; i < 20; i++)
         {
             GameObject _b = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
             _bulletsList.Add(_b);
@@ -47,10 +47,6 @@ public class UFO : MonoBehaviour
                 }
             }
         }
-        else
-        {
-
-        }
     }
     void OnTriggerExit(Collider other) 
     {
@@ -63,7 +59,7 @@ public class UFO : MonoBehaviour
     {
         while(_life == 1)
         {
-            yield return new WaitForSeconds(Random.Range(2.0f, 4.0f));
+            yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
             foreach (var item in _bulletsList)
             {
                 if (!item.activeSelf)
@@ -81,9 +77,18 @@ public class UFO : MonoBehaviour
     public void Death()
     {
         _life = 0;
-        _random = Random.Range(2.0f, 4.0f);
+        _random = Random.Range(20.0f, 40.0f);
         _time = 0;
         _rigidbody.velocity = Vector3.zero;
         transform.position = new Vector3(100,100,0);
+    }
+    void OnTriggerEnter(Collider other) 
+    {
+        if(other.gameObject.tag == "Bullet" )
+        {
+            other.gameObject.SetActive(false);
+            Player._score += 200;
+            Death();
+        }
     }
 }

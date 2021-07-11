@@ -18,7 +18,6 @@ public class Player : MonoBehaviour
     int _life;
     void Start()
     {
-        Time.timeScale = 1;
         _life = 3;
         _score = 0;
         _meshRenderer = GetComponent<MeshRenderer>();
@@ -57,16 +56,16 @@ public class Player : MonoBehaviour
             }
             else
             {
-                _rigidbody.AddForce(transform.up/30, ForceMode.Impulse);
+                _rigidbody.AddForce(transform.up/20, ForceMode.Impulse);
             }
         }
         if(Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(0.0f, 0.0f, 0.5f, Space.Self);
+            transform.Rotate(0.0f, 0.0f, 2.0f, Space.Self);
         }
         if(Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(0.0f, 0.0f, -0.5f, Space.Self);
+            transform.Rotate(0.0f, 0.0f, -2.0f, Space.Self);
         }
         if(Input.GetKeyDown(KeyCode.Space))
         {
