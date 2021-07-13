@@ -10,11 +10,19 @@ public class Player2 : MonoBehaviour
     public int _moveLeft;
     public int _moveRight;
     public Transform _chest;
-    public Vector3 _chestVector;
-    public Vector3 _leftVector;
-    public Vector3 _rightVector;
+    public Vector3 _mouseVector;
+    int _layerMask  = 1 << 8;
+    RaycastHit _hit;
     void LateUpdate()
     {
+        Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, _layerMask))
+        {
+            _mouseVector = _hit.point;
+            _mouseVector += transform.up*2;
+            _chest.rotation = Quaternion.LookRotation(Vector3.up, _mouseVector- _chest.position);
+            _chest.transform.Rotate(-30,90,0);
+        }
         if(Input.GetKey(KeyCode.W))
         {
             if(_moveBack == 0)
@@ -37,7 +45,6 @@ public class Player2 : MonoBehaviour
                 }
                 _moveLeft = 1;
                 transform.position += -transform.right/35;
-                _chest.localEulerAngles = _leftVector;
             }
         }
         if(Input.GetKey(KeyCode.D))
@@ -50,7 +57,6 @@ public class Player2 : MonoBehaviour
                 }
                 _moveRight = 1;
                 transform.position += transform.right/35;
-                _chest.localEulerAngles = _rightVector;
             }
         }
         if(Input.GetKey(KeyCode.S))
