@@ -9,55 +9,12 @@ public class Player2 : MonoBehaviour
     public int _moveBack;
     public int _moveLeft;
     public int _moveRight;
-    public Transform targetBone;
-    public Vector3 _Left;
-    public Vector3 _Right;
-    public Vector3 rot;
-    // int check;
-    void Start()
-    {
-        // check = 0;
-    }
+    public Transform _chest;
+    public Vector3 _chestVector;
+    public Vector3 _leftVector;
+    public Vector3 _rightVector;
     void LateUpdate()
     {
-        // targetBone.localEulerAngles = rot;
-        // if(Input.GetKeyDown(KeyCode.W))
-        // {
-            // check++;
-            // if(_moveBack == 0)
-            // {
-            //     _animator.Play("Run_Rifle");
-            // }
-        // }
-        // if(Input.GetKeyDown(KeyCode.A))
-        // {
-        //     // check++;
-            
-        //     if(_moveRight == 0)
-        //     {
-        //         // rot = _Right;
-                
-        //         _animator.Play("Run_Left_Rifle");
-        //     }
-        // }
-        // if(Input.GetKeyDown(KeyCode.D))
-        // {
-        //     // check++;
-        //     if(_moveLeft == 0)
-        //     {
-        //         // rot = _Left;
-        //         _animator.Play("Run_Right_Rifle");
-        //     }
-        // }
-        // if(Input.GetKeyDown(KeyCode.S))
-        // {
-        //     // check++;
-        //     if(_moveForward == 0)
-        //     {
-        //         _animator.Play("Back_Run_Rifle");
-        //     }
-        // }
-
         if(Input.GetKey(KeyCode.W))
         {
             if(_moveBack == 0)
@@ -80,7 +37,7 @@ public class Player2 : MonoBehaviour
                 }
                 _moveLeft = 1;
                 transform.position += -transform.right/35;
-                // targetBone.localEulerAngles = _Left;
+                _chest.localEulerAngles = _leftVector;
             }
         }
         if(Input.GetKey(KeyCode.D))
@@ -93,7 +50,7 @@ public class Player2 : MonoBehaviour
                 }
                 _moveRight = 1;
                 transform.position += transform.right/35;
-                // targetBone.localEulerAngles = _Right;
+                _chest.localEulerAngles = _rightVector;
             }
         }
         if(Input.GetKey(KeyCode.S))
@@ -111,22 +68,18 @@ public class Player2 : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.W))
         {
-            // check--;
             _moveForward = 0;
         } 
         if(Input.GetKeyUp(KeyCode.A))
         {
-            // check--;
             _moveLeft = 0;
         } 
         if(Input.GetKeyUp(KeyCode.D))
         {
-            // check--;
             _moveRight = 0;
         } 
         if(Input.GetKeyUp(KeyCode.S))
         {
-            // check--;
             _moveBack = 0;
         } 
 
