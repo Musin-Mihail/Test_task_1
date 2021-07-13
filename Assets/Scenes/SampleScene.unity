@@ -294,7 +294,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 584555202}
-  - component: {fileID: 584555203}
+  - component: {fileID: 584555204}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -317,7 +317,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &584555203
+--- !u!114 &584555204
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -326,11 +326,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 584555201}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f26c0ac693fccea4d8ec4b21a458bbad, type: 3}
+  m_Script: {fileID: 11500000, guid: a382af41439417d42b9de0e1476ff98d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 539450014}
+  _moveForward: 0
+  _moveBack: 0
+  _moveLeft: 0
+  _moveRight: 0
   targetBone: {fileID: 1372666662}
-  rot: {x: 1, y: 1, z: 1}
+  _Left: {x: 50, y: 0, z: 0}
+  _Right: {x: -50, y: 0, z: 0}
+  rot: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,15 +657,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f5abd89e727b3e0429f9c2bcfdf5f92e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f5abd89e727b3e0429f9c2bcfdf5f92e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f5abd89e727b3e0429f9c2bcfdf5f92e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f5abd89e727b3e0429f9c2bcfdf5f92e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
