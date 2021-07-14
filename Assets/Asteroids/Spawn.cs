@@ -62,7 +62,6 @@ public class Spawn : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log(_spheresLeft);
         if(_spheresLeft <= 0 && check == 1)
         {
             check = 0;

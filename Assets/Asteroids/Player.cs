@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     int _layerMask  = 1 << 8;
     RaycastHit _hit;
     Quaternion targetRotation;
+    public AudioSource _thrustSoundEffect;
     void Start()
     {
         Application.targetFrameRate = 60;
@@ -38,6 +39,14 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            _thrustSoundEffect.mute = false;
+        }
+        if(Input.GetKeyUp(KeyCode.W))
+        {
+            _thrustSoundEffect.mute = true;
+        }
         _scoreText.text = _score.ToString();
         if(_immortality == 2)
         {
@@ -133,6 +142,7 @@ public class Player : MonoBehaviour
                     item.GetComponent<Rigidbody>().AddForce(transform.up*10, ForceMode.Impulse);
                     _numberBullets--;
                     Invoke("Reloading", 1.0f);
+                    Sound._sound = 1;
                     break;
                 }
             }

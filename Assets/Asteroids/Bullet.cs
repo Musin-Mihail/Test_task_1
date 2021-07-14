@@ -17,8 +17,9 @@ public class Bullet : MonoBehaviour
     }
     void Update()
     {
+        
         float _distans = Vector2.Distance(_oldVector2,transform.position);
-        if(_distans < 0.2f)
+        if(_distans < 0.5f)
         {
             _totalDistans += _distans;
         }

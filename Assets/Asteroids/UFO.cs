@@ -12,6 +12,7 @@ public class UFO : MonoBehaviour
     public GameObject _bulletPrefab;
     public GameObject _bullets;
     public GameObject _player;
+    public AudioSource _largeFlyingSaucer;
     void Start()
     {
         _bulletsList = new List<GameObject>();
@@ -23,7 +24,7 @@ public class UFO : MonoBehaviour
         }
         _life = 0;
         _rigidbody = GetComponent<Rigidbody>();
-        _random = Random.Range(2.0f, 4.0f);
+        _random = Random.Range(20.0f, 40.0f);
     }
     void Update()
     {
@@ -33,6 +34,7 @@ public class UFO : MonoBehaviour
             if(_time >_random)
             {
                 _life = 1;
+                _largeFlyingSaucer.mute = false;
                 StartCoroutine(Shooting());
                 int _side = Random.Range(0,2);
                 if(_side == 0)
@@ -64,6 +66,7 @@ public class UFO : MonoBehaviour
             {
                 if (!item.activeSelf)
                 {
+                    Sound._sound = 1;
                     item.SetActive(true);
                     item.transform.position = transform.position;
                     item.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -76,6 +79,7 @@ public class UFO : MonoBehaviour
     }
     public void Death()
     {
+        _largeFlyingSaucer.mute = true;
         _life = 0;
         _random = Random.Range(20.0f, 40.0f);
         _time = 0;

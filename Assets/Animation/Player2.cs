@@ -31,8 +31,11 @@ public class Player2 : MonoBehaviour
     }
     void LateUpdate()
     {
+        if(Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
         Camera.main.transform.position = transform.position + _camera;
-        
         if(_finishing == 1)
         {
             _chest.rotation = Quaternion.LookRotation(Vector3.up, _target - _chest.position);
