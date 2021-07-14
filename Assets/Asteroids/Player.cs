@@ -45,7 +45,10 @@ public class Player : MonoBehaviour
         }
         if(Input.GetKeyUp(KeyCode.W))
         {
-            _thrustSoundEffect.mute = true;
+            if(!Input.GetKey(KeyCode.Mouse1))
+            {
+                _thrustSoundEffect.mute = true;
+            }
         }
         _scoreText.text = _score.ToString();
         if(_immortality == 2)
@@ -91,7 +94,10 @@ public class Player : MonoBehaviour
             }
             if(Input.GetKeyUp(KeyCode.Mouse1))
             {
-                _thrustSoundEffect.mute = true;
+                if(!Input.GetKey(KeyCode.W))
+                {
+                    _thrustSoundEffect.mute = true;
+                }
             }
             if(Input.GetKey(KeyCode.Mouse1))
             {
