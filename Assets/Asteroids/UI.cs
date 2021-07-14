@@ -10,9 +10,19 @@ public class UI : MonoBehaviour
     public GameObject _scoreUI;
     public GameObject _game;
     public Button _continue;
+    public Image _keyboard;
+    public Image _keyboardMouse;
     void Start()
     {
         Time.timeScale = 1;
+        if(Settings._mouse == 0)
+        {
+            Keyboard();
+        }
+        else
+        {
+            KeyboardMouse();
+        }
     }
     void Update()
     {
@@ -40,5 +50,17 @@ public class UI : MonoBehaviour
     public void Exit()
     {
         Application.Quit();
+    }
+    public void Keyboard()
+    {
+        _keyboard.color = Color.green;
+        _keyboardMouse.color = Color.white;
+        Settings._mouse = 0;
+    }
+    public void KeyboardMouse()
+    {
+        _keyboard.color = Color.white;
+        _keyboardMouse.color = Color.green;
+        Settings._mouse = 1;
     }
 }

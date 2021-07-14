@@ -21,6 +21,7 @@ public class Spawn : MonoBehaviour
     public GameObject _asteroids;
     void Start()
     {
+        _spheresLeft = 0;
         _spheresList = new List<GameObject>();
         _spheresMediumList = new List<GameObject>();
         _spheresSmallList = new List<GameObject>();
@@ -61,6 +62,7 @@ public class Spawn : MonoBehaviour
     }
     void Update()
     {
+        Debug.Log(_spheresLeft);
         if(_spheresLeft <= 0 && check == 1)
         {
             check = 0;

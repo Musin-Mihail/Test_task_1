@@ -16,8 +16,12 @@ public class Player : MonoBehaviour
     public Text _scoreText;
     public List<GameObject> _lifeList;
     int _life;
+    int _layerMask  = 1 << 8;
+    RaycastHit _hit;
+    Quaternion targetRotation;
     void Start()
     {
+        Application.targetFrameRate = 60;
         _life = 3;
         _score = 0;
         _meshRenderer = GetComponent<MeshRenderer>();
@@ -50,14 +54,7 @@ public class Player : MonoBehaviour
         }
         if(Input.GetKey(KeyCode.W))
         {
-            if(_rigidbody.velocity.magnitude > 6)
-            {
-                _rigidbody.velocity *= 0.99f;
-            }
-            else
-            {
-                _rigidbody.AddForce(transform.up/20, ForceMode.Impulse);
-            }
+            Forward();
         }
         if(Input.GetKey(KeyCode.A))
         {
@@ -69,21 +66,23 @@ public class Player : MonoBehaviour
         }
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            if(_numberBullets > 0)
+            Shot();
+        }
+        if(Settings._mouse == 1)
+        {
+            Ray _ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+            if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, _layerMask))
             {
-                foreach (var item in _bulletsList)
-                {
-                    if(!item.activeSelf)
-                    {
-                        item.SetActive(true);
-                        item.transform.position = transform.position + transform.up;
-                        item.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                        item.GetComponent<Rigidbody>().AddForce(transform.up*10, ForceMode.Impulse);
-                        _numberBullets--;
-                        Invoke("Reloading", 1.0f);
-                        break;
-                    }
-                }
+                targetRotation = Quaternion.LookRotation(Vector3.forward, _hit.point - transform.position);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 0.05f);
+            }
+            if(Input.GetKey(KeyCode.Mouse1))
+            {
+                Forward();
+            }
+            if(Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                Shot();
             }
         }
     }
@@ -118,6 +117,36 @@ public class Player : MonoBehaviour
         if(other.gameObject.tag == "EnemyBullet" && _immortality == 0)
         {
             _immortality = 2;
+        }
+    }
+    void Shot()
+    {
+        if(_numberBullets > 0)
+        {
+            foreach (var item in _bulletsList)
+            {
+                if(!item.activeSelf)
+                {
+                    item.SetActive(true);
+                    item.transform.position = transform.position + transform.up;
+                    item.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    item.GetComponent<Rigidbody>().AddForce(transform.up*10, ForceMode.Impulse);
+                    _numberBullets--;
+                    Invoke("Reloading", 1.0f);
+                    break;
+                }
+            }
+        }
+    }
+    void Forward()
+    {
+        if(_rigidbody.velocity.magnitude > 6)
+        {
+            _rigidbody.velocity *= 0.99f;
+        }
+        else
+        {
+            _rigidbody.AddForce(transform.up/20, ForceMode.Impulse);
         }
     }
 }
