@@ -85,6 +85,14 @@ public class Player : MonoBehaviour
                 targetRotation = Quaternion.LookRotation(Vector3.forward, _hit.point - transform.position);
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 0.05f);
             }
+            if(Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                _thrustSoundEffect.mute = false;
+            }
+            if(Input.GetKeyUp(KeyCode.Mouse1))
+            {
+                _thrustSoundEffect.mute = true;
+            }
             if(Input.GetKey(KeyCode.Mouse1))
             {
                 Forward();

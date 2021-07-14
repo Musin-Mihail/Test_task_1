@@ -6,10 +6,6 @@ public class Bullet : MonoBehaviour
 {
     Vector2 _oldVector2;
     float _totalDistans;
-    void OnDisable()
-    {
-
-    }
     void OnEnable()
     {
         _totalDistans = 0;
@@ -17,7 +13,6 @@ public class Bullet : MonoBehaviour
     }
     void Update()
     {
-        
         float _distans = Vector2.Distance(_oldVector2,transform.position);
         if(_distans < 0.5f)
         {

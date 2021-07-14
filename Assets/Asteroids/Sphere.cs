@@ -13,6 +13,7 @@ public class Sphere : MonoBehaviour
     {
         if(other.gameObject.tag == "Player" && Player._immortality == 0)
         {
+            Debug.Log(other.gameObject.name);
             SoundExplosion();
             Player._immortality = 2;
             gameObject.SetActive(false);
@@ -20,6 +21,7 @@ public class Sphere : MonoBehaviour
         }
         else if(other.gameObject.name == "UFO")
         {
+            Debug.Log(other.gameObject.name);
             SoundExplosion();
             other.gameObject.GetComponent<UFO>().Death();
             gameObject.SetActive(false);
@@ -27,6 +29,7 @@ public class Sphere : MonoBehaviour
         }
         else if(other.gameObject.tag == "Bullet" )
         {
+            Debug.Log(other.gameObject.name);
             if(gameObject.tag == "SphereBig")
             {
                 SoundExplosion();

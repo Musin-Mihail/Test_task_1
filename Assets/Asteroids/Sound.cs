@@ -11,7 +11,6 @@ public class Sound : MonoBehaviour
     public AudioClip _smallExplosion;
     public AudioClip _thrustSoundEffect;
     public static int _sound;
-
     void Start() 
     {
         _AudioSource = GetComponent<AudioSource>();
