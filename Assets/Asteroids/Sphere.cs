@@ -66,33 +66,33 @@ public class Sphere : MonoBehaviour
     }
     void SearchSphere(List<GameObject> _list)
     {
-        float _speed = _rigidbody.velocity.magnitude;
-        foreach (var Sphere in _list)
+        float _speed = Random.Range(1.0f, 3.0f);
+        foreach (var Asteroid in _list)
         {
-            if (!Sphere.activeSelf)
+            if (!Asteroid.activeSelf)
             {
-                Sphere.transform.position = transform.position;
-                Sphere.transform.rotation = transform.rotation;
-                Rigidbody _rigidbodySphere = GetComponent<Rigidbody>();
+                Asteroid.transform.position = transform.position;
+                Asteroid.transform.rotation = transform.rotation;
+                Rigidbody _rigidbodySphere = Asteroid.GetComponent<Rigidbody>();
                 _rigidbodySphere.velocity = Vector3.zero;
-                Sphere.transform.Rotate(45.0f, 0.0f, 0.0f, Space.Self);
-                Sphere.SetActive(true);
-                _rigidbodySphere.AddForce(Sphere.transform.forward * _speed, ForceMode.Impulse);
+                Asteroid.transform.Rotate(45.0f, 0.0f, 0.0f, Space.Self);
+                Asteroid.SetActive(true);
+                _rigidbodySphere.AddForce(Asteroid.transform.forward * _speed, ForceMode.Impulse);
                 Spawn._spheresLeft++;
                 break;
             }
         }
-        foreach (var Sphere in _list)
+        foreach (var Asteroid in _list)
         {
-            if (!Sphere.activeSelf)
+            if (!Asteroid.activeSelf)
             {
-                Sphere.transform.position = transform.position;
-                Sphere.transform.rotation = transform.rotation;
-                Rigidbody _rigidbodySphere = GetComponent<Rigidbody>();
+                Asteroid.transform.position = transform.position;
+                Asteroid.transform.rotation = transform.rotation;
+                Rigidbody _rigidbodySphere = Asteroid.GetComponent<Rigidbody>();
                 _rigidbodySphere.velocity = Vector3.zero;
-                Sphere.transform.Rotate(-45.0f, 0.0f, 0.0f, Space.Self);
-                Sphere.SetActive(true);
-                _rigidbodySphere.AddForce(Sphere.transform.forward * _speed, ForceMode.Impulse);
+                Asteroid.transform.Rotate(-45.0f, 0.0f, 0.0f, Space.Self);
+                Asteroid.SetActive(true);
+                _rigidbodySphere.AddForce(Asteroid.transform.forward * _speed, ForceMode.Impulse);
                 Spawn._spheresLeft++;
                 break;
             }

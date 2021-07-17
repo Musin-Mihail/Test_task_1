@@ -68,7 +68,7 @@ public class UFO : MonoBehaviour
                     Sound._sound = 1;
                     Bullet.SetActive(true);
                     Bullet.transform.position = transform.position;
-                    Rigidbody _rigidbodyBullet = GetComponent<Rigidbody>();
+                    Rigidbody _rigidbodyBullet = Bullet.GetComponent<Rigidbody>();
                     _rigidbodyBullet.velocity = Vector3.zero;
                     Vector2 _vector = (_player.transform.position - transform.position).normalized;
                     _rigidbodyBullet.AddForce(_vector * 10, ForceMode.Impulse);

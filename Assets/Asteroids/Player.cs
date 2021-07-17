@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     static Rigidbody _rigidbody;
     List<GameObject> _bulletsList;
     MeshRenderer _meshRenderer;
+    bool _shoot;
     int _numberBullets;
     public static int _immortality;
     public static int _score;
@@ -19,9 +20,11 @@ public class Player : MonoBehaviour
     int _layerMask = 1 << 8;
     RaycastHit _hit;
     Quaternion targetRotation;
+    float _timeBullet;
     public AudioSource _thrustSoundEffect;
     void Start()
     {
+        _shoot = true;
         Application.targetFrameRate = 60;
         _life = 3;
         _score = 0;
@@ -38,6 +41,14 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        if(!_shoot)
+        {
+            _timeBullet += Time.deltaTime;
+            if(_timeBullet > 0.33f)
+            {
+                _shoot = true;
+            }
+        }
         if (Input.GetKeyDown(KeyCode.W))
         {
             _thrustSoundEffect.mute = false;
@@ -108,10 +119,10 @@ public class Player : MonoBehaviour
             }
         }
     }
-    void Reloading()
-    {
-        _numberBullets++;
-    }
+    // void Reloading()
+    // {
+    //     _numberBullets++;
+    // }
     public IEnumerator Immortality()
     {
         Vector2 _newVector = new Vector2(Random.Range(Spawn._maxVector2.x, Spawn._minVector2.x), Random.Range(Spawn._maxVector2.y, Spawn._minVector2.y));
@@ -143,7 +154,7 @@ public class Player : MonoBehaviour
     }
     void Shot()
     {
-        if (_numberBullets > 0)
+        if (_shoot)
         {
             foreach (var Bullet in _bulletsList)
             {
@@ -155,8 +166,10 @@ public class Player : MonoBehaviour
                     _RigidbodyBullet.velocity = Vector3.zero;
                     _RigidbodyBullet.AddForce(transform.up * 10, ForceMode.Impulse);
                     _numberBullets--;
-                    Invoke("Reloading", 1.0f);
+                    // Invoke("Reloading", 1.0f);
                     Sound._sound = 1;
+                    _shoot = false;
+                    _timeBullet = 0;
                     break;
                 }
             }
