@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     public Text _scoreText;
     public List<GameObject> _lifeList;
     int _life;
-    int _layerMask  = 1 << 8;
+    int _layerMask = 1 << 8;
     RaycastHit _hit;
     Quaternion targetRotation;
     public AudioSource _thrustSoundEffect;
@@ -31,29 +31,28 @@ public class Player : MonoBehaviour
         _bulletsList = new List<GameObject>();
         for (int i = 0; i < 40; i++)
         {
-            GameObject _b = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
+            GameObject _b = Instantiate(_bulletPrefab, transform.position, Quaternion.identity, _bullets.transform);
             _bulletsList.Add(_b);
-           _b.transform.parent = _bullets.transform;
         }
         _rigidbody = GetComponent<Rigidbody>();
     }
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W))
         {
             _thrustSoundEffect.mute = false;
         }
-        if(Input.GetKeyUp(KeyCode.W))
+        if (Input.GetKeyUp(KeyCode.W))
         {
-            if(!Input.GetKey(KeyCode.Mouse1))
+            if (!Input.GetKey(KeyCode.Mouse1))
             {
                 _thrustSoundEffect.mute = true;
             }
         }
         _scoreText.text = _score.ToString();
-        if(_immortality == 2)
+        if (_immortality == 2)
         {
-            if(_life > 0)
+            if (_life > 0)
             {
                 _immortality = 1;
                 StartCoroutine(Immortality());
@@ -64,46 +63,46 @@ public class Player : MonoBehaviour
                 _meshRenderer.enabled = false;
             }
         }
-        if(Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W))
         {
             Forward();
         }
-        if(Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
             transform.Rotate(0.0f, 0.0f, 2.0f, Space.Self);
         }
-        if(Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
             transform.Rotate(0.0f, 0.0f, -2.0f, Space.Self);
         }
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Shot();
         }
-        if(Settings._mouse == 1)
+        if (Settings._mouse == 1)
         {
-            Ray _ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+            Ray _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, _layerMask))
             {
                 targetRotation = Quaternion.LookRotation(Vector3.forward, _hit.point - transform.position);
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 0.05f);
             }
-            if(Input.GetKeyDown(KeyCode.Mouse1))
+            if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 _thrustSoundEffect.mute = false;
             }
-            if(Input.GetKeyUp(KeyCode.Mouse1))
+            if (Input.GetKeyUp(KeyCode.Mouse1))
             {
-                if(!Input.GetKey(KeyCode.W))
+                if (!Input.GetKey(KeyCode.W))
                 {
                     _thrustSoundEffect.mute = true;
                 }
             }
-            if(Input.GetKey(KeyCode.Mouse1))
+            if (Input.GetKey(KeyCode.Mouse1))
             {
                 Forward();
             }
-            if(Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 Shot();
             }
@@ -121,7 +120,7 @@ public class Player : MonoBehaviour
         _life--;
         _lifeList[_life].SetActive(false);
         int count = 0;
-        while(count != 3)
+        while (count != 3)
         {
             yield return new WaitForSeconds(0.25f);
             _meshRenderer.enabled = false;
@@ -135,25 +134,26 @@ public class Player : MonoBehaviour
         }
         _immortality = 0;
     }
-    void OnTriggerEnter(Collider other) 
+    void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "EnemyBullet" && _immortality == 0)
+        if (other.gameObject.tag == "EnemyBullet" && _immortality == 0)
         {
             _immortality = 2;
         }
     }
     void Shot()
     {
-        if(_numberBullets > 0)
+        if (_numberBullets > 0)
         {
-            foreach (var item in _bulletsList)
+            foreach (var Bullet in _bulletsList)
             {
-                if(!item.activeSelf)
+                if (!Bullet.activeSelf)
                 {
-                    item.SetActive(true);
-                    item.transform.position = transform.position + transform.up;
-                    item.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                    item.GetComponent<Rigidbody>().AddForce(transform.up*10, ForceMode.Impulse);
+                    Bullet.SetActive(true);
+                    Bullet.transform.position = transform.position + transform.up;
+                    Rigidbody _RigidbodyBullet = Bullet.GetComponent<Rigidbody>();
+                    _RigidbodyBullet.velocity = Vector3.zero;
+                    _RigidbodyBullet.AddForce(transform.up * 10, ForceMode.Impulse);
                     _numberBullets--;
                     Invoke("Reloading", 1.0f);
                     Sound._sound = 1;
@@ -164,13 +164,13 @@ public class Player : MonoBehaviour
     }
     void Forward()
     {
-        if(_rigidbody.velocity.magnitude > 6)
+        if (_rigidbody.velocity.magnitude > 6)
         {
             _rigidbody.velocity *= 0.99f;
         }
         else
         {
-            _rigidbody.AddForce(transform.up/20, ForceMode.Impulse);
+            _rigidbody.AddForce(transform.up / 20, ForceMode.Impulse);
         }
     }
 }

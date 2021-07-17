@@ -11,28 +11,28 @@ public class Sound : MonoBehaviour
     public AudioClip _smallExplosion;
     public AudioClip _thrustSoundEffect;
     public static int _sound;
-    void Start() 
+    void Start()
     {
         _AudioSource = GetComponent<AudioSource>();
     }
     void Update()
     {
-        if( _sound == 1)
+        if (_sound == 1)
         {
             _sound = 0;
             _AudioSource.PlayOneShot(_fireSoundEffect, 0.3F);
         }
-        if( _sound == 2)
+        if (_sound == 2)
         {
             _sound = 0;
             _AudioSource.PlayOneShot(_largeExplosion, 0.3F);
         }
-        if( _sound == 3)
+        if (_sound == 3)
         {
             _sound = 0;
             _AudioSource.PlayOneShot(_mediumExplosion, 0.3F);
         }
-        if( _sound == 4)
+        if (_sound == 4)
         {
             _sound = 0;
             _AudioSource.PlayOneShot(_smallExplosion, 0.3F);

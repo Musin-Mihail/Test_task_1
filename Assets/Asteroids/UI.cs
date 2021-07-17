@@ -15,7 +15,7 @@ public class UI : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1;
-        if(Settings._mouse == 0)
+        if (Settings._mouse == 0)
         {
             Keyboard();
         }
@@ -26,9 +26,9 @@ public class UI : MonoBehaviour
     }
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(!_menuUI.activeSelf)
+            if (!_menuUI.activeSelf)
             {
                 Time.timeScale = 0;
                 _scoreUI.SetActive(false);
