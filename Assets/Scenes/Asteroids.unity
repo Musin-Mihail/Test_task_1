@@ -586,11 +586,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 658368312}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1715.1797, y: 1196.0206, z: -235.94467}
+  m_LocalPosition: {x: 1715.1797, y: 1196.0206, z: -245.94467}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 963194228}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &680973077
 GameObject:
@@ -936,7 +936,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 963194228}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &924680896
 GameObject:
@@ -1030,6 +1030,8 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194230}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194231}
+  - component: {fileID: 963194232}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1099,8 +1101,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2097244445}
-  - {fileID: 658368313}
   - {fileID: 923306267}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1117,11 +1117,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e066c3d02510973419889bcc87a11ac8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sphereBig: {fileID: 6631590434697862757, guid: 4820d4cdfd5fb814d9dcead29678f2db, type: 3}
-  _sphereMedium: {fileID: 3924769951429019960, guid: 2b953ae0289f7274fb936372c7686b40, type: 3}
-  _sphereSmall: {fileID: 2956181906000217556, guid: 354e6e528ad196945b704a67ea250cfd, type: 3}
-  _field: {fileID: 1520334387}
-  _asteroids: {fileID: 658368312}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1140,6 +1135,35 @@ MonoBehaviour:
   _continue: {fileID: 834154949}
   _keyboard: {fileID: 1806419609}
   _keyboardMouse: {fileID: 1607996470}
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1b4cb046a805a140b315433c6dacac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bigAsteroidPrefab: {fileID: 6631590434697862757, guid: 4820d4cdfd5fb814d9dcead29678f2db, type: 3}
+  _mediumAsteroidPrefab: {fileID: 3924769951429019960, guid: 2b953ae0289f7274fb936372c7686b40, type: 3}
+  _smallAsteroidPrefab: {fileID: 2956181906000217556, guid: 354e6e528ad196945b704a67ea250cfd, type: 3}
+  _asteroidsParent: {fileID: 658368312}
+--- !u!114 &963194232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2d1e2f75546c544b926cafde9788853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _field: {fileID: 1520334387}
 --- !u!1 &1131803560
 GameObject:
   m_ObjectHideFlags: 0
@@ -2094,13 +2118,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84419b42cb0da3540b97fb4449c66fa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bullets: {fileID: 2097244444}
+  _bulletsParent: {fileID: 2097244444}
   _bulletPrefab: {fileID: 7786078782806074883, guid: 27696ed8b1063214983ba5d4eaa597c4, type: 3}
-  _scoreText: {fileID: 1701168968}
   _lifeList:
   - {fileID: 550788839}
   - {fileID: 1135990543}
   - {fileID: 194419928}
+  _scoreText: {fileID: 1701168968}
   _thrustSoundEffect: {fileID: 80857007}
 --- !u!114 &1744699687
 MonoBehaviour:
@@ -2566,11 +2590,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2097244444}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7902832, y: -0.44696045, z: -3.0313997}
+  m_LocalPosition: {x: 0.7902832, y: -0.44696045, z: -13.0314}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 963194228}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &117718132225448450
 CapsuleCollider:

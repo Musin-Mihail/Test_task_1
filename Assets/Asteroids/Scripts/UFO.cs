@@ -38,12 +38,12 @@ public class UFO : MonoBehaviour
                 int _side = Random.Range(0, 2);
                 if (_side == 0)
                 {
-                    transform.position = new Vector3(Spawn._minVector2.x - 1, Random.Range(Spawn._maxVector2.y * 0.8f, Spawn._minVector2.y * 0.8f), 0);
+                    transform.position = new Vector3(Global._minVector2.x - 1, Random.Range(Global._maxVector2.y * 0.8f, Global._minVector2.y * 0.8f), 0);
                     _rigidbody.AddForce(-transform.up * 5, ForceMode.Impulse);
                 }
                 else
                 {
-                    transform.position = new Vector3(Spawn._maxVector2.x + 1, Random.Range(Spawn._maxVector2.y * 0.8f, Spawn._minVector2.y * 0.8f), 0);
+                    transform.position = new Vector3(Global._maxVector2.x + 1, Random.Range(Global._maxVector2.y * 0.8f, Global._minVector2.y * 0.8f), 0);
                     _rigidbody.AddForce(transform.up * 5, ForceMode.Impulse);
                 }
             }

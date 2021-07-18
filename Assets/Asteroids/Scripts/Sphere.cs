@@ -5,9 +5,13 @@ using UnityEngine;
 public class Sphere : MonoBehaviour
 {
     Rigidbody _rigidbody;
+    public GameObject _pool;
+    GameObject _spawnAsteroid;
+    Pool Poolscript;
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        Poolscript = Global.Pool.GetComponent<Pool>();
     }
     void OnTriggerEnter(Collider other)
     {
@@ -27,17 +31,26 @@ public class Sphere : MonoBehaviour
         }
         else if (other.gameObject.tag == "Bullet")
         {
+            
             if (gameObject.tag == "SphereBig")
             {
                 SoundExplosion();
                 Player._score += 20;
-                SearchSphere(Spawn._spheresMediumList);
+                float _speed = Random.Range(1.0f, 3.0f);
+                Poolscript.SearchFreeMediumAsteroid(ref _spawnAsteroid);
+                SpanwAsteroid(_spawnAsteroid, _speed, 45.0f);
+                Poolscript.SearchFreeMediumAsteroid(ref _spawnAsteroid);
+                SpanwAsteroid(_spawnAsteroid, _speed, -45.0f);
             }
             else if (gameObject.tag == "SphereMedium")
             {
                 SoundExplosion();
                 Player._score += 50;
-                SearchSphere(Spawn._spheresSmallList);
+                float _speed = Random.Range(1.0f, 3.0f);
+                Poolscript.SearchFreeSmallAsteroid(ref _spawnAsteroid);
+                SpanwAsteroid(_spawnAsteroid, _speed, 45.0f);
+                Poolscript.SearchFreeSmallAsteroid(ref _spawnAsteroid);
+                SpanwAsteroid(_spawnAsteroid, _speed, -45.0f);
             }
             else if (gameObject.tag == "SphereSmall")
             {
@@ -53,50 +66,35 @@ public class Sphere : MonoBehaviour
             SoundExplosion();
             if (gameObject.tag == "SphereBig")
             {
-                SearchSphere(Spawn._spheresMediumList);
+                float _speed = Random.Range(1.0f, 3.0f);
+                Poolscript.SearchFreeMediumAsteroid(ref _spawnAsteroid);
+                SpanwAsteroid(_spawnAsteroid, _speed, 45.0f);
+                Poolscript.SearchFreeMediumAsteroid(ref _spawnAsteroid);
+                SpanwAsteroid(_spawnAsteroid, _speed, -45.0f);
             }
             else if (gameObject.tag == "SphereMedium")
             {
-                SearchSphere(Spawn._spheresSmallList);
+                float _speed = Random.Range(1.0f, 3.0f);
+                Poolscript.SearchFreeSmallAsteroid(ref _spawnAsteroid);
+                SpanwAsteroid(_spawnAsteroid, _speed, 45.0f);
+                Poolscript.SearchFreeSmallAsteroid(ref _spawnAsteroid);
+                SpanwAsteroid(_spawnAsteroid, _speed, -45.0f);
             }
             other.gameObject.SetActive(false);
             gameObject.SetActive(false);
             Spawn._spheresLeft--;
         }
     }
-    void SearchSphere(List<GameObject> _list)
+    void SpanwAsteroid(GameObject asteroid, float speed, float side)
     {
-        float _speed = Random.Range(1.0f, 3.0f);
-        foreach (var Asteroid in _list)
-        {
-            if (!Asteroid.activeSelf)
-            {
-                Asteroid.transform.position = transform.position;
-                Asteroid.transform.rotation = transform.rotation;
-                Rigidbody _rigidbodySphere = Asteroid.GetComponent<Rigidbody>();
-                _rigidbodySphere.velocity = Vector3.zero;
-                Asteroid.transform.Rotate(45.0f, 0.0f, 0.0f, Space.Self);
-                Asteroid.SetActive(true);
-                _rigidbodySphere.AddForce(Asteroid.transform.forward * _speed, ForceMode.Impulse);
-                Spawn._spheresLeft++;
-                break;
-            }
-        }
-        foreach (var Asteroid in _list)
-        {
-            if (!Asteroid.activeSelf)
-            {
-                Asteroid.transform.position = transform.position;
-                Asteroid.transform.rotation = transform.rotation;
-                Rigidbody _rigidbodySphere = Asteroid.GetComponent<Rigidbody>();
-                _rigidbodySphere.velocity = Vector3.zero;
-                Asteroid.transform.Rotate(-45.0f, 0.0f, 0.0f, Space.Self);
-                Asteroid.SetActive(true);
-                _rigidbodySphere.AddForce(Asteroid.transform.forward * _speed, ForceMode.Impulse);
-                Spawn._spheresLeft++;
-                break;
-            }
-        }
+        asteroid.transform.position = transform.position;
+        asteroid.transform.rotation = transform.rotation;
+        Rigidbody _rigidbodySphere = asteroid.GetComponent<Rigidbody>();
+        _rigidbodySphere.velocity = Vector3.zero;
+        asteroid.transform.Rotate(side, 0.0f, 0.0f, Space.Self);
+        asteroid.SetActive(true);
+        _rigidbodySphere.AddForce(asteroid.transform.forward * speed, ForceMode.Impulse);
+        Spawn._spheresLeft++;
     }
     void SoundExplosion()
     {

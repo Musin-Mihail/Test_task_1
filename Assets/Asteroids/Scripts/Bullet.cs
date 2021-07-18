@@ -19,7 +19,7 @@ public class Bullet : MonoBehaviour
             _totalDistans += _distans;
         }
         _oldVector2 = transform.position;
-        if(_totalDistans > Spawn._maxDistans)
+        if(_totalDistans > Global._maxDistans)
         {
             gameObject.SetActive(false);
         }

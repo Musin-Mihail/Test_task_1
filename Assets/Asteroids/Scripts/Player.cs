@@ -5,19 +5,15 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    public GameObject _bullets;
-    public GameObject _bulletPrefab;
+    public GameObject _bulletsParent, _bulletPrefab;
     static Rigidbody _rigidbody;
     List<GameObject> _bulletsList;
+    public List<GameObject> _lifeList;
     MeshRenderer _meshRenderer;
     bool _shoot;
-    int _numberBullets;
-    public static int _immortality;
-    public static int _score;
+    public static int _immortality, _score;
     public Text _scoreText;
-    public List<GameObject> _lifeList;
-    int _life;
-    int _layerMask = 1 << 8;
+    int _life, _layerMask = 1 << 8;
     RaycastHit _hit;
     Quaternion targetRotation;
     float _timeBullet;
@@ -30,11 +26,10 @@ public class Player : MonoBehaviour
         _score = 0;
         _meshRenderer = GetComponent<MeshRenderer>();
         _immortality = 0;
-        _numberBullets = 3;
         _bulletsList = new List<GameObject>();
         for (int i = 0; i < 40; i++)
         {
-            GameObject _b = Instantiate(_bulletPrefab, transform.position, Quaternion.identity, _bullets.transform);
+            GameObject _b = Instantiate(_bulletPrefab, transform.position, Quaternion.identity, _bulletsParent.transform);
             _bulletsList.Add(_b);
         }
         _rigidbody = GetComponent<Rigidbody>();
@@ -119,13 +114,9 @@ public class Player : MonoBehaviour
             }
         }
     }
-    // void Reloading()
-    // {
-    //     _numberBullets++;
-    // }
     public IEnumerator Immortality()
     {
-        Vector2 _newVector = new Vector2(Random.Range(Spawn._maxVector2.x, Spawn._minVector2.x), Random.Range(Spawn._maxVector2.y, Spawn._minVector2.y));
+        Vector2 _newVector = new Vector2(Random.Range(Global._maxVector2.x, Global._minVector2.x), Random.Range(Global._maxVector2.y, Global._minVector2.y));
         transform.position = _newVector;
         _rigidbody.velocity = Vector3.zero;
         _life--;
@@ -165,8 +156,6 @@ public class Player : MonoBehaviour
                     Rigidbody _RigidbodyBullet = Bullet.GetComponent<Rigidbody>();
                     _RigidbodyBullet.velocity = Vector3.zero;
                     _RigidbodyBullet.AddForce(transform.up * 10, ForceMode.Impulse);
-                    _numberBullets--;
-                    // Invoke("Reloading", 1.0f);
                     Sound._sound = 1;
                     _shoot = false;
                     _timeBullet = 0;
