@@ -29,9 +29,8 @@ public class Sphere : MonoBehaviour
             gameObject.SetActive(false);
             Spawn._spheresLeft--;
         }
-        else if (other.gameObject.tag == "Bullet")
+        else if (other.gameObject.GetComponent<PlayerBullet>() && other.gameObject.GetComponent<PlayerBullet>().enabled == true)
         {
-            
             if (gameObject.tag == "SphereBig")
             {
                 SoundExplosion();
@@ -61,7 +60,7 @@ public class Sphere : MonoBehaviour
             gameObject.SetActive(false);
             Spawn._spheresLeft--;
         }
-        else if (other.gameObject.tag == "EnemyBullet")
+        else if (other.gameObject.GetComponent<EnemyBullet>() && other.gameObject.GetComponent<EnemyBullet>().enabled == true)
         {
             SoundExplosion();
             if (gameObject.tag == "SphereBig")

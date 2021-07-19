@@ -8,19 +8,12 @@ public class UFO : MonoBehaviour
     float _random;
     int _life;
     Rigidbody _rigidbody;
-    List<GameObject> _bulletsList;
-    public GameObject _bulletPrefab;
-    public GameObject _bullets;
     public GameObject _player;
     public AudioSource _largeFlyingSaucer;
+    GameObject _spawnBullet;
+
     void Start()
     {
-        _bulletsList = new List<GameObject>();
-        for (int i = 0; i < 20; i++)
-        {
-            GameObject _b = Instantiate(_bulletPrefab, transform.position, Quaternion.identity, _bullets.transform);
-            _bulletsList.Add(_b);
-        }
         _life = 0;
         _rigidbody = GetComponent<Rigidbody>();
         _random = Random.Range(20.0f, 40.0f);
@@ -61,20 +54,16 @@ public class UFO : MonoBehaviour
         while (_life == 1)
         {
             yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
-            foreach (var Bullet in _bulletsList)
-            {
-                if (!Bullet.activeSelf)
-                {
-                    Sound._sound = 1;
-                    Bullet.SetActive(true);
-                    Bullet.transform.position = transform.position;
-                    Rigidbody _rigidbodyBullet = Bullet.GetComponent<Rigidbody>();
-                    _rigidbodyBullet.velocity = Vector3.zero;
-                    Vector2 _vector = (_player.transform.position - transform.position).normalized;
-                    _rigidbodyBullet.AddForce(_vector * 10, ForceMode.Impulse);
-                    break;
-                }
-            }
+            Sound._sound = 1;
+            Global.Pool.GetComponent<Pool>().SearchFreeBullet(ref _spawnBullet);  
+            _spawnBullet.SetActive(true);
+            _spawnBullet.GetComponent<EnemyBullet>().enabled = true;
+            _spawnBullet.GetComponent<MeshRenderer>().material.color = Color.red;
+            _spawnBullet.transform.position = transform.position;
+            Rigidbody _rigidbodyBullet = _spawnBullet.GetComponent<Rigidbody>();
+            _rigidbodyBullet.velocity = Vector3.zero;
+            Vector2 _vector = (_player.transform.position - transform.position).normalized;
+            _rigidbodyBullet.AddForce(_vector * 10, ForceMode.Impulse);
         }
     }
     public void Death()
@@ -88,11 +77,14 @@ public class UFO : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Bullet")
+        if (other.gameObject.GetComponent<PlayerBullet>())
         {
-            other.gameObject.SetActive(false);
-            Player._score += 200;
-            Death();
+            if (other.gameObject.GetComponent<PlayerBullet>().enabled == true)
+            {
+                other.gameObject.SetActive(false);
+                Player._score += 200;
+                Death();
+            }
         }
     }
 }

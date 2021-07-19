@@ -1150,7 +1150,9 @@ MonoBehaviour:
   _bigAsteroidPrefab: {fileID: 6631590434697862757, guid: 4820d4cdfd5fb814d9dcead29678f2db, type: 3}
   _mediumAsteroidPrefab: {fileID: 3924769951429019960, guid: 2b953ae0289f7274fb936372c7686b40, type: 3}
   _smallAsteroidPrefab: {fileID: 2956181906000217556, guid: 354e6e528ad196945b704a67ea250cfd, type: 3}
+  _bulletPrefab: {fileID: 7786078782806074883, guid: 27696ed8b1063214983ba5d4eaa597c4, type: 3}
   _asteroidsParent: {fileID: 658368312}
+  _bulletParent: {fileID: 2097244444}
 --- !u!114 &963194232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2118,8 +2120,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84419b42cb0da3540b97fb4449c66fa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bulletsParent: {fileID: 2097244444}
-  _bulletPrefab: {fileID: 7786078782806074883, guid: 27696ed8b1063214983ba5d4eaa597c4, type: 3}
   _lifeList:
   - {fileID: 550788839}
   - {fileID: 1135990543}

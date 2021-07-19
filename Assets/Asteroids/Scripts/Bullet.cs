@@ -11,6 +11,11 @@ public class Bullet : MonoBehaviour
         _totalDistans = 0;
         _oldVector2 = transform.position;
     }
+    void OnDisable() 
+    {
+        GetComponent<PlayerBullet>().enabled = false;
+        GetComponent<EnemyBullet>().enabled = false;
+    }
     void Update()
     {
         float _distans = Vector2.Distance(_oldVector2,transform.position);

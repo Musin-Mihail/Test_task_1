@@ -5,9 +5,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    public GameObject _bulletsParent, _bulletPrefab;
     static Rigidbody _rigidbody;
-    List<GameObject> _bulletsList;
     public List<GameObject> _lifeList;
     MeshRenderer _meshRenderer;
     bool _shoot;
@@ -18,6 +16,7 @@ public class Player : MonoBehaviour
     Quaternion targetRotation;
     float _timeBullet;
     public AudioSource _thrustSoundEffect;
+    GameObject _spawnBullet;
     void Start()
     {
         _shoot = true;
@@ -26,12 +25,6 @@ public class Player : MonoBehaviour
         _score = 0;
         _meshRenderer = GetComponent<MeshRenderer>();
         _immortality = 0;
-        _bulletsList = new List<GameObject>();
-        for (int i = 0; i < 40; i++)
-        {
-            GameObject _b = Instantiate(_bulletPrefab, transform.position, Quaternion.identity, _bulletsParent.transform);
-            _bulletsList.Add(_b);
-        }
         _rigidbody = GetComponent<Rigidbody>();
     }
     void Update()
@@ -138,30 +131,30 @@ public class Player : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "EnemyBullet" && _immortality == 0)
+        if (other.gameObject.GetComponent<EnemyBullet>() && _immortality == 0)
         {
-            _immortality = 2;
+            if (other.gameObject.GetComponent<EnemyBullet>().enabled == true)
+            {
+                other.gameObject.SetActive(false);
+                _immortality = 2;
+            }
         }
     }
     void Shot()
     {
         if (_shoot)
         {
-            foreach (var Bullet in _bulletsList)
-            {
-                if (!Bullet.activeSelf)
-                {
-                    Bullet.SetActive(true);
-                    Bullet.transform.position = transform.position + transform.up;
-                    Rigidbody _RigidbodyBullet = Bullet.GetComponent<Rigidbody>();
-                    _RigidbodyBullet.velocity = Vector3.zero;
-                    _RigidbodyBullet.AddForce(transform.up * 10, ForceMode.Impulse);
-                    Sound._sound = 1;
-                    _shoot = false;
-                    _timeBullet = 0;
-                    break;
-                }
-            }
+            Global.Pool.GetComponent<Pool>().SearchFreeBullet(ref _spawnBullet);  
+            _spawnBullet.SetActive(true);
+            _spawnBullet.GetComponent<PlayerBullet>().enabled = true;
+            _spawnBullet.GetComponent<MeshRenderer>().material.color = Color.green;
+            _spawnBullet.transform.position = transform.position + transform.up;
+            Rigidbody _RigidbodyBullet = _spawnBullet.GetComponent<Rigidbody>();
+            _RigidbodyBullet.velocity = Vector3.zero;
+            _RigidbodyBullet.AddForce(transform.up * 10, ForceMode.Impulse);
+            Sound._sound = 1;
+            _shoot = false;
+            _timeBullet = 0;
         }
     }
     void Forward()
