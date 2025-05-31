@@ -89,7 +89,7 @@ public class Sphere : MonoBehaviour
         asteroid.transform.position = transform.position;
         asteroid.transform.rotation = transform.rotation;
         Rigidbody _rigidbodySphere = asteroid.GetComponent<Rigidbody>();
-        _rigidbodySphere.velocity = Vector3.zero;
+        _rigidbodySphere.linearVelocity = Vector3.zero;
         asteroid.transform.Rotate(side, 0.0f, 0.0f, Space.Self);
         asteroid.SetActive(true);
         _rigidbodySphere.AddForce(asteroid.transform.forward * speed, ForceMode.Impulse);

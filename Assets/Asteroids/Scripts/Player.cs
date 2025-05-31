@@ -111,7 +111,7 @@ public class Player : MonoBehaviour
     {
         Vector2 _newVector = new Vector2(Random.Range(Global._maxVector2.x, Global._minVector2.x), Random.Range(Global._maxVector2.y, Global._minVector2.y));
         transform.position = _newVector;
-        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.linearVelocity = Vector3.zero;
         _life--;
         _lifeList[_life].SetActive(false);
         int count = 0;
@@ -150,7 +150,7 @@ public class Player : MonoBehaviour
             _spawnBullet.GetComponent<MeshRenderer>().material.color = Color.green;
             _spawnBullet.transform.position = transform.position + transform.up;
             Rigidbody _RigidbodyBullet = _spawnBullet.GetComponent<Rigidbody>();
-            _RigidbodyBullet.velocity = Vector3.zero;
+            _RigidbodyBullet.linearVelocity = Vector3.zero;
             _RigidbodyBullet.AddForce(transform.up * 10, ForceMode.Impulse);
             Sound._sound = 1;
             _shoot = false;
@@ -159,9 +159,9 @@ public class Player : MonoBehaviour
     }
     void Forward()
     {
-        if (_rigidbody.velocity.magnitude > 6)
+        if (_rigidbody.linearVelocity.magnitude > 6)
         {
-            _rigidbody.velocity *= 0.99f;
+            _rigidbody.linearVelocity *= 0.99f;
         }
         else
         {

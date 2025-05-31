@@ -57,7 +57,7 @@ public class Spawn : MonoBehaviour
         }
         asteroid.transform.position = _spawnVector;
         Rigidbody _rigidbodySphere = asteroid.GetComponent<Rigidbody>();
-        _rigidbodySphere.velocity = Vector3.zero;
+        _rigidbodySphere.linearVelocity = Vector3.zero;
         asteroid.transform.LookAt(Vector3.zero);
         asteroid.SetActive(true);
         _rigidbodySphere.AddForce(asteroid.transform.forward * Random.Range(1.0f, 3.0f), ForceMode.Impulse);

@@ -61,7 +61,7 @@ public class UFO : MonoBehaviour
             _spawnBullet.GetComponent<MeshRenderer>().material.color = Color.red;
             _spawnBullet.transform.position = transform.position;
             Rigidbody _rigidbodyBullet = _spawnBullet.GetComponent<Rigidbody>();
-            _rigidbodyBullet.velocity = Vector3.zero;
+            _rigidbodyBullet.linearVelocity = Vector3.zero;
             Vector2 _vector = (_player.transform.position - transform.position).normalized;
             _rigidbodyBullet.AddForce(_vector * 10, ForceMode.Impulse);
         }
@@ -72,7 +72,7 @@ public class UFO : MonoBehaviour
         _life = 0;
         _random = Random.Range(20.0f, 40.0f);
         _time = 0;
-        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.linearVelocity = Vector3.zero;
         transform.position = new Vector3(100, 100, 0);
     }
     void OnTriggerEnter(Collider other)
