@@ -6,38 +6,42 @@ namespace Animation.Scripts
     public class Player2 : MonoBehaviour
     {
         public Animator animator;
+        public GameObject finishingText;
+        public Transform chest;
+        public GameObject enemy;
+        public Animator enemyAnimator;
+        public GameObject gun;
+        public GameObject sword;
+
         private int _moveForward;
         private int _moveBack;
         private int _moveLeft;
         private int _moveRight;
         private int _finishing;
-        public GameObject finishingText;
-        public Transform chest;
         private Vector3 _mouseVector;
         private Vector3 _target;
-        private readonly Vector3 _camera = new(6.0f, 10.0f, -6.0f);
         private const int LayerMask = 1 << 8;
-        public GameObject enemy;
-        public Animator enemyAnimator;
         private RaycastHit _hit;
-        public GameObject gun;
-        public GameObject sword;
-        public Collider playercollider;
+        private Collider _playerCollider;
         private const int Speed = 10;
+        private Camera _camera;
+        private readonly Vector3 _cameraOffset = new(6.0f, 10.0f, -6.0f);
 
         private void Start()
         {
             Application.targetFrameRate = 60;
+            _playerCollider = GetComponent<Collider>();
+            _camera = Camera.main;
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             if (Input.GetKey(KeyCode.Escape))
             {
                 Application.Quit();
             }
 
-            Camera.main.transform.position = transform.position + _camera;
+            _camera.transform.position = transform.position + _cameraOffset;
             if (_finishing == 1)
             {
                 chest.rotation = Quaternion.LookRotation(Vector3.up, _target - chest.position);
@@ -48,8 +52,8 @@ namespace Animation.Scripts
             else
             {
                 transform.rotation = Quaternion.identity;
-                var _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(_ray, out _hit, Mathf.Infinity, LayerMask))
+                var ray = _camera.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out _hit, Mathf.Infinity, LayerMask))
                 {
                     _mouseVector = _hit.point;
                     _mouseVector += transform.up * 2;
@@ -118,7 +122,7 @@ namespace Animation.Scripts
                     if (finishingText.activeSelf)
                     {
                         _finishing = 1;
-                        playercollider.enabled = false;
+                        _playerCollider.enabled = false;
                         finishingText.SetActive(false);
                         animator.Play("Run_Rifle");
                         StartCoroutine(Finishing());
@@ -171,12 +175,11 @@ namespace Animation.Scripts
 
         private IEnumerator Finishing()
         {
-            float _distans;
-            _distans = Vector3.Distance(transform.position, _target);
-            while (_distans > 2.5f)
+            var distanceToTarget = Vector3.Distance(transform.position, _target);
+            while (distanceToTarget > 2.5f)
             {
                 transform.position += transform.forward / (Speed / 2);
-                _distans = Vector3.Distance(transform.position, _target);
+                distanceToTarget = Vector3.Distance(transform.position, _target);
                 yield return new WaitForSeconds(0.001f);
             }
 
@@ -195,11 +198,11 @@ namespace Animation.Scripts
             while (true)
             {
                 var target2 = Random.insideUnitCircle * 10;
-                var NewTarget = new Vector3(target2.x + transform.position.x, 0, target2.y + transform.position.z);
-                var _distans2 = Vector3.Distance(transform.position, NewTarget);
-                if (_distans2 > 6)
+                var newTarget = new Vector3(target2.x + transform.position.x, 0, target2.y + transform.position.z);
+                var distans2 = Vector3.Distance(transform.position, newTarget);
+                if (distans2 > 6)
                 {
-                    enemy.transform.position = NewTarget;
+                    enemy.transform.position = newTarget;
                     break;
                 }
 
@@ -208,7 +211,7 @@ namespace Animation.Scripts
 
             enemyAnimator.enabled = true;
             enemy.SetActive(true);
-            playercollider.enabled = true;
+            _playerCollider.enabled = true;
         }
     }
 }
