@@ -15,7 +15,8 @@ namespace Animation.Scripts
         public GameObject finishingText;
 
         private Collider _playerCollider;
-        private PlayerStateMachine _playerStateMachine;
+        private PlayerAnimation _playerAnimation;
+        private PlayerMovement _playerMovement;
         private bool _isFinishing;
 
         public Vector3 CurrentTarget { get; private set; }
@@ -23,7 +24,7 @@ namespace Animation.Scripts
         private void Awake()
         {
             _playerCollider = GetComponent<Collider>();
-            _playerStateMachine = GetComponent<PlayerStateMachine>();
+            _playerAnimation = GetComponent<PlayerAnimation>();
             gun.SetActive(true);
             sword.SetActive(false);
         }
@@ -36,7 +37,7 @@ namespace Animation.Scripts
             _isFinishing = true;
             _playerCollider.enabled = false;
             finishingText.SetActive(false);
-            _playerStateMachine.PlayerAnimation.PlayAnimation("Run_Rifle");
+            _playerAnimation.PlayAnimation("Run_Rifle");
             StartCoroutine(FinishingCoroutine());
         }
 
@@ -55,7 +56,7 @@ namespace Animation.Scripts
 
             gun.SetActive(false);
             sword.SetActive(true);
-            _playerStateMachine.PlayerAnimation.PlayAnimation("Finishing");
+            _playerAnimation.PlayAnimation("Finishing");
             yield return new WaitForSeconds(0.35f);
 
             enemyAnimator.enabled = false;
@@ -64,7 +65,7 @@ namespace Animation.Scripts
             gun.SetActive(true);
             sword.SetActive(false);
             _isFinishing = false;
-            _playerStateMachine.PlayerMovement.RotateTowardsCamera();
+            _playerMovement.RotateTowardsCamera();
 
             yield return new WaitForSeconds(4.0f);
 

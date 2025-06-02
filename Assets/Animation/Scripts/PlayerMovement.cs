@@ -7,28 +7,25 @@ namespace Animation.Scripts
     /// </summary>
     public class PlayerMovement : MonoBehaviour
     {
+        public Transform chest;
+
         private bool IsMovingForward { get; set; }
         private bool IsMovingBack { get; set; }
         private bool IsMovingLeft { get; set; }
         private bool IsMovingRight { get; set; }
-        public Transform chest;
-
+        private PlayerController _playerController;
+        private PlayerCombat _playerCombat;
         private const float Speed = 10f;
-        private PlayerStateMachine _playerStateMachine;
         private Camera _camera;
 
         private void Awake()
         {
-            _playerStateMachine = GetComponent<PlayerStateMachine>();
+            _playerController = GetComponent<PlayerController>();
+            _playerCombat = GetComponent<PlayerCombat>();
+
             _camera = Camera.main;
 
-            if (!_playerStateMachine)
-            {
-                Debug.LogError("PlayerStateMachine не найден на объекте PlayerMovement.");
-                enabled = false;
-            }
-
-            if (_playerStateMachine.PlayerController)
+            if (_playerController)
             {
                 SubscribeToControllerEvents();
             }
@@ -36,7 +33,7 @@ namespace Animation.Scripts
 
         private void OnDisable()
         {
-            if (_playerStateMachine.PlayerController)
+            if (_playerController)
             {
                 UnsubscribeFromControllerEvents();
             }
@@ -53,26 +50,26 @@ namespace Animation.Scripts
 
         private void SubscribeToControllerEvents()
         {
-            _playerStateMachine.PlayerController.OnMoveForwardPressed += OnMoveForwardPressedHandler;
-            _playerStateMachine.PlayerController.OnMoveForwardReleased += OnMoveForwardReleasedHandler;
-            _playerStateMachine.PlayerController.OnMoveBackPressed += OnMoveBackPressedHandler;
-            _playerStateMachine.PlayerController.OnMoveBackReleased += OnMoveBackReleasedHandler;
-            _playerStateMachine.PlayerController.OnMoveLeftPressed += OnMoveLeftPressedHandler;
-            _playerStateMachine.PlayerController.OnMoveLeftReleased += OnMoveLeftReleasedHandler;
-            _playerStateMachine.PlayerController.OnMoveRightPressed += OnMoveRightPressedHandler;
-            _playerStateMachine.PlayerController.OnMoveRightReleased += OnMoveRightReleasedHandler;
+            _playerController.OnMoveForwardPressed += OnMoveForwardPressedHandler;
+            _playerController.OnMoveForwardReleased += OnMoveForwardReleasedHandler;
+            _playerController.OnMoveBackPressed += OnMoveBackPressedHandler;
+            _playerController.OnMoveBackReleased += OnMoveBackReleasedHandler;
+            _playerController.OnMoveLeftPressed += OnMoveLeftPressedHandler;
+            _playerController.OnMoveLeftReleased += OnMoveLeftReleasedHandler;
+            _playerController.OnMoveRightPressed += OnMoveRightPressedHandler;
+            _playerController.OnMoveRightReleased += OnMoveRightReleasedHandler;
         }
 
         private void UnsubscribeFromControllerEvents()
         {
-            _playerStateMachine.PlayerController.OnMoveForwardPressed -= OnMoveForwardPressedHandler;
-            _playerStateMachine.PlayerController.OnMoveForwardReleased -= OnMoveForwardReleasedHandler;
-            _playerStateMachine.PlayerController.OnMoveBackPressed -= OnMoveBackPressedHandler;
-            _playerStateMachine.PlayerController.OnMoveBackReleased -= OnMoveBackReleasedHandler;
-            _playerStateMachine.PlayerController.OnMoveLeftPressed -= OnMoveLeftPressedHandler;
-            _playerStateMachine.PlayerController.OnMoveLeftReleased -= OnMoveLeftReleasedHandler;
-            _playerStateMachine.PlayerController.OnMoveRightPressed -= OnMoveRightPressedHandler;
-            _playerStateMachine.PlayerController.OnMoveRightReleased -= OnMoveRightReleasedHandler;
+            _playerController.OnMoveForwardPressed -= OnMoveForwardPressedHandler;
+            _playerController.OnMoveForwardReleased -= OnMoveForwardReleasedHandler;
+            _playerController.OnMoveBackPressed -= OnMoveBackPressedHandler;
+            _playerController.OnMoveBackReleased -= OnMoveBackReleasedHandler;
+            _playerController.OnMoveLeftPressed -= OnMoveLeftPressedHandler;
+            _playerController.OnMoveLeftReleased -= OnMoveLeftReleasedHandler;
+            _playerController.OnMoveRightPressed -= OnMoveRightPressedHandler;
+            _playerController.OnMoveRightReleased -= OnMoveRightReleasedHandler;
         }
 
         /// <summary>
@@ -110,7 +107,7 @@ namespace Animation.Scripts
         /// </summary>
         public void RotationToMouse()
         {
-            var mouseWorldPosition = _playerStateMachine.PlayerController.GetMouseWorldPosition();
+            var mouseWorldPosition = _playerController.GetMouseWorldPosition();
             chest.rotation = Quaternion.LookRotation(Vector3.up, mouseWorldPosition - chest.position);
             chest.transform.Rotate(-30, 90, 0);
         }
@@ -120,9 +117,9 @@ namespace Animation.Scripts
         /// </summary>
         public void RotationToTarget()
         {
-            chest.rotation = Quaternion.LookRotation(Vector3.up, _playerStateMachine.PlayerCombat.CurrentTarget - chest.position);
+            chest.rotation = Quaternion.LookRotation(Vector3.up, _playerCombat.CurrentTarget - chest.position);
             chest.transform.Rotate(-30, 90, 10);
-            transform.rotation = Quaternion.LookRotation(Vector3.up, _playerStateMachine.PlayerCombat.CurrentTarget - transform.position);
+            transform.rotation = Quaternion.LookRotation(Vector3.up, _playerCombat.CurrentTarget - transform.position);
             transform.transform.Rotate(270, 180, 0);
         }
 
