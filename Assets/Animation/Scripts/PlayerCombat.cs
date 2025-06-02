@@ -15,22 +15,15 @@ namespace Animation.Scripts
         public GameObject finishingText;
 
         private Collider _playerCollider;
-        private PlayerController _playerController;
-        private PlayerAnimation _playerAnimation;
-
-        private bool _isFinishing = false;
+        private PlayerStateMachine _playerStateMachine;
+        private bool _isFinishing;
 
         public Vector3 CurrentTarget { get; private set; }
-
 
         private void Awake()
         {
             _playerCollider = GetComponent<Collider>();
-            _playerController = GetComponent<PlayerController>();
-            _playerAnimation = GetComponent<PlayerAnimation>();
-
-            _playerController.OnSpacePressed += HandleSpacePressed;
-
+            _playerStateMachine = GetComponent<PlayerStateMachine>();
             gun.SetActive(true);
             sword.SetActive(false);
         }
@@ -38,16 +31,13 @@ namespace Animation.Scripts
         /// <summary>
         /// Обработчик нажатия пробела.
         /// </summary>
-        private void HandleSpacePressed()
+        public void StartFinishing()
         {
-            if (finishingText.activeSelf && !_isFinishing)
-            {
-                _isFinishing = true;
-                _playerCollider.enabled = false;
-                finishingText.SetActive(false);
-                _playerAnimation.PlayAnimation("Run_Rifle");
-                StartCoroutine(FinishingCoroutine());
-            }
+            _isFinishing = true;
+            _playerCollider.enabled = false;
+            finishingText.SetActive(false);
+            _playerStateMachine.PlayerAnimation.PlayAnimation("Run_Rifle");
+            StartCoroutine(FinishingCoroutine());
         }
 
         /// <summary>
@@ -55,7 +45,7 @@ namespace Animation.Scripts
         /// </summary>
         private IEnumerator FinishingCoroutine()
         {
-            float distanceToTarget = Vector3.Distance(transform.position, CurrentTarget);
+            var distanceToTarget = Vector3.Distance(transform.position, CurrentTarget);
             while (distanceToTarget > 2.5f)
             {
                 transform.position += transform.forward * (5 * Time.deltaTime);
@@ -65,7 +55,7 @@ namespace Animation.Scripts
 
             gun.SetActive(false);
             sword.SetActive(true);
-            _playerAnimation.PlayAnimation("Finishing");
+            _playerStateMachine.PlayerAnimation.PlayAnimation("Finishing");
             yield return new WaitForSeconds(0.35f);
 
             enemyAnimator.enabled = false;
@@ -74,7 +64,7 @@ namespace Animation.Scripts
             gun.SetActive(true);
             sword.SetActive(false);
             _isFinishing = false;
-            _playerCollider.enabled = true;
+            _playerStateMachine.PlayerMovement.RotateTowardsCamera();
 
             yield return new WaitForSeconds(4.0f);
 
@@ -83,12 +73,12 @@ namespace Animation.Scripts
 
             while (true)
             {
-                var randomCircle = Random.insideUnitCircle * 10;
-                var newTarget = new Vector3(randomCircle.x + transform.position.x, 0, randomCircle.y + transform.position.z);
-                var distance = Vector3.Distance(transform.position, newTarget);
+                var randomVector = Random.insideUnitCircle * 10;
+                var newVector = new Vector3(randomVector.x + transform.position.x, 0, randomVector.y + transform.position.z);
+                var distance = Vector3.Distance(transform.position, newVector);
                 if (distance > 6)
                 {
-                    enemy.transform.position = newTarget;
+                    enemy.transform.position = newVector;
                     break;
                 }
 
@@ -97,6 +87,7 @@ namespace Animation.Scripts
 
             enemyAnimator.enabled = true;
             enemy.SetActive(true);
+            _playerCollider.enabled = true;
         }
 
         /// <summary>

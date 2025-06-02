@@ -7,72 +7,129 @@ namespace Animation.Scripts
     /// </summary>
     public class PlayerMovement : MonoBehaviour
     {
-        private const float Speed = 10f;
-        public bool IsMovingForward { get; private set; }
-        public bool IsMovingBack { get; private set; }
-        public bool IsMovingLeft { get; private set; }
-        public bool IsMovingRight { get; private set; }
+        private bool IsMovingForward { get; set; }
+        private bool IsMovingBack { get; set; }
+        private bool IsMovingLeft { get; set; }
+        private bool IsMovingRight { get; set; }
+        public Transform chest;
 
-        private PlayerController _playerController;
-        private PlayerCombat _playerCombat;
+        private const float Speed = 10f;
+        private PlayerStateMachine _playerStateMachine;
         private Camera _camera;
 
         private void Awake()
         {
-            _playerController = GetComponent<PlayerController>();
-            _playerCombat = GetComponent<PlayerCombat>();
+            _playerStateMachine = GetComponent<PlayerStateMachine>();
             _camera = Camera.main;
 
-            if (!_playerController)
+            if (!_playerStateMachine)
             {
+                Debug.LogError("PlayerStateMachine не найден на объекте PlayerMovement.");
                 enabled = false;
-                return;
             }
 
-            _playerController.OnMoveForwardPressed += () => IsMovingForward = true;
-            _playerController.OnMoveForwardReleased += () => IsMovingForward = false;
-            _playerController.OnMoveBackPressed += () => IsMovingBack = true;
-            _playerController.OnMoveBackReleased += () => IsMovingBack = false;
-            _playerController.OnMoveLeftPressed += () => IsMovingLeft = true;
-            _playerController.OnMoveLeftReleased += () => IsMovingLeft = false;
-            _playerController.OnMoveRightPressed += () => IsMovingRight = true;
-            _playerController.OnMoveRightReleased += () => IsMovingRight = false;
+            if (_playerStateMachine.PlayerController)
+            {
+                SubscribeToControllerEvents();
+            }
         }
 
-        private void FixedUpdate()
+        private void OnDisable()
         {
-            if (!_playerCombat.IsFinishing())
+            if (_playerStateMachine.PlayerController)
             {
-                RotateTowardsCamera();
-                var cameraForward = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
-                var cameraRight = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
-
-                if (IsMovingForward)
-                {
-                    transform.position += cameraForward * (Speed * Time.fixedDeltaTime);
-                }
-
-                if (IsMovingBack)
-                {
-                    transform.position += -cameraForward * (Speed * Time.fixedDeltaTime);
-                }
-
-                if (IsMovingLeft)
-                {
-                    transform.position += -cameraRight * (Speed * Time.fixedDeltaTime);
-                }
-
-                if (IsMovingRight)
-                {
-                    transform.position += cameraRight * (Speed * Time.fixedDeltaTime);
-                }
+                UnsubscribeFromControllerEvents();
             }
+        }
+
+        private void OnMoveForwardPressedHandler() => IsMovingForward = true;
+        private void OnMoveForwardReleasedHandler() => IsMovingForward = false;
+        private void OnMoveBackPressedHandler() => IsMovingBack = true;
+        private void OnMoveBackReleasedHandler() => IsMovingBack = false;
+        private void OnMoveLeftPressedHandler() => IsMovingLeft = true;
+        private void OnMoveLeftReleasedHandler() => IsMovingLeft = false;
+        private void OnMoveRightPressedHandler() => IsMovingRight = true;
+        private void OnMoveRightReleasedHandler() => IsMovingRight = false;
+
+        private void SubscribeToControllerEvents()
+        {
+            _playerStateMachine.PlayerController.OnMoveForwardPressed += OnMoveForwardPressedHandler;
+            _playerStateMachine.PlayerController.OnMoveForwardReleased += OnMoveForwardReleasedHandler;
+            _playerStateMachine.PlayerController.OnMoveBackPressed += OnMoveBackPressedHandler;
+            _playerStateMachine.PlayerController.OnMoveBackReleased += OnMoveBackReleasedHandler;
+            _playerStateMachine.PlayerController.OnMoveLeftPressed += OnMoveLeftPressedHandler;
+            _playerStateMachine.PlayerController.OnMoveLeftReleased += OnMoveLeftReleasedHandler;
+            _playerStateMachine.PlayerController.OnMoveRightPressed += OnMoveRightPressedHandler;
+            _playerStateMachine.PlayerController.OnMoveRightReleased += OnMoveRightReleasedHandler;
+        }
+
+        private void UnsubscribeFromControllerEvents()
+        {
+            _playerStateMachine.PlayerController.OnMoveForwardPressed -= OnMoveForwardPressedHandler;
+            _playerStateMachine.PlayerController.OnMoveForwardReleased -= OnMoveForwardReleasedHandler;
+            _playerStateMachine.PlayerController.OnMoveBackPressed -= OnMoveBackPressedHandler;
+            _playerStateMachine.PlayerController.OnMoveBackReleased -= OnMoveBackReleasedHandler;
+            _playerStateMachine.PlayerController.OnMoveLeftPressed -= OnMoveLeftPressedHandler;
+            _playerStateMachine.PlayerController.OnMoveLeftReleased -= OnMoveLeftReleasedHandler;
+            _playerStateMachine.PlayerController.OnMoveRightPressed -= OnMoveRightPressedHandler;
+            _playerStateMachine.PlayerController.OnMoveRightReleased -= OnMoveRightReleasedHandler;
+        }
+
+        /// <summary>
+        /// Выполняет движение игрока. Вызывается из состояния FSM.
+        /// </summary>
+        public void Move()
+        {
+            if (!_camera) return;
+            var cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var cameraRightFlat = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
+
+            if (IsMovingForward)
+            {
+                transform.position += cameraForwardFlat * (Speed * Time.fixedDeltaTime);
+            }
+
+            if (IsMovingBack)
+            {
+                transform.position += -cameraForwardFlat * (Speed * Time.fixedDeltaTime);
+            }
+
+            if (IsMovingLeft)
+            {
+                transform.position += -cameraRightFlat * (Speed * Time.fixedDeltaTime);
+            }
+
+            if (IsMovingRight)
+            {
+                transform.position += cameraRightFlat * (Speed * Time.fixedDeltaTime);
+            }
+        }
+
+        /// <summary>
+        /// Поворачивает объект игрока в сторону указателя мышки.
+        /// </summary>
+        public void RotationToMouse()
+        {
+            var mouseWorldPosition = _playerStateMachine.PlayerController.GetMouseWorldPosition();
+            chest.rotation = Quaternion.LookRotation(Vector3.up, mouseWorldPosition - chest.position);
+            chest.transform.Rotate(-30, 90, 0);
+        }
+
+        /// <summary>
+        /// Поворачивает объект игрока в сторону цели.
+        /// </summary>
+        public void RotationToTarget()
+        {
+            chest.rotation = Quaternion.LookRotation(Vector3.up, _playerStateMachine.PlayerCombat.CurrentTarget - chest.position);
+            chest.transform.Rotate(-30, 90, 10);
+            transform.rotation = Quaternion.LookRotation(Vector3.up, _playerStateMachine.PlayerCombat.CurrentTarget - transform.position);
+            transform.transform.Rotate(270, 180, 0);
         }
 
         /// <summary>
         /// Поворачивает объект игрока в сторону, куда смотрит камера, по горизонтальной плоскости.
         /// </summary>
-        private void RotateTowardsCamera()
+        public void RotateTowardsCamera()
         {
             if (_camera)
             {

@@ -10,12 +10,16 @@ namespace Animation.Scripts
     {
         public event Action OnMoveForwardPressed;
         public event Action OnMoveForwardReleased;
+        public event Action<string> OnMoveForwardKeyDown;
         public event Action OnMoveBackPressed;
         public event Action OnMoveBackReleased;
+        public event Action<string> OnMoveBackKeyDown;
         public event Action OnMoveLeftPressed;
         public event Action OnMoveLeftReleased;
+        public event Action<string> OnMoveLeftKeyDown;
         public event Action OnMoveRightPressed;
         public event Action OnMoveRightReleased;
+        public event Action<string> OnMoveRightKeyDown;
         public event Action OnSpacePressed;
 
         private Camera _camera;
@@ -42,6 +46,11 @@ namespace Animation.Scripts
                 OnMoveForwardReleased?.Invoke();
             }
 
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                OnMoveForwardKeyDown?.Invoke("Run_Rifle");
+            }
+
             if (Input.GetKey(KeyCode.A))
             {
                 OnMoveLeftPressed?.Invoke();
@@ -50,6 +59,11 @@ namespace Animation.Scripts
             if (Input.GetKeyUp(KeyCode.A))
             {
                 OnMoveLeftReleased?.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                OnMoveLeftKeyDown?.Invoke("Run_Left_Rifle");
             }
 
             if (Input.GetKey(KeyCode.D))
@@ -62,6 +76,11 @@ namespace Animation.Scripts
                 OnMoveRightReleased?.Invoke();
             }
 
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                OnMoveRightKeyDown?.Invoke("Run_Right_Rifle");
+            }
+
             if (Input.GetKey(KeyCode.S))
             {
                 OnMoveBackPressed?.Invoke();
@@ -70,6 +89,11 @@ namespace Animation.Scripts
             if (Input.GetKeyUp(KeyCode.S))
             {
                 OnMoveBackReleased?.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                OnMoveBackKeyDown?.Invoke("Back_Run_Rifle");
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
