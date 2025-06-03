@@ -1,12 +1,12 @@
-﻿namespace Animation.Scripts
+﻿namespace Animation.Scripts.States
 {
     public abstract class PlayerState
     {
-        protected readonly PlayerStateMachine PlayerStateMachine;
+        protected readonly IPlayerStateContext Context;
 
-        protected PlayerState(PlayerStateMachine playerStateMachine)
+        protected PlayerState(IPlayerStateContext context)
         {
-            PlayerStateMachine = playerStateMachine;
+            Context = context;
         }
 
         public virtual void EnterState()

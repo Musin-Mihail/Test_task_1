@@ -59,7 +59,7 @@ namespace Animation.Scripts
             gun.SetActive(false);
             sword.SetActive(true);
             _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
-            yield return new WaitForSeconds(0.35f);
+            yield return new WaitForSeconds(1.6f);
         }
 
         private IEnumerator ResetFinisherStateAndTriggerEnemyHandler()

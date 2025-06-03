@@ -1,9 +1,8 @@
-﻿using Animation.Scripts.States;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Animation.Scripts
+namespace Animation.Scripts.States
 {
-    public class PlayerStateMachine : MonoBehaviour
+    public class PlayerStateMachine : MonoBehaviour, IPlayerStateContext
     {
         private PlayerState CurrentState { get; set; }
         public PlayerAnimation PlayerAnimation { get; private set; }
@@ -12,6 +11,14 @@ namespace Animation.Scripts
         public PlayerController PlayerController { get; private set; }
         public EnemyFinishingTrigger EnemyFinishingTrigger { get; private set; }
 
+        private PlayerIdleState _idleState;
+        private PlayerRunState _runState;
+        private PlayerFinishingState _finishingState;
+
+        public PlayerIdleState GetIdleState() => _idleState;
+        public PlayerRunState GetRunState() => _runState;
+        public PlayerFinishingState GetFinishingState() => _finishingState;
+
         private void Awake()
         {
             PlayerAnimation = GetComponent<PlayerAnimation>();
@@ -19,12 +26,16 @@ namespace Animation.Scripts
             PlayerFinisher = GetComponent<PlayerFinisher>();
             PlayerController = GetComponent<PlayerController>();
             EnemyFinishingTrigger = GetComponent<EnemyFinishingTrigger>();
+
+            _idleState = new PlayerIdleState(this);
+            _runState = new PlayerRunState(this);
+            _finishingState = new PlayerFinishingState(this);
         }
 
         private void Start()
         {
             PlayerMovement.RotateTowardsCamera();
-            ChangeState(new PlayerIdleState(this));
+            ChangeState(_idleState);
         }
 
         private void Update()

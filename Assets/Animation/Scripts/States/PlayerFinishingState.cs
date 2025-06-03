@@ -2,14 +2,14 @@
 {
     public class PlayerFinishingState : PlayerState
     {
-        public PlayerFinishingState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+        public PlayerFinishingState(IPlayerStateContext context) : base(context)
         {
         }
 
         public override void EnterState()
         {
-            PlayerStateMachine.PlayerMovement.RotationToTarget();
-            PlayerStateMachine.PlayerFinisher.StartFinishingSequence();
+            Context.PlayerMovement.RotationToTarget();
+            Context.PlayerFinisher.StartFinishingSequence();
         }
 
         public override void ExitState()
@@ -18,9 +18,9 @@
 
         public override void UpdateState()
         {
-            if (!PlayerStateMachine.PlayerFinisher.IsFinishing())
+            if (!Context.PlayerFinisher.IsFinishing())
             {
-                PlayerStateMachine.ChangeState(new PlayerIdleState(PlayerStateMachine));
+                Context.ChangeState(Context.GetIdleState());
             }
         }
     }

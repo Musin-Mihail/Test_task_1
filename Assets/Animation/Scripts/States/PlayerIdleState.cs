@@ -2,45 +2,45 @@
 {
     public class PlayerIdleState : PlayerState
     {
-        public PlayerIdleState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+        public PlayerIdleState(IPlayerStateContext context) : base(context)
         {
         }
 
         public override void EnterState()
         {
-            PlayerStateMachine.PlayerAnimation.PlayAnimation(PlayerAnimationNames.Idle);
-            PlayerStateMachine.PlayerController.OnMoveForwardPressed += OnMovePressed;
-            PlayerStateMachine.PlayerController.OnMoveBackPressed += OnMovePressed;
-            PlayerStateMachine.PlayerController.OnMoveLeftPressed += OnMovePressed;
-            PlayerStateMachine.PlayerController.OnMoveRightPressed += OnMovePressed;
-            PlayerStateMachine.PlayerController.OnSpacePressed += OnSpacePressed;
+            Context.PlayerAnimation.PlayAnimation(PlayerAnimationNames.Idle);
+            Context.PlayerController.OnMoveForwardPressed += OnMovePressed;
+            Context.PlayerController.OnMoveBackPressed += OnMovePressed;
+            Context.PlayerController.OnMoveLeftPressed += OnMovePressed;
+            Context.PlayerController.OnMoveRightPressed += OnMovePressed;
+            Context.PlayerController.OnSpacePressed += OnSpacePressed;
         }
 
         public override void ExitState()
         {
-            PlayerStateMachine.PlayerController.OnMoveForwardPressed -= OnMovePressed;
-            PlayerStateMachine.PlayerController.OnMoveBackPressed -= OnMovePressed;
-            PlayerStateMachine.PlayerController.OnMoveLeftPressed -= OnMovePressed;
-            PlayerStateMachine.PlayerController.OnMoveRightPressed -= OnMovePressed;
-            PlayerStateMachine.PlayerController.OnSpacePressed -= OnSpacePressed;
+            Context.PlayerController.OnMoveForwardPressed -= OnMovePressed;
+            Context.PlayerController.OnMoveBackPressed -= OnMovePressed;
+            Context.PlayerController.OnMoveLeftPressed -= OnMovePressed;
+            Context.PlayerController.OnMoveRightPressed -= OnMovePressed;
+            Context.PlayerController.OnSpacePressed -= OnSpacePressed;
         }
 
         private void OnMovePressed()
         {
-            PlayerStateMachine.ChangeState(new PlayerRunState(PlayerStateMachine));
+            Context.ChangeState(Context.GetRunState());
         }
 
         private void OnSpacePressed()
         {
-            if (PlayerStateMachine.EnemyFinishingTrigger.TryStartFinishing())
+            if (Context.EnemyFinishingTrigger.TryStartFinishing())
             {
-                PlayerStateMachine.ChangeState(new PlayerFinishingState(PlayerStateMachine));
+                Context.ChangeState(Context.GetFinishingState());
             }
         }
 
         public override void LateUpdateState()
         {
-            PlayerStateMachine.PlayerMovement.RotationToMouse();
+            Context.PlayerMovement.RotationToMouse();
         }
     }
 }
