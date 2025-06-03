@@ -577,9 +577,9 @@ GameObject:
   - component: {fileID: 584555206}
   - component: {fileID: 584555205}
   - component: {fileID: 584555208}
-  - component: {fileID: 584555207}
   - component: {fileID: 584555209}
   - component: {fileID: 584555210}
+  - component: {fileID: 584555211}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -649,23 +649,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d5acc5990ad4c9981985298709f72c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &584555207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 584555201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea20983ebacf9b342baf6e2e2613b5e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gun: {fileID: 325948398}
-  sword: {fileID: 1275783781}
-  enemy: {fileID: 2686342998258755412}
-  enemyAnimator: {fileID: 2686342998838596321}
-  finishingText: {fileID: 556377277}
 --- !u!114 &584555208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -705,8 +688,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gun: {fileID: 325948398}
   sword: {fileID: 1275783781}
-  enemyAnimator: {fileID: 2686342998838596321}
-  enemy: {fileID: 2686342998258755412}
+  enemyFinisherHandler: {fileID: 2686342998258755414}
+--- !u!114 &584555211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584555201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ca138a8c64464cb58c630705a0290e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   finishingText: {fileID: 556377277}
 --- !u!1 &705507993
 GameObject:
@@ -2591,6 +2585,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2686342998258755413}
+  - component: {fileID: 2686342998258755414}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -2614,6 +2609,19 @@ Transform:
   - {fileID: 2507792252459987603}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2686342998258755414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2686342998258755412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac5d66a474444f4a5eb8f96803d48a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemy: {fileID: 2992263071057766441}
 --- !u!95 &2686342998838596321
 Animator:
   serializedVersion: 7

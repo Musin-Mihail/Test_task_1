@@ -7,16 +7,15 @@ namespace Animation.Scripts
     {
         public GameObject gun;
         public GameObject sword;
-        public Animator enemyAnimator;
-        public GameObject enemy;
+        public EnemyFinisherHandler enemyFinisherHandler;
+
+        public Vector3 TargetPosition { get; set; }
+        public bool IsFinishing() => _isFinishing;
+
         private PlayerAnimation _playerAnimation;
         private PlayerMovement _playerMovement;
         private Collider _playerCollider;
-
         private bool _isFinishing;
-        public Vector3 TargetPosition { get; set; }
-
-        public bool IsFinishing() => _isFinishing;
 
         private void Awake()
         {
@@ -37,6 +36,15 @@ namespace Animation.Scripts
 
         private IEnumerator FinishingCoroutine()
         {
+            yield return StartCoroutine(MoveToTarget());
+            yield return StartCoroutine(PerformFinishingAnimation());
+            yield return StartCoroutine(ResetFinisherStateAndTriggerEnemyHandler());
+            yield return StartCoroutine(enemyFinisherHandler.RepositionEnemyCoroutine());
+            _playerCollider.enabled = true;
+        }
+
+        private IEnumerator MoveToTarget()
+        {
             var distanceToTarget = Vector3.Distance(transform.position, TargetPosition);
             while (distanceToTarget > 2.5f)
             {
@@ -44,41 +52,23 @@ namespace Animation.Scripts
                 distanceToTarget = Vector3.Distance(transform.position, TargetPosition);
                 yield return null;
             }
+        }
 
+        private IEnumerator PerformFinishingAnimation()
+        {
             gun.SetActive(false);
             sword.SetActive(true);
             _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
             yield return new WaitForSeconds(0.35f);
+        }
 
-            enemyAnimator.enabled = false;
-            yield return new WaitForSeconds(1.15f);
-
+        private IEnumerator ResetFinisherStateAndTriggerEnemyHandler()
+        {
             gun.SetActive(true);
             sword.SetActive(false);
             _isFinishing = false;
             _playerMovement.RotateTowardsCamera();
-
-            yield return new WaitForSeconds(4.0f);
-            enemy.SetActive(false);
-            yield return new WaitForSeconds(1.0f);
-
-            while (true)
-            {
-                var randomVector = Random.insideUnitCircle * 10;
-                var newVector = new Vector3(randomVector.x + transform.position.x, 0, randomVector.y + transform.position.z);
-                var distance = Vector3.Distance(transform.position, newVector);
-                if (distance > 6)
-                {
-                    enemy.transform.position = newVector;
-                    break;
-                }
-
-                yield return new WaitForSeconds(0.1f);
-            }
-
-            enemyAnimator.enabled = true;
-            enemy.SetActive(true);
-            _playerCollider.enabled = true;
+            yield return null;
         }
     }
 }
