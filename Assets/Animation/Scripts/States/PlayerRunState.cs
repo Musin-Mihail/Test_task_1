@@ -62,7 +62,7 @@
 
         private void OnSpacePressed()
         {
-            if (!PlayerStateMachine.PlayerCombat.IsFinishing() && PlayerStateMachine.PlayerCombat.finishingText.activeSelf)
+            if (PlayerStateMachine.EnemyFinishingTrigger.TryStartFinishing())
             {
                 PlayerStateMachine.ChangeState(new PlayerFinishingState(PlayerStateMachine));
             }

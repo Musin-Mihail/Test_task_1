@@ -14,14 +14,14 @@ namespace Animation.Scripts
         private bool IsMovingLeft { get; set; }
         private bool IsMovingRight { get; set; }
         private PlayerController _playerController;
-        private PlayerCombat _playerCombat;
+        private PlayerFinisher _playerFinisher;
         private const float Speed = 10f;
         private Camera _camera;
 
         private void Awake()
         {
             _playerController = GetComponent<PlayerController>();
-            _playerCombat = GetComponent<PlayerCombat>();
+            _playerFinisher = GetComponent<PlayerFinisher>();
 
             _camera = Camera.main;
 
@@ -117,9 +117,9 @@ namespace Animation.Scripts
         /// </summary>
         public void RotationToTarget()
         {
-            chest.rotation = Quaternion.LookRotation(Vector3.up, _playerCombat.CurrentTarget - chest.position);
+            chest.rotation = Quaternion.LookRotation(Vector3.up, _playerFinisher.TargetPosition - chest.position);
             chest.transform.Rotate(-30, 90, 10);
-            transform.rotation = Quaternion.LookRotation(Vector3.up, _playerCombat.CurrentTarget - transform.position);
+            transform.rotation = Quaternion.LookRotation(Vector3.up, _playerFinisher.TargetPosition - transform.position);
             transform.transform.Rotate(270, 180, 0);
         }
 

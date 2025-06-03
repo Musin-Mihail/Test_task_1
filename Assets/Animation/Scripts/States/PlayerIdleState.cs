@@ -8,7 +8,7 @@
 
         public override void EnterState()
         {
-            PlayerStateMachine.PlayerAnimation.PlayAnimation("Idle");
+            PlayerStateMachine.PlayerAnimation.PlayAnimation(PlayerAnimationNames.Idle);
             PlayerStateMachine.PlayerController.OnMoveForwardPressed += OnMovePressed;
             PlayerStateMachine.PlayerController.OnMoveBackPressed += OnMovePressed;
             PlayerStateMachine.PlayerController.OnMoveLeftPressed += OnMovePressed;
@@ -32,7 +32,7 @@
 
         private void OnSpacePressed()
         {
-            if (!PlayerStateMachine.PlayerCombat.IsFinishing() && PlayerStateMachine.PlayerCombat.finishingText.activeSelf)
+            if (PlayerStateMachine.EnemyFinishingTrigger.TryStartFinishing())
             {
                 PlayerStateMachine.ChangeState(new PlayerFinishingState(PlayerStateMachine));
             }

@@ -9,7 +9,7 @@
         public override void EnterState()
         {
             PlayerStateMachine.PlayerMovement.RotationToTarget();
-            PlayerStateMachine.PlayerCombat.StartFinishing();
+            PlayerStateMachine.PlayerFinisher.StartFinishingSequence();
         }
 
         public override void ExitState()
@@ -18,7 +18,7 @@
 
         public override void UpdateState()
         {
-            if (!PlayerStateMachine.PlayerCombat.IsFinishing())
+            if (!PlayerStateMachine.PlayerFinisher.IsFinishing())
             {
                 PlayerStateMachine.ChangeState(new PlayerIdleState(PlayerStateMachine));
             }

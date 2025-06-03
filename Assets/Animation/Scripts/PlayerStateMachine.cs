@@ -8,15 +8,17 @@ namespace Animation.Scripts
         private PlayerState CurrentState { get; set; }
         public PlayerAnimation PlayerAnimation { get; private set; }
         public PlayerMovement PlayerMovement { get; private set; }
-        public PlayerCombat PlayerCombat { get; private set; }
+        public PlayerFinisher PlayerFinisher { get; private set; }
         public PlayerController PlayerController { get; private set; }
+        public EnemyFinishingTrigger EnemyFinishingTrigger { get; private set; }
 
         private void Awake()
         {
             PlayerAnimation = GetComponent<PlayerAnimation>();
             PlayerMovement = GetComponent<PlayerMovement>();
-            PlayerCombat = GetComponent<PlayerCombat>();
+            PlayerFinisher = GetComponent<PlayerFinisher>();
             PlayerController = GetComponent<PlayerController>();
+            EnemyFinishingTrigger = GetComponent<EnemyFinishingTrigger>();
         }
 
         private void Start()

@@ -1,62 +1,53 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace Animation.Scripts
 {
-    /// <summary>
-    /// Отвечает за логику боя игрока, включая добивания и смену оружия.
-    /// </summary>
-    public class PlayerCombat : MonoBehaviour
+    public class PlayerFinisher : MonoBehaviour
     {
         public GameObject gun;
         public GameObject sword;
-        public GameObject enemy;
         public Animator enemyAnimator;
-        public GameObject finishingText;
-
-        private Collider _playerCollider;
+        public GameObject enemy;
         private PlayerAnimation _playerAnimation;
         private PlayerMovement _playerMovement;
-        private bool _isFinishing;
+        private Collider _playerCollider;
 
-        public Vector3 CurrentTarget { get; private set; }
+        private bool _isFinishing;
+        public Vector3 TargetPosition { get; set; }
+
+        public bool IsFinishing() => _isFinishing;
 
         private void Awake()
         {
             _playerCollider = GetComponent<Collider>();
             _playerAnimation = GetComponent<PlayerAnimation>();
+            _playerMovement = GetComponent<PlayerMovement>();
             gun.SetActive(true);
             sword.SetActive(false);
         }
 
-        /// <summary>
-        /// Обработчик нажатия пробела.
-        /// </summary>
-        public void StartFinishing()
+        public void StartFinishingSequence()
         {
             _isFinishing = true;
             _playerCollider.enabled = false;
-            finishingText.SetActive(false);
-            _playerAnimation.PlayAnimation("Run_Rifle");
+            _playerAnimation.PlayAnimation(PlayerAnimationNames.RunRifle);
             StartCoroutine(FinishingCoroutine());
         }
 
-        /// <summary>
-        /// Корутина, управляющая последовательностью событий добивания.
-        /// </summary>
         private IEnumerator FinishingCoroutine()
         {
-            var distanceToTarget = Vector3.Distance(transform.position, CurrentTarget);
+            var distanceToTarget = Vector3.Distance(transform.position, TargetPosition);
             while (distanceToTarget > 2.5f)
             {
                 transform.position += transform.forward * (5 * Time.deltaTime);
-                distanceToTarget = Vector3.Distance(transform.position, CurrentTarget);
+                distanceToTarget = Vector3.Distance(transform.position, TargetPosition);
                 yield return null;
             }
 
             gun.SetActive(false);
             sword.SetActive(true);
-            _playerAnimation.PlayAnimation("Finishing");
+            _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
             yield return new WaitForSeconds(0.35f);
 
             enemyAnimator.enabled = false;
@@ -68,7 +59,6 @@ namespace Animation.Scripts
             _playerMovement.RotateTowardsCamera();
 
             yield return new WaitForSeconds(4.0f);
-
             enemy.SetActive(false);
             yield return new WaitForSeconds(1.0f);
 
@@ -89,37 +79,6 @@ namespace Animation.Scripts
             enemyAnimator.enabled = true;
             enemy.SetActive(true);
             _playerCollider.enabled = true;
-        }
-
-        /// <summary>
-        /// Вызывается при входе в триггер.
-        /// </summary>
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.gameObject.CompareTag("Enemy"))
-            {
-                CurrentTarget = other.gameObject.transform.position;
-                finishingText.SetActive(true);
-            }
-        }
-
-        /// <summary>
-        /// Вызывается при выходе из триггера.
-        /// </summary>
-        private void OnTriggerExit(Collider other)
-        {
-            if (other.gameObject.CompareTag("Enemy"))
-            {
-                finishingText.SetActive(false);
-            }
-        }
-
-        /// <summary>
-        /// Возвращает, находится ли игрок в состоянии добивания.
-        /// </summary>
-        public bool IsFinishing()
-        {
-            return _isFinishing;
         }
     }
 }

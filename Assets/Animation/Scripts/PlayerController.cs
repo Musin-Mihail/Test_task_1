@@ -48,7 +48,7 @@ namespace Animation.Scripts
 
             if (Input.GetKeyDown(KeyCode.W))
             {
-                OnMoveForwardKeyDown?.Invoke("Run_Rifle");
+                OnMoveForwardKeyDown?.Invoke(PlayerAnimationNames.RunRifle);
             }
 
             if (Input.GetKey(KeyCode.A))
@@ -63,7 +63,7 @@ namespace Animation.Scripts
 
             if (Input.GetKeyDown(KeyCode.A))
             {
-                OnMoveLeftKeyDown?.Invoke("Run_Left_Rifle");
+                OnMoveLeftKeyDown?.Invoke(PlayerAnimationNames.RunLeftRifle);
             }
 
             if (Input.GetKey(KeyCode.D))
@@ -78,7 +78,7 @@ namespace Animation.Scripts
 
             if (Input.GetKeyDown(KeyCode.D))
             {
-                OnMoveRightKeyDown?.Invoke("Run_Right_Rifle");
+                OnMoveRightKeyDown?.Invoke(PlayerAnimationNames.RunRightRifle);
             }
 
             if (Input.GetKey(KeyCode.S))
@@ -93,7 +93,7 @@ namespace Animation.Scripts
 
             if (Input.GetKeyDown(KeyCode.S))
             {
-                OnMoveBackKeyDown?.Invoke("Back_Run_Rifle");
+                OnMoveBackKeyDown?.Invoke(PlayerAnimationNames.BackRunRifle);
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
