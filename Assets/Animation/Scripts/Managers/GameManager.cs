@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Animation.Scripts
+namespace Animation.Scripts.Managers
 {
     /// <summary>
     /// Отвечает за общие настройки игры.

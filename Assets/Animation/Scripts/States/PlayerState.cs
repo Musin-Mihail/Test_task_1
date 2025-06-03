@@ -1,4 +1,6 @@
-﻿namespace Animation.Scripts.States
+﻿using Animation.Scripts.Interfaces;
+
+namespace Animation.Scripts.States
 {
     public abstract class PlayerState
     {

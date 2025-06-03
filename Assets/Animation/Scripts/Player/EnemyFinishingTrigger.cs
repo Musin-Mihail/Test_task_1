@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Animation.Scripts
+namespace Animation.Scripts.Player
 {
     public class EnemyFinishingTrigger : MonoBehaviour
     {

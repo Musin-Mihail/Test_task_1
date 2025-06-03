@@ -1,4 +1,4 @@
-﻿namespace Animation.Scripts
+﻿namespace Animation.Scripts.Constants
 {
     public static class PlayerAnimationNames
     {

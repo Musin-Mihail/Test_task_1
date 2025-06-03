@@ -1,4 +1,7 @@
-﻿namespace Animation.Scripts.States
+﻿using Animation.Scripts.Constants;
+using Animation.Scripts.Interfaces;
+
+namespace Animation.Scripts.States
 {
     public class PlayerIdleState : PlayerState
     {

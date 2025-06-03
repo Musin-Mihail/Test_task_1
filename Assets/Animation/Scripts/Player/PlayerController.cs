@@ -1,7 +1,8 @@
 ﻿using System;
+using Animation.Scripts.Constants;
 using UnityEngine;
 
-namespace Animation.Scripts
+namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за обработку пользовательского ввода и передачу команд.

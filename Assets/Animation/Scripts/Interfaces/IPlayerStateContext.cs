@@ -1,4 +1,7 @@
-﻿namespace Animation.Scripts.States
+﻿using Animation.Scripts.Player;
+using Animation.Scripts.States;
+
+namespace Animation.Scripts.Interfaces
 {
     public interface IPlayerStateContext
     {

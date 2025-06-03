@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Animation.Scripts.Interfaces;
+using Animation.Scripts.Player;
+using UnityEngine;
 
 namespace Animation.Scripts.States
 {

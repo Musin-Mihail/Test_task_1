@@ -2,7 +2,7 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Animation.Scripts
+namespace Animation.Scripts.Enemy
 {
     public class EnemyFinisherHandler : MonoBehaviour
     {

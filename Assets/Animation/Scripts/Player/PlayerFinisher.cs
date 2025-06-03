@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using Animation.Scripts.Constants;
+using Animation.Scripts.Enemy;
 using UnityEngine;
 
-namespace Animation.Scripts
+namespace Animation.Scripts.Player
 {
     public class PlayerFinisher : MonoBehaviour
     {

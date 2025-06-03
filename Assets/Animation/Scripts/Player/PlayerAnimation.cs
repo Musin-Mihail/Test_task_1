@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Animation.Scripts
+namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за управление аниматором игрока.
