@@ -7,8 +7,6 @@ namespace Animation.Scripts.Player
 {
     public class PlayerFinisher : MonoBehaviour
     {
-        public GameObject gun;
-        public GameObject sword;
         public EnemyFinisherHandler enemyFinisherHandler;
 
         public Vector3 TargetPosition { get; set; }
@@ -16,6 +14,7 @@ namespace Animation.Scripts.Player
 
         private PlayerAnimation _playerAnimation;
         private PlayerMovement _playerMovement;
+        private PlayerEquipment _playerEquipment;
         private Collider _playerCollider;
         private bool _isFinishing;
 
@@ -25,13 +24,15 @@ namespace Animation.Scripts.Player
         /// <param name="playerCollider">Ссылка на Collider игрока.</param>
         /// <param name="playerAnimation">Ссылка на PlayerAnimation.</param>
         /// <param name="playerMovement">Ссылка на PlayerMovement.</param>
-        public void Initialize(Collider playerCollider, PlayerAnimation playerAnimation, PlayerMovement playerMovement)
+        /// <param name="playerEquipment">Ссылка на PlayerEquipment.</param>
+        public void Initialize(Collider playerCollider, PlayerAnimation playerAnimation, PlayerMovement playerMovement, PlayerEquipment playerEquipment)
         {
             _playerCollider = playerCollider;
             _playerAnimation = playerAnimation;
             _playerMovement = playerMovement;
-            gun.SetActive(true);
-            sword.SetActive(false);
+            _playerEquipment = playerEquipment;
+            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Gun, true);
+            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Sword, false);
         }
 
         public void StartFinishingSequence()
@@ -62,8 +63,8 @@ namespace Animation.Scripts.Player
 
         private IEnumerator PerformFinishingAnimation()
         {
-            gun.SetActive(false);
-            sword.SetActive(true);
+            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Gun, false);
+            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Sword, true);
             _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
             yield return new WaitForSeconds(0.4f);
             StartCoroutine(enemyFinisherHandler.RepositionEnemyCoroutine());
@@ -73,8 +74,8 @@ namespace Animation.Scripts.Player
 
         private IEnumerator ResetFinisherStateAndTriggerEnemyHandler()
         {
-            gun.SetActive(true);
-            sword.SetActive(false);
+            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Gun, true);
+            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Sword, false);
             _isFinishing = false;
             _playerMovement.RotateTowardsCamera();
             yield return null;

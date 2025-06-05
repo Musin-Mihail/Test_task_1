@@ -11,6 +11,7 @@ namespace Animation.Scripts.States
         [SerializeField] private PlayerFinisher playerFinisher;
         [SerializeField] private PlayerController playerController;
         [SerializeField] private EnemyFinishingTrigger enemyFinishingTrigger;
+        [SerializeField] private PlayerEquipment playerEquipment;
         private PlayerState CurrentState { get; set; }
         public PlayerAnimation PlayerAnimation => playerAnimation;
         public PlayerMovement PlayerMovement => playerMovement;
@@ -45,7 +46,7 @@ namespace Animation.Scripts.States
                 var playerCollider = GetComponent<Collider>();
                 if (playerCollider)
                 {
-                    playerFinisher.Initialize(playerCollider, playerAnimation, playerMovement);
+                    playerFinisher.Initialize(playerCollider, playerAnimation, playerMovement, playerEquipment);
                 }
                 else
                 {

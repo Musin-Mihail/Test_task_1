@@ -580,6 +580,7 @@ GameObject:
   - component: {fileID: 584555209}
   - component: {fileID: 584555210}
   - component: {fileID: 584555211}
+  - component: {fileID: 584555212}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -707,6 +708,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   finishingText: {fileID: 556377277}
+--- !u!114 &584555212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584555201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3481267246745fbb9ba74b0200a383b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gun: {fileID: 325948398}
+  sword: {fileID: 1275783781}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
