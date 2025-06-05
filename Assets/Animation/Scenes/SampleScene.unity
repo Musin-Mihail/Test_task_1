@@ -581,6 +581,7 @@ GameObject:
   - component: {fileID: 584555210}
   - component: {fileID: 584555211}
   - component: {fileID: 584555212}
+  - component: {fileID: 584555213}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -675,13 +676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd78f54289b84501a05a3bc6edf99503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAnimation: {fileID: 584555208}
-  playerMovement: {fileID: 584555205}
-  playerFinisher: {fileID: 584555210}
-  playerController: {fileID: 584555206}
-  enemyFinishingTrigger: {fileID: 584555211}
-  playerEquipment: {fileID: 584555212}
-  enemyFinisherHandler: {fileID: 2686342998258755414}
+  componentRegistry: {fileID: 584555213}
 --- !u!114 &584555210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -721,6 +716,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gun: {fileID: 325948398}
   sword: {fileID: 1275783781}
+--- !u!114 &584555213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584555201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05c2f5a1226a45ba8fdedda0e0e8b13a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerAnimation: {fileID: 584555208}
+  playerMovement: {fileID: 584555205}
+  playerFinisher: {fileID: 584555210}
+  playerController: {fileID: 584555206}
+  enemyFinishingTrigger: {fileID: 584555211}
+  playerEquipment: {fileID: 584555212}
+  enemyFinisherHandler: {fileID: 2686342998258755414}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
