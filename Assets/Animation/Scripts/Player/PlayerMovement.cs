@@ -18,16 +18,24 @@ namespace Animation.Scripts.Player
         private const float Speed = 10f;
         private Camera _camera;
 
-        private void Awake()
+        /// <summary>
+        /// Метод инициализации для внедрения зависимостей.
+        /// </summary>
+        /// <param name="controller">Ссылка на PlayerController.</param>
+        /// <param name="finisher">Ссылка на PlayerFinisher.</param>
+        public void Initialize(PlayerController controller, PlayerFinisher finisher)
         {
-            _playerController = GetComponent<PlayerController>();
-            _playerFinisher = GetComponent<PlayerFinisher>();
-
+            _playerController = controller;
+            _playerFinisher = finisher;
             _camera = Camera.main;
 
             if (_playerController)
             {
                 SubscribeToControllerEvents();
+            }
+            else
+            {
+                Debug.LogError("PlayerController не был внедрен в PlayerMovement.");
             }
         }
 

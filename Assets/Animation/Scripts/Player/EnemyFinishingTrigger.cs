@@ -8,9 +8,13 @@ namespace Animation.Scripts.Player
         private PlayerFinisher _playerFinisher;
         private Vector3 _currentTarget;
 
-        private void Awake()
+        /// <summary>
+        /// Метод инициализации для внедрения зависимостей.
+        /// </summary>
+        /// <param name="playerFinisher">Ссылка на PlayerFinisher.</param>
+        public void Initialize(PlayerFinisher playerFinisher)
         {
-            _playerFinisher = GetComponent<PlayerFinisher>();
+            _playerFinisher = playerFinisher;
         }
 
         private void OnTriggerEnter(Collider other)

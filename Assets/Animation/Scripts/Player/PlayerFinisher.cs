@@ -19,11 +19,17 @@ namespace Animation.Scripts.Player
         private Collider _playerCollider;
         private bool _isFinishing;
 
-        private void Awake()
+        /// <summary>
+        /// Метод инициализации для внедрения зависимостей.
+        /// </summary>
+        /// <param name="playerCollider">Ссылка на Collider игрока.</param>
+        /// <param name="playerAnimation">Ссылка на PlayerAnimation.</param>
+        /// <param name="playerMovement">Ссылка на PlayerMovement.</param>
+        public void Initialize(Collider playerCollider, PlayerAnimation playerAnimation, PlayerMovement playerMovement)
         {
-            _playerCollider = GetComponent<Collider>();
-            _playerAnimation = GetComponent<PlayerAnimation>();
-            _playerMovement = GetComponent<PlayerMovement>();
+            _playerCollider = playerCollider;
+            _playerAnimation = playerAnimation;
+            _playerMovement = playerMovement;
             gun.SetActive(true);
             sword.SetActive(false);
         }
@@ -41,8 +47,6 @@ namespace Animation.Scripts.Player
             yield return StartCoroutine(MoveToTarget());
             yield return StartCoroutine(PerformFinishingAnimation());
             yield return StartCoroutine(ResetFinisherStateAndTriggerEnemyHandler());
-            yield return StartCoroutine(enemyFinisherHandler.RepositionEnemyCoroutine());
-            _playerCollider.enabled = true;
         }
 
         private IEnumerator MoveToTarget()
@@ -61,7 +65,10 @@ namespace Animation.Scripts.Player
             gun.SetActive(false);
             sword.SetActive(true);
             _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
-            yield return new WaitForSeconds(1.6f);
+            yield return new WaitForSeconds(0.4f);
+            StartCoroutine(enemyFinisherHandler.RepositionEnemyCoroutine());
+            yield return new WaitForSeconds(1.2f);
+            _playerCollider.enabled = true;
         }
 
         private IEnumerator ResetFinisherStateAndTriggerEnemyHandler()

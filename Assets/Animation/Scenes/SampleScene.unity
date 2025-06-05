@@ -674,6 +674,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd78f54289b84501a05a3bc6edf99503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAnimation: {fileID: 584555208}
+  playerMovement: {fileID: 584555205}
+  playerFinisher: {fileID: 584555210}
+  playerController: {fileID: 584555206}
+  enemyFinishingTrigger: {fileID: 584555211}
 --- !u!114 &584555210
 MonoBehaviour:
   m_ObjectHideFlags: 0
