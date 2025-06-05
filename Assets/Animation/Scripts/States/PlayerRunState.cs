@@ -52,7 +52,7 @@ namespace Animation.Scripts.States
         {
             if (!Context.PlayerMovement.IsMoving())
             {
-                Context.ChangeState(Context.GetIdleState());
+                Context.ChangeState(Context.GetState<PlayerIdleState>());
             }
         }
 
@@ -66,7 +66,7 @@ namespace Animation.Scripts.States
         {
             if (Context.EnemyFinishingTrigger.TryStartFinishing())
             {
-                Context.ChangeState(Context.GetFinishingState());
+                Context.ChangeState(Context.GetState<PlayerFinishingState>());
             }
         }
     }

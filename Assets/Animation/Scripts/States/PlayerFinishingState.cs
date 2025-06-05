@@ -22,7 +22,7 @@ namespace Animation.Scripts.States
         {
             if (!Context.PlayerFinisher.IsFinishing())
             {
-                Context.ChangeState(Context.GetIdleState());
+                Context.ChangeState(Context.GetState<PlayerIdleState>());
             }
         }
     }

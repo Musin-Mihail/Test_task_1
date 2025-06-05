@@ -10,8 +10,6 @@ namespace Animation.Scripts.Interfaces
         IEnemyFinishingTrigger EnemyFinishingTrigger { get; }
         IPlayerFinisher PlayerFinisher { get; }
         void ChangeState(PlayerState newState);
-        PlayerIdleState GetIdleState();
-        PlayerRunState GetRunState();
-        PlayerFinishingState GetFinishingState();
+        T GetState<T>() where T : PlayerState;
     }
 }

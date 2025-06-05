@@ -30,14 +30,14 @@ namespace Animation.Scripts.States
 
         private void OnMovePressed()
         {
-            Context.ChangeState(Context.GetRunState());
+            Context.ChangeState(Context.GetState<PlayerRunState>());
         }
 
         private void OnSpacePressed()
         {
             if (Context.EnemyFinishingTrigger.TryStartFinishing())
             {
-                Context.ChangeState(Context.GetFinishingState());
+                Context.ChangeState(Context.GetState<PlayerFinishingState>());
             }
         }
 
