@@ -1,4 +1,5 @@
-﻿using Animation.Scripts.Interfaces;
+﻿using Animation.Scripts.Constants;
+using Animation.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
@@ -11,12 +12,6 @@ namespace Animation.Scripts.Player
     {
         public GameObject gun;
         public GameObject sword;
-
-        public enum WeaponType
-        {
-            Gun,
-            Sword
-        }
 
         /// <summary>
         /// Устанавливает активность указанного типа оружия.

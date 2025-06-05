@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Animation.Scripts.Constants;
 using Animation.Scripts.Interfaces;
 using UnityEngine;
 
@@ -50,37 +52,68 @@ namespace Animation.Scripts.Player
             }
         }
 
-        private void OnMoveForwardPressedHandler() => _isMovingForward = true;
-        private void OnMoveForwardReleasedHandler() => _isMovingForward = false;
-        private void OnMoveBackPressedHandler() => _isMovingBack = true;
-        private void OnMoveBackReleasedHandler() => _isMovingBack = false;
-        private void OnMoveLeftPressedHandler() => _isMovingLeft = true;
-        private void OnMoveLeftReleasedHandler() => _isMovingLeft = false;
-        private void OnMoveRightPressedHandler() => _isMovingRight = true;
-        private void OnMoveRightReleasedHandler() => _isMovingRight = false;
-
+        /// <summary>
+        /// Подписывается на события контроллера игрока.
+        /// </summary>
         private void SubscribeToControllerEvents()
         {
-            _playerController.OnMoveForwardPressed += OnMoveForwardPressedHandler;
-            _playerController.OnMoveForwardReleased += OnMoveForwardReleasedHandler;
-            _playerController.OnMoveBackPressed += OnMoveBackPressedHandler;
-            _playerController.OnMoveBackReleased += OnMoveBackReleasedHandler;
-            _playerController.OnMoveLeftPressed += OnMoveLeftPressedHandler;
-            _playerController.OnMoveLeftReleased += OnMoveLeftReleasedHandler;
-            _playerController.OnMoveRightPressed += OnMoveRightPressedHandler;
-            _playerController.OnMoveRightReleased += OnMoveRightReleasedHandler;
+            _playerController.OnMovementIntent += OnMovementIntentHandler;
         }
 
+        /// <summary>
+        /// Отписывается от событий контроллера игрока.
+        /// </summary>
         private void UnsubscribeFromControllerEvents()
         {
-            _playerController.OnMoveForwardPressed -= OnMoveForwardPressedHandler;
-            _playerController.OnMoveForwardReleased -= OnMoveForwardReleasedHandler;
-            _playerController.OnMoveBackPressed -= OnMoveBackPressedHandler;
-            _playerController.OnMoveBackReleased -= OnMoveBackReleasedHandler;
-            _playerController.OnMoveLeftPressed -= OnMoveLeftPressedHandler;
-            _playerController.OnMoveLeftReleased -= OnMoveLeftReleasedHandler;
-            _playerController.OnMoveRightPressed -= OnMoveRightPressedHandler;
-            _playerController.OnMoveRightReleased -= OnMoveRightReleasedHandler;
+            _playerController.OnMovementIntent -= OnMovementIntentHandler;
+        }
+
+        /// <summary>
+        /// Обработчик абстрактного события намерения движения.
+        /// Обновляет флаги движения игрока на основе направления и состояния клавиши.
+        /// </summary>
+        /// <param name="direction">Направление движения.</param>
+        /// <param name="state">Состояние клавиши (нажата/отпущена/удерживается).</param>
+        private void OnMovementIntentHandler(MovementDirection direction, KeyState state)
+        {
+            var isPressedOrDown = state is KeyState.Pressed or KeyState.Down;
+
+            switch (direction)
+            {
+                case MovementDirection.Forward:
+                    _isMovingForward = isPressedOrDown;
+                    break;
+                case MovementDirection.Back:
+                    _isMovingBack = isPressedOrDown;
+                    break;
+                case MovementDirection.Left:
+                    _isMovingLeft = isPressedOrDown;
+                    break;
+                case MovementDirection.Right:
+                    _isMovingRight = isPressedOrDown;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
+
+            if (state == KeyState.Released)
+            {
+                switch (direction)
+                {
+                    case MovementDirection.Forward:
+                        _isMovingForward = false;
+                        break;
+                    case MovementDirection.Back:
+                        _isMovingBack = false;
+                        break;
+                    case MovementDirection.Left:
+                        _isMovingLeft = false;
+                        break;
+                    case MovementDirection.Right:
+                        _isMovingRight = false;
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -114,7 +147,7 @@ namespace Animation.Scripts.Player
         }
 
         /// <summary>
-        /// Поворачивает объект игрока в сторону указателя мышки.
+        /// Поворачивает объект игрока в сторону указателя мыши.
         /// </summary>
         public void RotationToMouse()
         {

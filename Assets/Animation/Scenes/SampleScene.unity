@@ -651,6 +651,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d5acc5990ad4c9981985298709f72c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseWorldPositionLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &584555208
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 ﻿using System;
+using Animation.Scripts.Constants;
 using UnityEngine;
 
 namespace Animation.Scripts.Interfaces
@@ -8,19 +9,8 @@ namespace Animation.Scripts.Interfaces
     /// </summary>
     public interface IPlayerController
     {
-        event Action OnMoveForwardPressed;
-        event Action OnMoveForwardReleased;
-        event Action<string> OnMoveForwardKeyDown;
-        event Action OnMoveBackPressed;
-        event Action OnMoveBackReleased;
-        event Action<string> OnMoveBackKeyDown;
-        event Action OnMoveLeftPressed;
-        event Action OnMoveLeftReleased;
-        event Action<string> OnMoveLeftKeyDown;
-        event Action OnMoveRightPressed;
-        event Action OnMoveRightReleased;
-        event Action<string> OnMoveRightKeyDown;
-        event Action OnSpacePressed;
+        public event Action<MovementDirection, KeyState> OnMovementIntent;
+        public event Action OnSpacePressed;
 
         Vector3 GetMouseWorldPosition();
     }

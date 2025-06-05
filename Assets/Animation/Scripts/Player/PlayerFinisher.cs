@@ -36,8 +36,8 @@ namespace Animation.Scripts.Player
             _playerAnimation = playerAnimation;
             _playerMovement = playerMovement;
             _playerEquipment = playerEquipment;
-            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Gun, true);
-            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Sword, false);
+            _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
+            _playerEquipment.SetWeaponActive(WeaponType.Sword, false);
         }
 
         public void StartFinishingSequence()
@@ -57,8 +57,8 @@ namespace Animation.Scripts.Player
 
         private IEnumerator PerformFinishingAnimation()
         {
-            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Gun, false);
-            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Sword, true);
+            _playerEquipment.SetWeaponActive(WeaponType.Gun, false);
+            _playerEquipment.SetWeaponActive(WeaponType.Sword, true);
             _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
             yield return new WaitForSeconds(0.4f);
             OnFinisherSequenceCompleted?.Invoke();
@@ -68,8 +68,8 @@ namespace Animation.Scripts.Player
 
         private IEnumerator ResetFinisherState()
         {
-            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Gun, true);
-            _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Sword, false);
+            _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
+            _playerEquipment.SetWeaponActive(WeaponType.Sword, false);
             _isFinishing = false;
             _playerMovement.RotateTowardsCamera();
             yield return null;

@@ -1,4 +1,4 @@
-﻿using Animation.Scripts.Player;
+﻿using Animation.Scripts.Constants;
 
 namespace Animation.Scripts.Interfaces
 {
@@ -7,6 +7,6 @@ namespace Animation.Scripts.Interfaces
     /// </summary>
     public interface IPlayerEquipment
     {
-        void SetWeaponActive(PlayerEquipment.WeaponType weaponType, bool isActive);
+        void SetWeaponActive(WeaponType weaponType, bool isActive);
     }
 }

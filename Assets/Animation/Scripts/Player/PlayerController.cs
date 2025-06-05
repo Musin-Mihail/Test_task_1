@@ -11,20 +11,9 @@ namespace Animation.Scripts.Player
     /// </summary>
     public class PlayerController : MonoBehaviour, IPlayerController
     {
-        public event Action OnMoveForwardPressed;
-        public event Action OnMoveForwardReleased;
-        public event Action<string> OnMoveForwardKeyDown;
-        public event Action OnMoveBackPressed;
-        public event Action OnMoveBackReleased;
-        public event Action<string> OnMoveBackKeyDown;
-        public event Action OnMoveLeftPressed;
-        public event Action OnMoveLeftReleased;
-        public event Action<string> OnMoveLeftKeyDown;
-        public event Action OnMoveRightPressed;
-        public event Action OnMoveRightReleased;
-        public event Action<string> OnMoveRightKeyDown;
+        public LayerMask mouseWorldPositionLayerMask;
+        public event Action<MovementDirection, KeyState> OnMovementIntent;
         public event Action OnSpacePressed;
-
         private Camera _camera;
 
         private void Start()
@@ -41,62 +30,62 @@ namespace Animation.Scripts.Player
 
             if (Input.GetKey(KeyCode.W))
             {
-                OnMoveForwardPressed?.Invoke();
+                OnMovementIntent?.Invoke(MovementDirection.Forward, KeyState.Pressed);
             }
 
             if (Input.GetKeyUp(KeyCode.W))
             {
-                OnMoveForwardReleased?.Invoke();
+                OnMovementIntent?.Invoke(MovementDirection.Forward, KeyState.Released);
             }
 
             if (Input.GetKeyDown(KeyCode.W))
             {
-                OnMoveForwardKeyDown?.Invoke(PlayerAnimationNames.RunRifle);
+                OnMovementIntent?.Invoke(MovementDirection.Forward, KeyState.Down);
             }
 
             if (Input.GetKey(KeyCode.A))
             {
-                OnMoveLeftPressed?.Invoke();
+                OnMovementIntent?.Invoke(MovementDirection.Left, KeyState.Pressed);
             }
 
             if (Input.GetKeyUp(KeyCode.A))
             {
-                OnMoveLeftReleased?.Invoke();
+                OnMovementIntent?.Invoke(MovementDirection.Left, KeyState.Released);
             }
 
             if (Input.GetKeyDown(KeyCode.A))
             {
-                OnMoveLeftKeyDown?.Invoke(PlayerAnimationNames.RunLeftRifle);
+                OnMovementIntent?.Invoke(MovementDirection.Left, KeyState.Down);
             }
 
             if (Input.GetKey(KeyCode.D))
             {
-                OnMoveRightPressed?.Invoke();
+                OnMovementIntent?.Invoke(MovementDirection.Right, KeyState.Pressed);
             }
 
             if (Input.GetKeyUp(KeyCode.D))
             {
-                OnMoveRightReleased?.Invoke();
+                OnMovementIntent?.Invoke(MovementDirection.Right, KeyState.Released);
             }
 
             if (Input.GetKeyDown(KeyCode.D))
             {
-                OnMoveRightKeyDown?.Invoke(PlayerAnimationNames.RunRightRifle);
+                OnMovementIntent?.Invoke(MovementDirection.Right, KeyState.Down);
             }
 
             if (Input.GetKey(KeyCode.S))
             {
-                OnMoveBackPressed?.Invoke();
+                OnMovementIntent?.Invoke(MovementDirection.Back, KeyState.Pressed);
             }
 
             if (Input.GetKeyUp(KeyCode.S))
             {
-                OnMoveBackReleased?.Invoke();
+                OnMovementIntent?.Invoke(MovementDirection.Back, KeyState.Released);
             }
 
             if (Input.GetKeyDown(KeyCode.S))
             {
-                OnMoveBackKeyDown?.Invoke(PlayerAnimationNames.BackRunRifle);
+                OnMovementIntent?.Invoke(MovementDirection.Back, KeyState.Down);
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
@@ -111,7 +100,7 @@ namespace Animation.Scripts.Player
         public Vector3 GetMouseWorldPosition()
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit, Mathf.Infinity, 1 << 8))
+            if (Physics.Raycast(ray, out var hit, Mathf.Infinity, mouseWorldPositionLayerMask))
             {
                 return hit.point;
             }
