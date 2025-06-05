@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections;
 using Animation.Scripts.Constants;
+using Animation.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
-    public class PlayerFinisher : MonoBehaviour
+    /// <summary>
+    /// Отвечает за логику добивания игрока.
+    /// Реализует интерфейс IPlayerFinisher.
+    /// </summary>
+    public class PlayerFinisher : MonoBehaviour, IPlayerFinisher
     {
         public event Action OnFinisherSequenceCompleted;
 
         public Vector3 TargetPosition { get; set; }
         public bool IsFinishing() => _isFinishing;
 
-        private PlayerAnimation _playerAnimation;
-        private PlayerMovement _playerMovement;
-        private PlayerEquipment _playerEquipment;
+        private IPlayerAnimation _playerAnimation;
+        private IPlayerMovement _playerMovement;
+        private IPlayerEquipment _playerEquipment;
         private Collider _playerCollider;
         private bool _isFinishing;
 
@@ -24,8 +29,8 @@ namespace Animation.Scripts.Player
         /// <param name="playerCollider">Ссылка на Collider игрока.</param>
         /// <param name="playerAnimation">Ссылка на PlayerAnimation.</param>
         /// <param name="playerMovement">Ссылка на PlayerMovement.</param>
-        /// <param name="playerEquipment">Ссылка на PlayerEquipment.</param>
-        public void Initialize(Collider playerCollider, PlayerAnimation playerAnimation, PlayerMovement playerMovement, PlayerEquipment playerEquipment)
+        /// <param name="playerEquipment">Ссылка на PlayerEquipment (теперь IPlayerEquipment).</param>
+        public void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment)
         {
             _playerCollider = playerCollider;
             _playerAnimation = playerAnimation;

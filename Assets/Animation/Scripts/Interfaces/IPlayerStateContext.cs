@@ -1,15 +1,14 @@
-﻿using Animation.Scripts.Player;
-using Animation.Scripts.States;
+﻿using Animation.Scripts.States;
 
 namespace Animation.Scripts.Interfaces
 {
     public interface IPlayerStateContext
     {
-        PlayerAnimation PlayerAnimation { get; }
-        PlayerMovement PlayerMovement { get; }
-        PlayerController PlayerController { get; }
-        EnemyFinishingTrigger EnemyFinishingTrigger { get; }
-        PlayerFinisher PlayerFinisher { get; }
+        IPlayerAnimation PlayerAnimation { get; }
+        IPlayerMovement PlayerMovement { get; }
+        IPlayerController PlayerController { get; }
+        IEnemyFinishingTrigger EnemyFinishingTrigger { get; }
+        IPlayerFinisher PlayerFinisher { get; }
         void ChangeState(PlayerState newState);
         PlayerIdleState GetIdleState();
         PlayerRunState GetRunState();

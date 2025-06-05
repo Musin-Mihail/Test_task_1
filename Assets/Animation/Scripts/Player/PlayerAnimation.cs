@@ -1,11 +1,13 @@
+using Animation.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за управление аниматором игрока.
+    /// Реализует интерфейс IPlayerAnimation.
     /// </summary>
-    public class PlayerAnimation : MonoBehaviour
+    public class PlayerAnimation : MonoBehaviour, IPlayerAnimation
     {
         public Animator animator;
 

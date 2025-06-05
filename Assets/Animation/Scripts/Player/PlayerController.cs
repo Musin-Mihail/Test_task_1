@@ -1,13 +1,15 @@
 ﻿using System;
 using Animation.Scripts.Constants;
+using Animation.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за обработку пользовательского ввода и передачу команд.
+    /// Реализует интерфейс IPlayerController.
     /// </summary>
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, IPlayerController
     {
         public event Action OnMoveForwardPressed;
         public event Action OnMoveForwardReleased;

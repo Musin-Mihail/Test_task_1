@@ -1,4 +1,5 @@
 ﻿using Animation.Scripts.Enemy;
+using Animation.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
@@ -13,11 +14,13 @@ namespace Animation.Scripts.Player
         [SerializeField] private PlayerEquipment playerEquipment;
         [SerializeField] private EnemyFinisherHandler enemyFinisherHandler;
 
-        public PlayerAnimation PlayerAnimation => playerAnimation;
-        public PlayerMovement PlayerMovement => playerMovement;
-        public PlayerFinisher PlayerFinisher => playerFinisher;
-        public PlayerController PlayerController => playerController;
-        public EnemyFinishingTrigger EnemyFinishingTrigger => enemyFinishingTrigger;
+        public IPlayerAnimation PlayerAnimationInstance => playerAnimation;
+        public IPlayerMovement PlayerMovementInstance => playerMovement;
+        public IPlayerFinisher PlayerFinisherInstance => playerFinisher;
+        public IPlayerController PlayerControllerInstance => playerController;
+        public IEnemyFinishingTrigger EnemyFinishingTriggerInstance => enemyFinishingTrigger;
+        private IPlayerEquipment PlayerEquipmentInstance => playerEquipment;
+        private IEnemyFinisherHandler EnemyFinisherHandlerInstance => enemyFinisherHandler;
 
         private Collider _playerCollider;
 
@@ -29,20 +32,20 @@ namespace Animation.Scripts.Player
                 Debug.LogError("Collider не найден на GameObject PlayerComponentRegistry.");
             }
 
-            if (playerMovement)
+            if (PlayerMovementInstance != null)
             {
-                playerMovement.Initialize(playerController, playerFinisher);
+                PlayerMovementInstance.Initialize(playerController, playerFinisher);
             }
             else
             {
                 Debug.LogError("PlayerMovement не назначен в инспекторе PlayerComponentRegistry.");
             }
 
-            if (playerFinisher)
+            if (PlayerFinisherInstance != null)
             {
                 if (_playerCollider)
                 {
-                    playerFinisher.Initialize(_playerCollider, playerAnimation, playerMovement, playerEquipment);
+                    PlayerFinisherInstance.Initialize(_playerCollider, playerAnimation, PlayerMovementInstance, PlayerEquipmentInstance);
                 }
                 else
                 {
@@ -54,18 +57,18 @@ namespace Animation.Scripts.Player
                 Debug.LogError("PlayerFinisher не назначен в инспекторе PlayerComponentRegistry.");
             }
 
-            if (enemyFinishingTrigger)
+            if (EnemyFinishingTriggerInstance != null)
             {
-                enemyFinishingTrigger.Initialize(playerFinisher);
+                EnemyFinishingTriggerInstance.Initialize(playerFinisher);
             }
             else
             {
                 Debug.LogError("EnemyFinishingTrigger не назначен в инспекторе PlayerComponentRegistry.");
             }
 
-            if (enemyFinisherHandler)
+            if (EnemyFinisherHandlerInstance != null)
             {
-                enemyFinisherHandler.Initialize(playerFinisher);
+                EnemyFinisherHandlerInstance.Initialize(playerFinisher);
             }
             else
             {

@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using Animation.Scripts.Interfaces;
+using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за управление активным снаряжением игрока (оружием).
+    /// Реализует интерфейс IPlayerEquipment.
     /// </summary>
-    public class PlayerEquipment : MonoBehaviour
+    public class PlayerEquipment : MonoBehaviour, IPlayerEquipment
     {
         public GameObject gun;
         public GameObject sword;

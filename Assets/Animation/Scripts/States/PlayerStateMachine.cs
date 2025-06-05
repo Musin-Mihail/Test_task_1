@@ -10,11 +10,11 @@ namespace Animation.Scripts.States
 
         private PlayerState CurrentState { get; set; }
 
-        public PlayerAnimation PlayerAnimation => componentRegistry.PlayerAnimation;
-        public PlayerMovement PlayerMovement => componentRegistry.PlayerMovement;
-        public PlayerFinisher PlayerFinisher => componentRegistry.PlayerFinisher;
-        public PlayerController PlayerController => componentRegistry.PlayerController;
-        public EnemyFinishingTrigger EnemyFinishingTrigger => componentRegistry.EnemyFinishingTrigger;
+        public IPlayerAnimation PlayerAnimation => componentRegistry.PlayerAnimationInstance;
+        public IPlayerMovement PlayerMovement => componentRegistry.PlayerMovementInstance;
+        public IPlayerFinisher PlayerFinisher => componentRegistry.PlayerFinisherInstance;
+        public IPlayerController PlayerController => componentRegistry.PlayerControllerInstance;
+        public IEnemyFinishingTrigger EnemyFinishingTrigger => componentRegistry.EnemyFinishingTriggerInstance;
 
         private PlayerIdleState _idleState;
         private PlayerRunState _runState;

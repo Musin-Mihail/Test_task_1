@@ -1,16 +1,20 @@
 ﻿using System.Collections;
-using Animation.Scripts.Player;
+using Animation.Scripts.Interfaces;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Animation.Scripts.Enemy
 {
-    public class EnemyFinisherHandler : MonoBehaviour
+    /// <summary>
+    /// Отвечает за логику обработки добивания противника.
+    /// Реализует интерфейс IEnemyFinisherHandler.
+    /// </summary>
+    public class EnemyFinisherHandler : MonoBehaviour, IEnemyFinisherHandler
     {
         public GameObject enemy;
 
         private Animator _enemyAnimator;
-        private PlayerFinisher _playerFinisher;
+        private IPlayerFinisher _playerFinisher;
 
         private void Awake()
         {
@@ -20,16 +24,23 @@ namespace Animation.Scripts.Enemy
         /// <summary>
         /// Инициализирует обработчик добивания противника и подписывается на событие PlayerFinisher.
         /// </summary>
-        /// <param name="playerFinisher">Ссылка на PlayerFinisher.</param>
-        public void Initialize(PlayerFinisher playerFinisher)
+        /// <param name="playerFinisher">Ссылка на IPlayerFinisher.</param>
+        public void Initialize(IPlayerFinisher playerFinisher)
         {
             _playerFinisher = playerFinisher;
-            _playerFinisher.OnFinisherSequenceCompleted += RepositionEnemyOnFinisherCompleted;
+            if (_playerFinisher != null)
+            {
+                _playerFinisher.OnFinisherSequenceCompleted += RepositionEnemyOnFinisherCompleted;
+            }
+            else
+            {
+                Debug.LogError("PlayerFinisher is null in EnemyFinisherHandler.Initialize.");
+            }
         }
 
         private void OnDestroy()
         {
-            if (_playerFinisher)
+            if (_playerFinisher != null)
             {
                 _playerFinisher.OnFinisherSequenceCompleted -= RepositionEnemyOnFinisherCompleted;
             }
@@ -45,10 +56,18 @@ namespace Animation.Scripts.Enemy
 
         private IEnumerator RepositionEnemyCoroutine()
         {
-            _enemyAnimator.enabled = false;
+            if (_enemyAnimator)
+            {
+                _enemyAnimator.enabled = false;
+            }
+
             yield return new WaitForSeconds(1.15f);
 
-            enemy.SetActive(false);
+            if (enemy)
+            {
+                enemy.SetActive(false);
+            }
+
             yield return new WaitForSeconds(4.0f);
 
             while (true)
@@ -65,8 +84,15 @@ namespace Animation.Scripts.Enemy
                 yield return new WaitForSeconds(0.1f);
             }
 
-            enemy.SetActive(true);
-            _enemyAnimator.enabled = true;
+            if (enemy)
+            {
+                enemy.SetActive(true);
+            }
+
+            if (_enemyAnimator)
+            {
+                _enemyAnimator.enabled = true;
+            }
         }
     }
 }

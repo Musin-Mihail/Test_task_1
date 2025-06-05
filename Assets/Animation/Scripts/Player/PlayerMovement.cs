@@ -1,21 +1,23 @@
 ﻿using System.Collections;
+using Animation.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за логику перемещения игрока.
+    /// Реализует интерфейс IPlayerMovement.
     /// </summary>
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : MonoBehaviour, IPlayerMovement
     {
-        public Transform chest;
+        [SerializeField] private Transform chest;
+        private bool _isMovingForward;
+        private bool _isMovingBack;
+        private bool _isMovingLeft;
+        private bool _isMovingRight;
 
-        private bool IsMovingForward { get; set; }
-        private bool IsMovingBack { get; set; }
-        private bool IsMovingLeft { get; set; }
-        private bool IsMovingRight { get; set; }
-        private PlayerController _playerController;
-        private PlayerFinisher _playerFinisher;
+        private IPlayerController _playerController;
+        private IPlayerFinisher _playerFinisher;
         private const float Speed = 10f;
         private Camera _camera;
 
@@ -24,13 +26,13 @@ namespace Animation.Scripts.Player
         /// </summary>
         /// <param name="controller">Ссылка на PlayerController.</param>
         /// <param name="finisher">Ссылка на PlayerFinisher.</param>
-        public void Initialize(PlayerController controller, PlayerFinisher finisher)
+        public void Initialize(IPlayerController controller, IPlayerFinisher finisher)
         {
             _playerController = controller;
             _playerFinisher = finisher;
             _camera = Camera.main;
 
-            if (_playerController)
+            if (_playerController != null)
             {
                 SubscribeToControllerEvents();
             }
@@ -42,20 +44,20 @@ namespace Animation.Scripts.Player
 
         private void OnDisable()
         {
-            if (_playerController)
+            if (_playerController != null)
             {
                 UnsubscribeFromControllerEvents();
             }
         }
 
-        private void OnMoveForwardPressedHandler() => IsMovingForward = true;
-        private void OnMoveForwardReleasedHandler() => IsMovingForward = false;
-        private void OnMoveBackPressedHandler() => IsMovingBack = true;
-        private void OnMoveBackReleasedHandler() => IsMovingBack = false;
-        private void OnMoveLeftPressedHandler() => IsMovingLeft = true;
-        private void OnMoveLeftReleasedHandler() => IsMovingLeft = false;
-        private void OnMoveRightPressedHandler() => IsMovingRight = true;
-        private void OnMoveRightReleasedHandler() => IsMovingRight = false;
+        private void OnMoveForwardPressedHandler() => _isMovingForward = true;
+        private void OnMoveForwardReleasedHandler() => _isMovingForward = false;
+        private void OnMoveBackPressedHandler() => _isMovingBack = true;
+        private void OnMoveBackReleasedHandler() => _isMovingBack = false;
+        private void OnMoveLeftPressedHandler() => _isMovingLeft = true;
+        private void OnMoveLeftReleasedHandler() => _isMovingLeft = false;
+        private void OnMoveRightPressedHandler() => _isMovingRight = true;
+        private void OnMoveRightReleasedHandler() => _isMovingRight = false;
 
         private void SubscribeToControllerEvents()
         {
@@ -90,22 +92,22 @@ namespace Animation.Scripts.Player
             var cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
             var cameraRightFlat = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
 
-            if (IsMovingForward)
+            if (_isMovingForward)
             {
                 transform.position += cameraForwardFlat * (Speed * Time.fixedDeltaTime);
             }
 
-            if (IsMovingBack)
+            if (_isMovingBack)
             {
                 transform.position += -cameraForwardFlat * (Speed * Time.fixedDeltaTime);
             }
 
-            if (IsMovingLeft)
+            if (_isMovingLeft)
             {
                 transform.position += -cameraRightFlat * (Speed * Time.fixedDeltaTime);
             }
 
-            if (IsMovingRight)
+            if (_isMovingRight)
             {
                 transform.position += cameraRightFlat * (Speed * Time.fixedDeltaTime);
             }
@@ -169,7 +171,7 @@ namespace Animation.Scripts.Player
         /// </summary>
         public bool IsMoving()
         {
-            return IsMovingForward || IsMovingBack || IsMovingLeft || IsMovingRight;
+            return _isMovingForward || _isMovingBack || _isMovingLeft || _isMovingRight;
         }
     }
 }
