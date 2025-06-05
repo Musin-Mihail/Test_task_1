@@ -680,6 +680,8 @@ MonoBehaviour:
   playerFinisher: {fileID: 584555210}
   playerController: {fileID: 584555206}
   enemyFinishingTrigger: {fileID: 584555211}
+  playerEquipment: {fileID: 584555212}
+  enemyFinisherHandler: {fileID: 2686342998258755414}
 --- !u!114 &584555210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -692,9 +694,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15a0c73abeb42228417944ffa01e95c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gun: {fileID: 325948398}
-  sword: {fileID: 1275783781}
-  enemyFinisherHandler: {fileID: 2686342998258755414}
 --- !u!114 &584555211
 MonoBehaviour:
   m_ObjectHideFlags: 0

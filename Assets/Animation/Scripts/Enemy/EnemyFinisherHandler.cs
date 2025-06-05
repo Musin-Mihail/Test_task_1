@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Animation.Scripts.Player;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,14 +8,42 @@ namespace Animation.Scripts.Enemy
     public class EnemyFinisherHandler : MonoBehaviour
     {
         public GameObject enemy;
+
         private Animator _enemyAnimator;
+        private PlayerFinisher _playerFinisher;
 
         private void Awake()
         {
             _enemyAnimator = enemy.GetComponent<Animator>();
         }
 
-        public IEnumerator RepositionEnemyCoroutine()
+        /// <summary>
+        /// Инициализирует обработчик добивания противника и подписывается на событие PlayerFinisher.
+        /// </summary>
+        /// <param name="playerFinisher">Ссылка на PlayerFinisher.</param>
+        public void Initialize(PlayerFinisher playerFinisher)
+        {
+            _playerFinisher = playerFinisher;
+            _playerFinisher.OnFinisherSequenceCompleted += RepositionEnemyOnFinisherCompleted;
+        }
+
+        private void OnDestroy()
+        {
+            if (_playerFinisher)
+            {
+                _playerFinisher.OnFinisherSequenceCompleted -= RepositionEnemyOnFinisherCompleted;
+            }
+        }
+
+        /// <summary>
+        /// Метод, вызываемый при завершении последовательности добивания игроком.
+        /// </summary>
+        private void RepositionEnemyOnFinisherCompleted()
+        {
+            StartCoroutine(RepositionEnemyCoroutine());
+        }
+
+        private IEnumerator RepositionEnemyCoroutine()
         {
             _enemyAnimator.enabled = false;
             yield return new WaitForSeconds(1.15f);

@@ -108,7 +108,7 @@ namespace Animation.Scripts.Player
         /// </summary>
         public Vector3 GetMouseWorldPosition()
         {
-            Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+            var ray = _camera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit, Mathf.Infinity, 1 << 8))
             {
                 return hit.point;

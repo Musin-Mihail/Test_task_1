@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
@@ -138,11 +139,28 @@ namespace Animation.Scripts.Player
         {
             if (_camera)
             {
-                Vector3 cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
+                var cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
                 if (cameraForwardFlat != Vector3.zero)
                 {
                     transform.rotation = Quaternion.LookRotation(cameraForwardFlat);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Перемещает игрока к указанной цели до достижения заданного расстояния.
+        /// </summary>
+        /// <param name="targetPosition">Целевая позиция.</param>
+        /// <param name="stopDistance">Расстояние до цели, на котором нужно остановиться.</param>
+        public IEnumerator MoveToTarget(Vector3 targetPosition, float stopDistance)
+        {
+            var distanceToTarget = Vector3.Distance(transform.position, targetPosition);
+            while (distanceToTarget > stopDistance)
+            {
+                var directionToTarget = (targetPosition - transform.position).normalized;
+                transform.position += directionToTarget * (Speed * Time.deltaTime);
+                distanceToTarget = Vector3.Distance(transform.position, targetPosition);
+                yield return null;
             }
         }
 

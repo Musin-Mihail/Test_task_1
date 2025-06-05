@@ -1,13 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Animation.Scripts.Constants;
-using Animation.Scripts.Enemy;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
     public class PlayerFinisher : MonoBehaviour
     {
-        public EnemyFinisherHandler enemyFinisherHandler;
+        public event Action OnFinisherSequenceCompleted;
 
         public Vector3 TargetPosition { get; set; }
         public bool IsFinishing() => _isFinishing;
@@ -45,20 +45,9 @@ namespace Animation.Scripts.Player
 
         private IEnumerator FinishingCoroutine()
         {
-            yield return StartCoroutine(MoveToTarget());
+            yield return StartCoroutine(_playerMovement.MoveToTarget(TargetPosition, 2.5f));
             yield return StartCoroutine(PerformFinishingAnimation());
-            yield return StartCoroutine(ResetFinisherStateAndTriggerEnemyHandler());
-        }
-
-        private IEnumerator MoveToTarget()
-        {
-            var distanceToTarget = Vector3.Distance(transform.position, TargetPosition);
-            while (distanceToTarget > 2.5f)
-            {
-                transform.position += transform.forward * (5 * Time.deltaTime);
-                distanceToTarget = Vector3.Distance(transform.position, TargetPosition);
-                yield return null;
-            }
+            yield return StartCoroutine(ResetFinisherState());
         }
 
         private IEnumerator PerformFinishingAnimation()
@@ -67,12 +56,12 @@ namespace Animation.Scripts.Player
             _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Sword, true);
             _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
             yield return new WaitForSeconds(0.4f);
-            StartCoroutine(enemyFinisherHandler.RepositionEnemyCoroutine());
+            OnFinisherSequenceCompleted?.Invoke();
             yield return new WaitForSeconds(1.2f);
             _playerCollider.enabled = true;
         }
 
-        private IEnumerator ResetFinisherStateAndTriggerEnemyHandler()
+        private IEnumerator ResetFinisherState()
         {
             _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Gun, true);
             _playerEquipment.SetWeaponActive(PlayerEquipment.WeaponType.Sword, false);

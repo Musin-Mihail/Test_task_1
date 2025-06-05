@@ -1,4 +1,5 @@
-﻿using Animation.Scripts.Interfaces;
+﻿using Animation.Scripts.Enemy;
+using Animation.Scripts.Interfaces;
 using Animation.Scripts.Player;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ namespace Animation.Scripts.States
         [SerializeField] private PlayerController playerController;
         [SerializeField] private EnemyFinishingTrigger enemyFinishingTrigger;
         [SerializeField] private PlayerEquipment playerEquipment;
+        [SerializeField] private EnemyFinisherHandler enemyFinisherHandler;
+
         private PlayerState CurrentState { get; set; }
         public PlayerAnimation PlayerAnimation => playerAnimation;
         public PlayerMovement PlayerMovement => playerMovement;
@@ -65,6 +68,15 @@ namespace Animation.Scripts.States
             else
             {
                 Debug.LogError("EnemyFinishingTrigger не назначен в инспекторе PlayerStateMachine.");
+            }
+
+            if (enemyFinisherHandler)
+            {
+                enemyFinisherHandler.Initialize(playerFinisher);
+            }
+            else
+            {
+                Debug.LogError("EnemyFinisherHandler не назначен в инспекторе PlayerStateMachine.");
             }
         }
 
