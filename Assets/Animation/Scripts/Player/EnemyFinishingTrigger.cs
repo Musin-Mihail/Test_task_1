@@ -5,7 +5,6 @@ namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за триггер добивания врага.
-    /// Реализует интерфейс IEnemyFinishingTrigger.
     /// </summary>
     public class EnemyFinishingTrigger : MonoBehaviour, IEnemyFinishingTrigger
     {
@@ -13,10 +12,6 @@ namespace Animation.Scripts.Player
         private IPlayerFinisher _playerFinisher;
         private Vector3 _currentTarget;
 
-        /// <summary>
-        /// Метод инициализации для внедрения зависимостей.
-        /// </summary>
-        /// <param name="playerFinisher">Ссылка на IPlayerFinisher.</param>
         public void Initialize(IPlayerFinisher playerFinisher)
         {
             _playerFinisher = playerFinisher;

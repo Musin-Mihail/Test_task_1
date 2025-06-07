@@ -8,7 +8,6 @@ namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за логику добивания игрока.
-    /// Реализует интерфейс IPlayerFinisher.
     /// </summary>
     public class PlayerFinisher : MonoBehaviour, IPlayerFinisher
     {
@@ -32,13 +31,6 @@ namespace Animation.Scripts.Player
         private Collider _playerCollider;
         private bool _isFinishing;
 
-        /// <summary>
-        /// Метод инициализации для внедрения зависимостей.
-        /// </summary>
-        /// <param name="playerCollider">Ссылка на Collider игрока.</param>
-        /// <param name="playerAnimation">Ссылка на IPlayerAnimation.</param>
-        /// <param name="playerMovement">Ссылка на IPlayerMovement.</param>
-        /// <param name="playerEquipment">Ссылка на IPlayerEquipment.</param>
         public void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment)
         {
             _playerCollider = playerCollider;

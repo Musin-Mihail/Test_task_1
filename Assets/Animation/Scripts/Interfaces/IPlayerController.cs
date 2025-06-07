@@ -12,6 +12,9 @@ namespace Animation.Scripts.Interfaces
         public event Action<MovementDirection, KeyState> OnMovementIntent;
         public event Action OnSpacePressed;
 
+        /// <summary>
+        /// Возвращает текущую позицию мыши в мировых координатах.
+        /// </summary>
         Vector3 GetMouseWorldPosition();
     }
 }

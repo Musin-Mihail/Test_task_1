@@ -8,8 +8,6 @@ namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за логику перемещения игрока.
-    /// Реализует интерфейс IPlayerMovement.
-    /// Является единственным источником правды о состоянии движения.
     /// </summary>
     public class PlayerMovement : MonoBehaviour, IPlayerMovement
     {
@@ -24,12 +22,6 @@ namespace Animation.Scripts.Player
         private const float Speed = 10f;
         private Camera _camera;
 
-        /// <summary>
-        /// Метод инициализации для внедрения зависимостей.
-        /// </summary>
-        /// <param name="controller">Ссылка на PlayerController.</param>
-        /// <param name="finisher">Ссылка на PlayerFinisher.</param>
-        /// <param name="animationController">Ссылка на PlayerAnimationController.</param>
         public void Initialize(IPlayerController controller, IPlayerFinisher finisher, IPlayerAnimationController animationController)
         {
             _playerController = controller;
@@ -105,9 +97,6 @@ namespace Animation.Scripts.Player
             }
         }
 
-        /// <summary>
-        /// Выполняет движение игрока. Вызывается из состояния FSM.
-        /// </summary>
         public void Move()
         {
             if (!_camera) return;
@@ -135,9 +124,6 @@ namespace Animation.Scripts.Player
             }
         }
 
-        /// <summary>
-        /// Поворачивает объект игрока в сторону указателя мыши.
-        /// </summary>
         public void RotationToMouse()
         {
             var mouseWorldPosition = _playerController.GetMouseWorldPosition();
@@ -145,9 +131,6 @@ namespace Animation.Scripts.Player
             chest.transform.Rotate(-30, 90, 0);
         }
 
-        /// <summary>
-        /// Поворачивает объект игрока в сторону цели.
-        /// </summary>
         public void RotationToTarget()
         {
             chest.rotation = Quaternion.LookRotation(Vector3.up, _playerFinisher.TargetPosition - chest.position);
@@ -156,9 +139,6 @@ namespace Animation.Scripts.Player
             transform.transform.Rotate(270, 180, 0);
         }
 
-        /// <summary>
-        /// Поворачивает объект игрока в сторону, куда смотрит камера, по горизонтальной плоскости.
-        /// </summary>
         public void RotateTowardsCamera()
         {
             if (_camera)
@@ -171,11 +151,6 @@ namespace Animation.Scripts.Player
             }
         }
 
-        /// <summary>
-        /// Перемещает игрока к указанной цели до достижения заданного расстояния.
-        /// </summary>
-        /// <param name="targetPosition">Целевая позиция.</param>
-        /// <param name="stopDistance">Расстояние до цели, на котором нужно остановиться.</param>
         public IEnumerator MoveToTarget(Vector3 targetPosition, float stopDistance)
         {
             var distanceToTarget = Vector3.Distance(transform.position, targetPosition);
@@ -188,17 +163,11 @@ namespace Animation.Scripts.Player
             }
         }
 
-        /// <summary>
-        /// Возвращает, движется ли игрок в данный момент.
-        /// </summary>
         public bool IsMoving()
         {
             return IsMovingForward || IsMovingBack || IsMovingLeft || IsMovingRight;
         }
 
-        /// <summary>
-        /// Обновляет анимацию движения игрока через PlayerAnimationController.
-        /// </summary>
         public void UpdateMovementAndAnimation()
         {
             _playerAnimationController?.UpdateAndPlayMovementAnimation();

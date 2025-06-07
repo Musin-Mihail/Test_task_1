@@ -7,7 +7,6 @@ namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за обработку пользовательского ввода и передачу команд.
-    /// Реализует интерфейс IPlayerController.
     /// </summary>
     public class PlayerController : MonoBehaviour, IPlayerController
     {
@@ -94,9 +93,6 @@ namespace Animation.Scripts.Player
             }
         }
 
-        /// <summary>
-        /// Возвращает текущую позицию мыши в мировых координатах.
-        /// </summary>
         public Vector3 GetMouseWorldPosition()
         {
             var ray = _camera.ScreenPointToRay(Input.mousePosition);

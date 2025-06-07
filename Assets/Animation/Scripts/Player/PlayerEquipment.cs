@@ -6,18 +6,12 @@ namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за управление активным снаряжением игрока (оружием).
-    /// Реализует интерфейс IPlayerEquipment.
     /// </summary>
     public class PlayerEquipment : MonoBehaviour, IPlayerEquipment
     {
         public GameObject gun;
         public GameObject sword;
 
-        /// <summary>
-        /// Устанавливает активность указанного типа оружия.
-        /// </summary>
-        /// <param name="weaponType">Тип оружия.</param>
-        /// <param name="isActive">Будет ли оружие активно.</param>
         public void SetWeaponActive(WeaponType weaponType, bool isActive)
         {
             switch (weaponType)

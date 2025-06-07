@@ -21,10 +21,6 @@ namespace Animation.Scripts.Enemy
             _enemyAnimator = enemy.GetComponent<Animator>();
         }
 
-        /// <summary>
-        /// Инициализирует обработчик добивания противника и подписывается на событие PlayerFinisher.
-        /// </summary>
-        /// <param name="playerFinisher">Ссылка на IPlayerFinisher.</param>
         public void Initialize(IPlayerFinisher playerFinisher)
         {
             _playerFinisher = playerFinisher;

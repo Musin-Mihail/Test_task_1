@@ -13,14 +13,8 @@ namespace Animation.Scripts.Player
         private static readonly int MoveZ = Animator.StringToHash("MoveZ");
         private IPlayerMovement _playerMovement;
         private IPlayerAnimation _playerAnimation;
-
         public float animationSmoothTime = 0.1f;
 
-        /// <summary>
-        /// Метод инициализации для внедрения зависимостей.
-        /// </summary>
-        /// <param name="playerMovement">Ссылка на IPlayerMovement.</param>
-        /// <param name="playerAnimation">Ссылка на PlayerAnimation.</param>
         public void Initialize(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation) // Изменили тип
         {
             _playerMovement = playerMovement;
@@ -36,9 +30,6 @@ namespace Animation.Scripts.Player
             }
         }
 
-        /// <summary>
-        /// Обновляет параметры аниматора в зависимости от движения игрока.
-        /// </summary>
         public void UpdateAndPlayMovementAnimation()
         {
             if (_playerMovement == null || _playerAnimation == null || !_playerAnimation.Animator)

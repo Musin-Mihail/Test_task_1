@@ -13,7 +13,7 @@
         void Initialize(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation);
 
         /// <summary>
-        /// Определяет доминирующее направление движения игрока и воспроизводит соответствующую анимацию.
+        /// Обновляет параметры аниматора в зависимости от движения игрока.
         /// </summary>
         void UpdateAndPlayMovementAnimation();
     }
