@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Animation.Scripts.Interfaces;
 using Animation.Scripts.Player;
 using UnityEngine;
@@ -30,43 +28,9 @@ namespace Animation.Scripts.States
 
             _states = new Dictionary<Type, PlayerState>();
 
-            var assembly = Assembly.GetAssembly(typeof(PlayerStateMachine));
-            var playerStateTypes = assembly.GetTypes()
-                .Where(type => type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(PlayerState)));
-
-            foreach (var stateType in playerStateTypes)
-            {
-                try
-                {
-                    var constructor = stateType.GetConstructor(new[] { typeof(IPlayerStateContext) });
-                    if (constructor != null)
-                    {
-                        var stateInstance = (PlayerState)constructor.Invoke(new object[] { this });
-                        RegisterState(stateInstance);
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"Состояние типа {stateType.Name} не имеет конструктора, принимающего IPlayerStateContext. Оно не будет зарегистрировано.");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"Ошибка при регистрации состояния типа {stateType.Name}: {e.Message}");
-                }
-            }
-
-            if (_states.Count == 0)
-            {
-                Debug.LogWarning("Не найдено и не зарегистрировано ни одного состояния. Убедитесь, что PlayerState-классы существуют и имеют правильные конструкторы.");
-            }
-            else
-            {
-                Debug.Log($"Зарегистрировано состояний: {_states.Count}.");
-                foreach (var stateEntry in _states)
-                {
-                    Debug.Log($" - {stateEntry.Key.Name}");
-                }
-            }
+            RegisterState(new PlayerIdleState(this));
+            RegisterState(new PlayerRunState(this));
+            RegisterState(new PlayerFinishingState(this));
         }
 
         private void RegisterState(PlayerState state)
