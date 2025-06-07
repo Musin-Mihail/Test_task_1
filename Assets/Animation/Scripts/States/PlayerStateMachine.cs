@@ -14,6 +14,7 @@ namespace Animation.Scripts.States
 
         public IPlayerAnimation PlayerAnimation => componentRegistry.PlayerAnimationInstance;
         public IPlayerMovement PlayerMovement => componentRegistry.PlayerMovementInstance;
+        public IPlayerRotator PlayerRotator => componentRegistry.PlayerRotatorInstance;
         public IPlayerFinisher PlayerFinisher => componentRegistry.PlayerFinisherInstance;
         public IPlayerController PlayerController => componentRegistry.PlayerControllerInstance;
         public IEnemyFinishingTrigger EnemyFinishingTrigger => componentRegistry.EnemyFinishingTriggerInstance;
@@ -51,7 +52,7 @@ namespace Animation.Scripts.States
 
         private void Start()
         {
-            PlayerMovement.RotateTowardsCamera();
+            PlayerRotator.RotateTowardsCamera();
             ChangeState<PlayerIdleState>();
         }
 

@@ -20,7 +20,8 @@ namespace Animation.Scripts.Interfaces
         /// <param name="playerAnimation">Ссылка на IPlayerAnimation.</param>
         /// <param name="playerMovement">Ссылка на IPlayerMovement.</param>
         /// <param name="playerEquipment">Ссылка на IPlayerEquipment.</param>
-        void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment);
+        /// <param name="playerRotator">Ссылка на IPlayerRotator.</param>
+        void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator);
 
         /// <summary>
         /// Запуск процесса добивания.

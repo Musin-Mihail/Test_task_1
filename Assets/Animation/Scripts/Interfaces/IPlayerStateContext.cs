@@ -9,6 +9,7 @@ namespace Animation.Scripts.Interfaces
         IPlayerController PlayerController { get; }
         IEnemyFinishingTrigger EnemyFinishingTrigger { get; }
         IPlayerFinisher PlayerFinisher { get; }
+        IPlayerRotator PlayerRotator { get; }
         void ChangeState<TState>() where TState : PlayerState;
     }
 }

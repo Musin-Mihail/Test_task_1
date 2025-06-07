@@ -22,15 +22,17 @@ namespace Animation.Scripts.Player
         private IPlayerAnimation _playerAnimation;
         private IPlayerMovement _playerMovement;
         private IPlayerEquipment _playerEquipment;
+        private IPlayerRotator _playerRotator;
         private Collider _playerCollider;
         private bool _isFinishing;
 
-        public void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment)
+        public void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator)
         {
             _playerCollider = playerCollider;
             _playerAnimation = playerAnimation;
             _playerMovement = playerMovement;
             _playerEquipment = playerEquipment;
+            _playerRotator = playerRotator;
             _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, false);
 
@@ -81,7 +83,7 @@ namespace Animation.Scripts.Player
             _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, false);
             _isFinishing = false;
-            _playerMovement.RotateTowardsCamera();
+            _playerRotator.RotateTowardsCamera();
             yield return null;
         }
 

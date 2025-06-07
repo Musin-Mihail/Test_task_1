@@ -14,6 +14,7 @@ namespace Animation.Scripts.Player
         [SerializeField] private PlayerEquipment playerEquipment;
         [SerializeField] private EnemyFinisherHandler enemyFinisherHandler;
         [SerializeField] private PlayerAnimationController animationController;
+        [SerializeField] private PlayerRotator playerRotator;
 
         public IPlayerAnimation PlayerAnimationInstance => playerAnimation;
         public IPlayerMovement PlayerMovementInstance => playerMovement;
@@ -23,6 +24,7 @@ namespace Animation.Scripts.Player
         private IPlayerEquipment PlayerEquipmentInstance => playerEquipment;
         private IEnemyFinisherHandler EnemyFinisherHandlerInstance => enemyFinisherHandler;
         private IPlayerAnimationController PlayerAnimationControllerInstance => animationController;
+        public IPlayerRotator PlayerRotatorInstance => playerRotator;
 
         private Collider _playerCollider;
         private PlayerMovementState _playerMovementState;
@@ -55,7 +57,7 @@ namespace Animation.Scripts.Player
 
             if (PlayerMovementInstance != null && _playerMovementState != null)
             {
-                PlayerMovementInstance.Initialize(PlayerControllerInstance, PlayerFinisherInstance, PlayerAnimationControllerInstance, _playerMovementState);
+                PlayerMovementInstance.Initialize(PlayerControllerInstance, PlayerAnimationControllerInstance, _playerMovementState);
             }
             else
             {
@@ -66,7 +68,7 @@ namespace Animation.Scripts.Player
             {
                 if (_playerCollider)
                 {
-                    PlayerFinisherInstance.Initialize(_playerCollider, PlayerAnimationInstance, PlayerMovementInstance, PlayerEquipmentInstance);
+                    PlayerFinisherInstance.Initialize(_playerCollider, PlayerAnimationInstance, PlayerMovementInstance, PlayerEquipmentInstance, PlayerRotatorInstance);
                 }
                 else
                 {
@@ -76,6 +78,15 @@ namespace Animation.Scripts.Player
             else
             {
                 Debug.LogError("PlayerFinisher не назначен в инспекторе PlayerComponentRegistry.");
+            }
+
+            if (PlayerRotatorInstance != null)
+            {
+                PlayerRotatorInstance.Initialize(PlayerControllerInstance, PlayerFinisherInstance);
+            }
+            else
+            {
+                Debug.LogError("PlayerRotator не назначен в инспекторе PlayerComponentRegistry.");
             }
 
             if (EnemyFinishingTriggerInstance != null)

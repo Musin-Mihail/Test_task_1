@@ -10,21 +10,18 @@ namespace Animation.Scripts.Player
     /// </summary>
     public class PlayerMovement : MonoBehaviour, IPlayerMovement
     {
-        [SerializeField] private Transform chest;
         [SerializeField] private PlayerConfig playerConfig;
 
         private IPlayerController _playerController;
-        private IPlayerFinisher _playerFinisher;
         private IPlayerAnimationController _playerAnimationController;
         private PlayerMovementState _playerMovementState;
         private Camera _camera;
 
         public Vector3 CurrentMovementInput => _playerMovementState.CurrentMovementInput;
 
-        public void Initialize(IPlayerController controller, IPlayerFinisher finisher, IPlayerAnimationController animationController, PlayerMovementState movementState)
+        public void Initialize(IPlayerController controller, IPlayerAnimationController animationController, PlayerMovementState movementState)
         {
             _playerController = controller;
-            _playerFinisher = finisher;
             _playerAnimationController = animationController;
             _playerMovementState = movementState;
             _camera = Camera.main;
@@ -39,11 +36,6 @@ namespace Animation.Scripts.Player
             if (_playerController == null)
             {
                 Debug.LogError("PlayerController не был внедрен в PlayerMovement.");
-            }
-
-            if (_playerFinisher == null)
-            {
-                Debug.LogError("PlayerFinisher не был внедрен в PlayerMovement.");
             }
 
             if (_playerAnimationController == null)
@@ -71,33 +63,6 @@ namespace Animation.Scripts.Player
 
             var moveDirection = cameraForwardFlat * CurrentMovementInput.z + cameraRightFlat * CurrentMovementInput.x;
             transform.position += moveDirection * (playerConfig.speed * Time.fixedDeltaTime);
-        }
-
-        public void RotationToMouse()
-        {
-            var mouseWorldPosition = _playerController.GetMouseWorldPosition();
-            chest.rotation = Quaternion.LookRotation(Vector3.up, mouseWorldPosition - chest.position);
-            chest.transform.Rotate(-30, 90, 0);
-        }
-
-        public void RotationToTarget()
-        {
-            chest.rotation = Quaternion.LookRotation(Vector3.up, _playerFinisher.TargetPosition - chest.position);
-            chest.transform.Rotate(-30, 90, 10);
-            transform.rotation = Quaternion.LookRotation(Vector3.up, _playerFinisher.TargetPosition - transform.position);
-            transform.transform.Rotate(270, 180, 0);
-        }
-
-        public void RotateTowardsCamera()
-        {
-            if (_camera)
-            {
-                var cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
-                if (cameraForwardFlat != Vector3.zero)
-                {
-                    transform.rotation = Quaternion.LookRotation(cameraForwardFlat);
-                }
-            }
         }
 
         /// <summary>

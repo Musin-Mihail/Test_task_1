@@ -10,7 +10,7 @@ namespace Animation.Scripts.States
 
         public override void EnterState()
         {
-            Context.PlayerMovement.RotationToTarget();
+            Context.PlayerRotator.RotationToTarget();
             Context.PlayerFinisher.StartFinishingSequence();
         }
 

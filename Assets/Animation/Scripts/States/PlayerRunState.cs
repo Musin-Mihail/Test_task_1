@@ -39,7 +39,7 @@ namespace Animation.Scripts.States
 
         public override void LateUpdateState()
         {
-            Context.PlayerMovement.RotationToMouse();
+            Context.PlayerRotator.RotationToMouse();
         }
 
         /// <summary>

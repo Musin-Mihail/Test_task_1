@@ -583,6 +583,7 @@ GameObject:
   - component: {fileID: 584555212}
   - component: {fileID: 584555213}
   - component: {fileID: 584555214}
+  - component: {fileID: 584555215}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -639,7 +640,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebba35d7376a41cbba2c9706cc5ef5be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chest: {fileID: 1385874062}
   playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
 --- !u!114 &584555206
 MonoBehaviour:
@@ -742,6 +742,7 @@ MonoBehaviour:
   playerEquipment: {fileID: 584555212}
   enemyFinisherHandler: {fileID: 2686342998258755414}
   animationController: {fileID: 584555214}
+  playerRotator: {fileID: 584555215}
 --- !u!114 &584555214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -755,6 +756,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
+--- !u!114 &584555215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584555201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c85cf0437c14fb680db73375b3ab9f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chest: {fileID: 1385874062}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
