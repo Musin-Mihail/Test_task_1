@@ -26,7 +26,8 @@ namespace Animation.Scripts.Enemy
             _playerFinisher = playerFinisher;
             if (_playerFinisher != null)
             {
-                _playerFinisher.OnFinisherSequenceCompleted += RepositionEnemyOnFinisherCompleted;
+                _playerFinisher.OnFinisherSequenceCompleted += HandleFinisherImpact;
+                _playerFinisher.OnFinisherAnimationFullyCompleted += HandleFinisherAnimationComplete;
             }
             else
             {
@@ -38,30 +39,38 @@ namespace Animation.Scripts.Enemy
         {
             if (_playerFinisher != null)
             {
-                _playerFinisher.OnFinisherSequenceCompleted -= RepositionEnemyOnFinisherCompleted;
+                _playerFinisher.OnFinisherSequenceCompleted -= HandleFinisherImpact;
+                _playerFinisher.OnFinisherAnimationFullyCompleted -= HandleFinisherAnimationComplete;
             }
         }
 
         /// <summary>
-        /// Метод, вызываемый при завершении последовательности добивания игроком.
+        /// Метод, вызываемый при достижении точки удара в последовательности добивания игроком.
         /// </summary>
-        private void RepositionEnemyOnFinisherCompleted()
-        {
-            StartCoroutine(RepositionEnemyCoroutine());
-        }
-
-        /// <summary>
-        /// Корутина для перемещения врага в новую случайную позицию.
-        /// </summary>
-        private IEnumerator RepositionEnemyCoroutine()
+        private void HandleFinisherImpact()
         {
             if (_enemyAnimator)
             {
                 _enemyAnimator.enabled = false;
             }
 
-            yield return new WaitForSeconds(1.15f);
+            Debug.Log("EnemyFinisherHandler: Player finisher impact received!");
+        }
 
+        /// <summary>
+        /// Метод, вызываемый при полном завершении анимации добивания игроком.
+        /// Здесь враг будет деактивирован.
+        /// </summary>
+        private void HandleFinisherAnimationComplete()
+        {
+            StartCoroutine(RepositionEnemyCoroutine());
+        }
+
+        /// <summary>
+        /// Корутина для перемещения врага в новую случайную позицию после завершения добивания.
+        /// </summary>
+        private IEnumerator RepositionEnemyCoroutine()
+        {
             if (enemy)
             {
                 enemy.SetActive(false);

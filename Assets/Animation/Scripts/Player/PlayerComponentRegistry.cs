@@ -68,7 +68,7 @@ namespace Animation.Scripts.Player
             {
                 if (_playerCollider)
                 {
-                    PlayerFinisherInstance.Initialize(_playerCollider, PlayerAnimationInstance, PlayerMovementInstance, PlayerEquipmentInstance, PlayerRotatorInstance);
+                    PlayerFinisherInstance.Initialize(_playerCollider, PlayerAnimationInstance, PlayerEquipmentInstance, PlayerRotatorInstance);
                 }
                 else
                 {

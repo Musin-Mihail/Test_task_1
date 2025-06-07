@@ -9,6 +9,7 @@ namespace Animation.Scripts.Interfaces
     public interface IPlayerFinisher
     {
         event Action OnFinisherSequenceCompleted;
+        event Action OnFinisherAnimationFullyCompleted;
 
         Vector3 TargetPosition { get; set; }
         bool IsFinishing();
@@ -18,14 +19,16 @@ namespace Animation.Scripts.Interfaces
         /// </summary>
         /// <param name="playerCollider">Ссылка на Collider игрока.</param>
         /// <param name="playerAnimation">Ссылка на IPlayerAnimation.</param>
-        /// <param name="playerMovement">Ссылка на IPlayerMovement.</param>
         /// <param name="playerEquipment">Ссылка на IPlayerEquipment.</param>
-        /// <param name="playerRotator">Ссылка на IPlayerRotator.</param>
-        void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator);
+        /// <param name="playerRotator">Ссылка на IPlayerEquipment.</param>
+        void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator);
 
         /// <summary>
         /// Запуск процесса добивания.
         /// </summary>
         void StartFinishingSequence();
+
+        void AnimationEvent_FinisherImpactPoint();
+        void AnimationEvent_FinisherComplete();
     }
 }

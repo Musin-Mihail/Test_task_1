@@ -19,12 +19,6 @@ namespace Animation.Scripts.ScriptableObjects
         [Tooltip("Дистанция до цели для начала добивания.")]
         public float finishingStartDistance = 2.5f;
 
-        [Tooltip("Время анимации до удара в добивании.")]
-        public float timeBeforeImpact = 0.4f;
-
-        [Tooltip("Время на выполнение анимации удара в добивании.")]
-        public float finishingStrikeDuration = 1.2f;
-
         [Tooltip("Скорость перемещения во время добивания.")]
         public float finishingMovementSpeed = 5f;
 

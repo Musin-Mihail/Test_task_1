@@ -13,24 +13,27 @@ namespace Animation.Scripts.Player
     public class PlayerFinisher : MonoBehaviour, IPlayerFinisher
     {
         [SerializeField] private PlayerConfig playerConfig;
+        [SerializeField] private Transform player;
 
         public event Action OnFinisherSequenceCompleted;
+        public event Action OnFinisherAnimationFullyCompleted;
 
         public Vector3 TargetPosition { get; set; }
         public bool IsFinishing() => _isFinishing;
 
         private IPlayerAnimation _playerAnimation;
-        private IPlayerMovement _playerMovement;
         private IPlayerEquipment _playerEquipment;
         private IPlayerRotator _playerRotator;
         private Collider _playerCollider;
         private bool _isFinishing;
 
-        public void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator)
+        private bool _isImpactPointReached;
+        private bool _isAnimationCompleted;
+
+        public void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator)
         {
             _playerCollider = playerCollider;
             _playerAnimation = playerAnimation;
-            _playerMovement = playerMovement;
             _playerEquipment = playerEquipment;
             _playerRotator = playerRotator;
             _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
@@ -51,14 +54,38 @@ namespace Animation.Scripts.Player
             _playerCollider.enabled = false;
             _playerAnimation.SetBool("IsMoving", true);
 
+            _isImpactPointReached = false;
+            _isAnimationCompleted = false;
+
             StartCoroutine(FinishingCoroutine());
         }
+
+        /// <summary>
+        /// Метод, вызываемый Animation Event в точке удара добивания.
+        /// </summary>
+        public void AnimationEvent_FinisherImpactPoint()
+        {
+            _isImpactPointReached = true;
+            OnFinisherSequenceCompleted?.Invoke();
+            Debug.Log("Animation Event: Finisher Impact Point reached!");
+        }
+
+        /// <summary>
+        /// Метод, вызываемый Animation Event по завершении анимации добивания.
+        /// </summary>
+        public void AnimationEvent_FinisherComplete()
+        {
+            _isAnimationCompleted = true;
+            OnFinisherAnimationFullyCompleted?.Invoke();
+            Debug.Log("Animation Event: Finisher animation completed!");
+        }
+
 
         private IEnumerator FinishingCoroutine()
         {
             if (!playerConfig) yield break;
 
-            yield return StartCoroutine(MoveToTarget(transform, TargetPosition, playerConfig.finishingStartDistance, playerConfig.finishingMovementSpeed));
+            yield return StartCoroutine(MoveToTarget(player, TargetPosition, playerConfig.finishingStartDistance, playerConfig.finishingMovementSpeed));
             yield return StartCoroutine(PerformFinishingAnimation());
             yield return StartCoroutine(ResetFinisherState());
         }
@@ -71,11 +98,15 @@ namespace Animation.Scripts.Player
             _playerEquipment.SetWeaponActive(WeaponType.Gun, false);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, true);
             _playerAnimation.SetBool("Finisher", true);
-            yield return new WaitForSeconds(playerConfig.timeBeforeImpact);
-            OnFinisherSequenceCompleted?.Invoke();
-            yield return new WaitForSeconds(playerConfig.finishingStrikeDuration);
+
+            yield return new WaitUntil(() => _isImpactPointReached);
+            yield return new WaitUntil(() => _isAnimationCompleted);
+
             _playerCollider.enabled = true;
             _playerAnimation.SetBool("Finisher", false);
+
+            _isImpactPointReached = false;
+            _isAnimationCompleted = false;
         }
 
         private IEnumerator ResetFinisherState()
@@ -90,14 +121,14 @@ namespace Animation.Scripts.Player
         /// <summary>
         /// Реализация MoveToTarget из IMovementService.
         /// </summary>
-        private IEnumerator MoveToTarget(Transform targetTransform, Vector3 targetPosition, float stopDistance, float speed)
+        private IEnumerator MoveToTarget(Transform playerTransform, Vector3 targetPosition, float stopDistance, float speed)
         {
-            var distanceToTarget = Vector3.Distance(targetTransform.position, targetPosition);
+            var distanceToTarget = Vector3.Distance(playerTransform.position, targetPosition);
             while (distanceToTarget > stopDistance)
             {
-                var directionToTarget = (targetPosition - targetTransform.position).normalized;
-                targetTransform.position += directionToTarget * (speed * Time.deltaTime);
-                distanceToTarget = Vector3.Distance(targetTransform.position, targetPosition);
+                var directionToTarget = (targetPosition - playerTransform.position).normalized;
+                playerTransform.position += directionToTarget * (speed * Time.deltaTime);
+                distanceToTarget = Vector3.Distance(playerTransform.position, targetPosition);
                 yield return null;
             }
         }
