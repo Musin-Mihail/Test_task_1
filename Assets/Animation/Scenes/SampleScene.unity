@@ -640,7 +640,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chest: {fileID: 1385874062}
-  speed: 10
+  playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
 --- !u!114 &584555206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -694,10 +694,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c15a0c73abeb42228417944ffa01e95c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  finishingStartDistance: 2.5
-  timeBeforeImpact: 0.4
-  finishingStrikeDuration: 1.2
-  finishingMovementSpeed: 5
+  playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
 --- !u!114 &584555211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -757,7 +754,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd3912d9b97e4f8b9b4b480352fb2db5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationSmoothTime: 0.1
+  playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1416,6 +1413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 584555202}
+  playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
 --- !u!114 &2073030325
 MonoBehaviour:
   m_ObjectHideFlags: 0

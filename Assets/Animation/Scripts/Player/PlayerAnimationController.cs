@@ -1,5 +1,7 @@
 ﻿using Animation.Scripts.Interfaces;
+using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
+// Добавляем using для доступа к PlayerConfig
 
 namespace Animation.Scripts.Player
 {
@@ -11,14 +13,24 @@ namespace Animation.Scripts.Player
     {
         private static readonly int MoveX = Animator.StringToHash("MoveX");
         private static readonly int MoveZ = Animator.StringToHash("MoveZ");
+
+        [SerializeField] private PlayerConfig playerConfig;
+
         private IPlayerMovement _playerMovement;
         private IPlayerAnimation _playerAnimation;
-        public float animationSmoothTime = 0.1f;
 
         public void Initialize(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation)
         {
             _playerMovement = playerMovement;
             _playerAnimation = playerAnimation;
+
+            if (!playerConfig)
+            {
+                Debug.LogError("PlayerConfig не назначен в инспекторе PlayerAnimationController. Пожалуйста, назначьте его.");
+                enabled = false;
+                return;
+            }
+
             if (_playerMovement == null)
             {
                 Debug.LogError("PlayerMovement не был внедрен в PlayerAnimationController.");
@@ -32,7 +44,7 @@ namespace Animation.Scripts.Player
 
         public void UpdateAndPlayMovementAnimation()
         {
-            if (_playerMovement == null || _playerAnimation == null || !_playerAnimation.Animator)
+            if (_playerMovement == null || _playerAnimation == null || !_playerAnimation.Animator || !playerConfig)
             {
                 return;
             }
@@ -45,8 +57,8 @@ namespace Animation.Scripts.Player
             var currentMoveX = _playerAnimation.Animator.GetFloat(MoveX);
             var currentMoveZ = _playerAnimation.Animator.GetFloat(MoveZ);
 
-            currentMoveX = Mathf.Lerp(currentMoveX, targetMoveX, Time.deltaTime / animationSmoothTime);
-            currentMoveZ = Mathf.Lerp(currentMoveZ, targetMoveZ, Time.deltaTime / animationSmoothTime);
+            currentMoveX = Mathf.Lerp(currentMoveX, targetMoveX, Time.deltaTime / playerConfig.animationSmoothTime);
+            currentMoveZ = Mathf.Lerp(currentMoveZ, targetMoveZ, Time.deltaTime / playerConfig.animationSmoothTime);
 
             _playerAnimation.SetFloat("MoveX", currentMoveX);
             _playerAnimation.SetFloat("MoveZ", currentMoveZ);

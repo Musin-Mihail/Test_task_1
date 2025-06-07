@@ -1,7 +1,6 @@
 ﻿using Animation.Scripts.Interfaces;
+using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
-
-// Убедитесь, что это добавлено
 
 namespace Animation.Scripts.Player
 {
@@ -12,7 +11,7 @@ namespace Animation.Scripts.Player
     public class PlayerMovement : MonoBehaviour, IPlayerMovement
     {
         [SerializeField] private Transform chest;
-        [SerializeField] private float speed = 10f;
+        [SerializeField] private PlayerConfig playerConfig;
 
         private IPlayerController _playerController;
         private IPlayerFinisher _playerFinisher;
@@ -29,6 +28,13 @@ namespace Animation.Scripts.Player
             _playerAnimationController = animationController;
             _playerMovementState = movementState;
             _camera = Camera.main;
+
+            if (!playerConfig)
+            {
+                Debug.LogError("PlayerConfig не назначен в инспекторе PlayerMovement. Пожалуйста, назначьте его.");
+                enabled = false;
+                return;
+            }
 
             if (_playerController == null)
             {
@@ -64,7 +70,7 @@ namespace Animation.Scripts.Player
             var cameraRightFlat = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
 
             var moveDirection = cameraForwardFlat * CurrentMovementInput.z + cameraRightFlat * CurrentMovementInput.x;
-            transform.position += moveDirection * (speed * Time.fixedDeltaTime);
+            transform.position += moveDirection * (playerConfig.speed * Time.fixedDeltaTime);
         }
 
         public void RotationToMouse()

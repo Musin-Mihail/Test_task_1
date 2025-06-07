@@ -2,6 +2,7 @@
 using System.Collections;
 using Animation.Scripts.Constants;
 using Animation.Scripts.Interfaces;
+using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
@@ -11,17 +12,7 @@ namespace Animation.Scripts.Player
     /// </summary>
     public class PlayerFinisher : MonoBehaviour, IPlayerFinisher
     {
-        [SerializeField, Tooltip("Дистанция до цели для начала добивания")]
-        private float finishingStartDistance = 2.5f;
-
-        [SerializeField, Tooltip("Время анимации до удара")]
-        private float timeBeforeImpact = 0.4f;
-
-        [SerializeField, Tooltip("Время на выполнение анимации удара")]
-        private float finishingStrikeDuration = 1.2f;
-
-        [SerializeField, Tooltip("Скорость перемещения во время добивания")]
-        private float finishingMovementSpeed = 5f;
+        [SerializeField] private PlayerConfig playerConfig;
 
         public event Action OnFinisherSequenceCompleted;
 
@@ -42,10 +33,18 @@ namespace Animation.Scripts.Player
             _playerEquipment = playerEquipment;
             _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, false);
+
+            if (!playerConfig)
+            {
+                Debug.LogError("PlayerConfig не назначен в инспекторе PlayerFinisher. Пожалуйста, назначьте его.");
+                enabled = false;
+            }
         }
 
         public void StartFinishingSequence()
         {
+            if (!playerConfig) return;
+
             _isFinishing = true;
             _playerCollider.enabled = false;
             _playerAnimation.SetBool("IsMoving", true);
@@ -55,20 +54,24 @@ namespace Animation.Scripts.Player
 
         private IEnumerator FinishingCoroutine()
         {
-            yield return StartCoroutine(MoveToTarget(transform, TargetPosition, finishingStartDistance, finishingMovementSpeed));
+            if (!playerConfig) yield break;
+
+            yield return StartCoroutine(MoveToTarget(transform, TargetPosition, playerConfig.finishingStartDistance, playerConfig.finishingMovementSpeed));
             yield return StartCoroutine(PerformFinishingAnimation());
             yield return StartCoroutine(ResetFinisherState());
         }
 
         private IEnumerator PerformFinishingAnimation()
         {
+            if (!playerConfig) yield break;
+
             _playerAnimation.SetBool("IsMoving", false);
             _playerEquipment.SetWeaponActive(WeaponType.Gun, false);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, true);
             _playerAnimation.SetBool("Finisher", true);
-            yield return new WaitForSeconds(timeBeforeImpact);
+            yield return new WaitForSeconds(playerConfig.timeBeforeImpact);
             OnFinisherSequenceCompleted?.Invoke();
-            yield return new WaitForSeconds(finishingStrikeDuration);
+            yield return new WaitForSeconds(playerConfig.finishingStrikeDuration);
             _playerCollider.enabled = true;
             _playerAnimation.SetBool("Finisher", false);
         }
@@ -87,8 +90,6 @@ namespace Animation.Scripts.Player
         /// </summary>
         private IEnumerator MoveToTarget(Transform targetTransform, Vector3 targetPosition, float stopDistance, float speed)
         {
-            Debug.Log(targetTransform.position);
-            Debug.Log(targetPosition);
             var distanceToTarget = Vector3.Distance(targetTransform.position, targetPosition);
             while (distanceToTarget > stopDistance)
             {

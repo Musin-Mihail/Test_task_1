@@ -1,3 +1,4 @@
+using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
 
 namespace Animation.Scripts
@@ -8,7 +9,8 @@ namespace Animation.Scripts
     public class CameraController : MonoBehaviour
     {
         public Transform playerTransform;
-        private readonly Vector3 _cameraOffset = new(6.0f, 10.0f, -6.0f);
+        [SerializeField] private PlayerConfig playerConfig;
+
         private Camera _camera;
 
         private void Start()
@@ -23,13 +25,19 @@ namespace Animation.Scripts
             {
                 enabled = false;
             }
+
+            if (!playerConfig)
+            {
+                Debug.LogError("PlayerConfig не назначен в инспекторе CameraController. Пожалуйста, назначьте его.");
+                enabled = false;
+            }
         }
 
         private void LateUpdate()
         {
-            if (playerTransform && _camera)
+            if (playerTransform && _camera && playerConfig)
             {
-                _camera.transform.position = playerTransform.position + _cameraOffset;
+                _camera.transform.position = playerTransform.position + playerConfig.cameraOffset;
             }
         }
     }
