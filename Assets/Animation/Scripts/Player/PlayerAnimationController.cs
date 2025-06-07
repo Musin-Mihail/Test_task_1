@@ -15,7 +15,7 @@ namespace Animation.Scripts.Player
         private IPlayerAnimation _playerAnimation;
         public float animationSmoothTime = 0.1f;
 
-        public void Initialize(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation) // Изменили тип
+        public void Initialize(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation)
         {
             _playerMovement = playerMovement;
             _playerAnimation = playerAnimation;
@@ -37,16 +37,10 @@ namespace Animation.Scripts.Player
                 return;
             }
 
-            var currentMoveDirection = Vector3.zero;
-            if (_playerMovement.IsMovingForward) currentMoveDirection += Vector3.forward;
-            if (_playerMovement.IsMovingBack) currentMoveDirection += Vector3.back;
-            if (_playerMovement.IsMovingLeft) currentMoveDirection += Vector3.left;
-            if (_playerMovement.IsMovingRight) currentMoveDirection += Vector3.right;
+            var targetMoveDirection = _playerMovement.CurrentMovementInput;
 
-            currentMoveDirection.Normalize();
-
-            var targetMoveX = currentMoveDirection.x;
-            var targetMoveZ = currentMoveDirection.z;
+            var targetMoveX = targetMoveDirection.x;
+            var targetMoveZ = targetMoveDirection.z;
 
             var currentMoveX = _playerAnimation.Animator.GetFloat(MoveX);
             var currentMoveZ = _playerAnimation.Animator.GetFloat(MoveZ);

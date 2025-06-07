@@ -20,6 +20,9 @@ namespace Animation.Scripts.Player
         [SerializeField, Tooltip("Время на выполнение анимации удара")]
         private float finishingStrikeDuration = 1.2f;
 
+        [SerializeField, Tooltip("Скорость перемещения во время добивания")]
+        private float finishingMovementSpeed = 5f;
+
         public event Action OnFinisherSequenceCompleted;
 
         public Vector3 TargetPosition { get; set; }
@@ -52,7 +55,7 @@ namespace Animation.Scripts.Player
 
         private IEnumerator FinishingCoroutine()
         {
-            yield return StartCoroutine(_playerMovement.MoveToTarget(TargetPosition, finishingStartDistance));
+            yield return StartCoroutine(MoveToTarget(transform, TargetPosition, finishingStartDistance, finishingMovementSpeed));
             yield return StartCoroutine(PerformFinishingAnimation());
             yield return StartCoroutine(ResetFinisherState());
         }
@@ -77,6 +80,23 @@ namespace Animation.Scripts.Player
             _isFinishing = false;
             _playerMovement.RotateTowardsCamera();
             yield return null;
+        }
+
+        /// <summary>
+        /// Реализация MoveToTarget из IMovementService.
+        /// </summary>
+        private IEnumerator MoveToTarget(Transform targetTransform, Vector3 targetPosition, float stopDistance, float speed)
+        {
+            Debug.Log(targetTransform.position);
+            Debug.Log(targetPosition);
+            var distanceToTarget = Vector3.Distance(targetTransform.position, targetPosition);
+            while (distanceToTarget > stopDistance)
+            {
+                var directionToTarget = (targetPosition - targetTransform.position).normalized;
+                targetTransform.position += directionToTarget * (speed * Time.deltaTime);
+                distanceToTarget = Vector3.Distance(targetTransform.position, targetPosition);
+                yield return null;
+            }
         }
     }
 }

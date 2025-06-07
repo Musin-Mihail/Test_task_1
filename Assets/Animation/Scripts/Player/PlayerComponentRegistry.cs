@@ -14,6 +14,7 @@ namespace Animation.Scripts.Player
         [SerializeField] private PlayerEquipment playerEquipment;
         [SerializeField] private EnemyFinisherHandler enemyFinisherHandler;
         [SerializeField] private PlayerAnimationController animationController;
+
         public IPlayerAnimation PlayerAnimationInstance => playerAnimation;
         public IPlayerMovement PlayerMovementInstance => playerMovement;
         public IPlayerFinisher PlayerFinisherInstance => playerFinisher;
@@ -24,6 +25,7 @@ namespace Animation.Scripts.Player
         private IPlayerAnimationController PlayerAnimationControllerInstance => animationController;
 
         private Collider _playerCollider;
+        private PlayerMovementState _playerMovementState;
 
         private void Awake()
         {
@@ -31,6 +33,15 @@ namespace Animation.Scripts.Player
             if (!_playerCollider)
             {
                 Debug.LogError("Collider не найден на GameObject PlayerComponentRegistry.");
+            }
+
+            if (PlayerControllerInstance != null)
+            {
+                _playerMovementState = new PlayerMovementState(PlayerControllerInstance);
+            }
+            else
+            {
+                Debug.LogError("PlayerController не назначен. Невозможно инициализировать PlayerMovementState.");
             }
 
             if (PlayerAnimationControllerInstance != null)
@@ -42,13 +53,13 @@ namespace Animation.Scripts.Player
                 Debug.LogError("PlayerAnimationControllerInstance не назначен в инспекторе PlayerComponentRegistry.");
             }
 
-            if (PlayerMovementInstance != null)
+            if (PlayerMovementInstance != null && _playerMovementState != null)
             {
-                PlayerMovementInstance.Initialize(PlayerControllerInstance, PlayerFinisherInstance, PlayerAnimationControllerInstance);
+                PlayerMovementInstance.Initialize(PlayerControllerInstance, PlayerFinisherInstance, PlayerAnimationControllerInstance, _playerMovementState);
             }
             else
             {
-                Debug.LogError("PlayerMovement не назначен в инспекторе PlayerComponentRegistry.");
+                Debug.LogError("PlayerMovement не назначен или PlayerMovementState не инициализирован в инспекторе PlayerComponentRegistry.");
             }
 
             if (PlayerFinisherInstance != null)
@@ -84,6 +95,11 @@ namespace Animation.Scripts.Player
             {
                 Debug.LogError("EnemyFinisherHandler не назначен в инспекторе PlayerComponentRegistry.");
             }
+        }
+
+        private void OnDestroy()
+        {
+            _playerMovementState?.Dispose();
         }
     }
 }

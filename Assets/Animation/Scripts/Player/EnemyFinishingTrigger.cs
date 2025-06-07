@@ -22,6 +22,7 @@ namespace Animation.Scripts.Player
             if (other.gameObject.CompareTag("Enemy"))
             {
                 _currentTarget = other.gameObject.transform.position;
+                _currentTarget.y = 0;
                 finishingText.SetActive(true);
             }
         }

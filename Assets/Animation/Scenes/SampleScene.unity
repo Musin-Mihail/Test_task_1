@@ -640,6 +640,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chest: {fileID: 1385874062}
+  speed: 10
 --- !u!114 &584555206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -696,6 +697,7 @@ MonoBehaviour:
   finishingStartDistance: 2.5
   timeBeforeImpact: 0.4
   finishingStrikeDuration: 1.2
+  finishingMovementSpeed: 5
 --- !u!114 &584555211
 MonoBehaviour:
   m_ObjectHideFlags: 0

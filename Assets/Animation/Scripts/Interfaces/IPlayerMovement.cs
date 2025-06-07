@@ -1,22 +1,12 @@
-﻿using System.Collections;
+﻿using Animation.Scripts.Player;
 using UnityEngine;
 
 namespace Animation.Scripts.Interfaces
 {
     public interface IPlayerMovement
     {
-        bool IsMovingForward { get; }
-        bool IsMovingBack { get; }
-        bool IsMovingLeft { get; }
-        bool IsMovingRight { get; }
-
-        /// <summary>
-        /// Метод инициализации для внедрения зависимостей.
-        /// </summary>
-        /// <param name="controller">Ссылка на PlayerController.</param>
-        /// <param name="finisher">Ссылка на PlayerFinisher.</param>
-        /// <param name="animationController">Ссылка на PlayerAnimationController.</param>
-        void Initialize(IPlayerController controller, IPlayerFinisher finisher, IPlayerAnimationController animationController);
+        Vector3 CurrentMovementInput { get; }
+        void Initialize(IPlayerController controller, IPlayerFinisher finisher, IPlayerAnimationController animationController, PlayerMovementState movementState);
 
         /// <summary>
         /// Выполняет движение игрока. Вызывается из состояния FSM.
@@ -37,13 +27,6 @@ namespace Animation.Scripts.Interfaces
         /// Поворачивает объект игрока в сторону, куда смотрит камера, по горизонтальной плоскости.
         /// </summary>
         void RotateTowardsCamera();
-
-        /// <summary>
-        /// Перемещает игрока к указанной цели до достижения заданного расстояния.
-        /// </summary>
-        /// <param name="targetPosition">Целевая позиция.</param>
-        /// <param name="stopDistance">Расстояние до цели, на котором нужно остановиться.</param>
-        IEnumerator MoveToTarget(Vector3 targetPosition, float stopDistance);
 
         /// <summary>
         /// Возвращает, движется ли игрок в данный момент.
