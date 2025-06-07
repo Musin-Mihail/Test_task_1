@@ -755,16 +755,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab7bc12c04ca424eaee16921ae092c54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerAnimation: {fileID: 539450019}
-  _playerMovement: {fileID: 584555205}
-  _playerFinisher: {fileID: 539450018}
-  _playerController: {fileID: 584555206}
-  _enemyFinishingTrigger: {fileID: 584555211}
-  _playerEquipment: {fileID: 584555212}
-  _enemyFinisherHandler: {fileID: 2686342998258755414}
-  _playerAnimationController: {fileID: 539450017}
-  _playerRotator: {fileID: 584555215}
-  _playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
+  playerAnimation: {fileID: 539450019}
+  playerMovement: {fileID: 584555205}
+  playerFinisher: {fileID: 539450018}
+  playerController: {fileID: 584555206}
+  enemyFinishingTrigger: {fileID: 584555211}
+  playerEquipment: {fileID: 584555212}
+  enemyFinisherHandler: {fileID: 2686342998258755414}
+  playerAnimationController: {fileID: 539450017}
+  playerRotator: {fileID: 584555215}
+  playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
