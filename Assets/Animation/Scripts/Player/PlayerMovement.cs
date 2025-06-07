@@ -9,15 +9,15 @@ namespace Animation.Scripts.Player
     /// <summary>
     /// Отвечает за логику перемещения игрока.
     /// Реализует интерфейс IPlayerMovement.
+    /// Является единственным источником правды о состоянии движения.
     /// </summary>
     public class PlayerMovement : MonoBehaviour, IPlayerMovement
     {
         [SerializeField] private Transform chest;
-        private bool _isMovingForward;
-        private bool _isMovingBack;
-        private bool _isMovingLeft;
-        private bool _isMovingRight;
-
+        public bool IsMovingForward { get; private set; }
+        public bool IsMovingBack { get; private set; }
+        public bool IsMovingLeft { get; private set; }
+        public bool IsMovingRight { get; private set; }
         private IPlayerController _playerController;
         private IPlayerFinisher _playerFinisher;
         private const float Speed = 10f;
@@ -76,43 +76,24 @@ namespace Animation.Scripts.Player
         /// <param name="state">Состояние клавиши (нажата/отпущена/удерживается).</param>
         private void OnMovementIntentHandler(MovementDirection direction, KeyState state)
         {
-            var isPressedOrDown = state is KeyState.Pressed or KeyState.Down;
+            var isPressed = state is KeyState.Pressed or KeyState.Down;
 
             switch (direction)
             {
                 case MovementDirection.Forward:
-                    _isMovingForward = isPressedOrDown;
+                    IsMovingForward = isPressed;
                     break;
                 case MovementDirection.Back:
-                    _isMovingBack = isPressedOrDown;
+                    IsMovingBack = isPressed;
                     break;
                 case MovementDirection.Left:
-                    _isMovingLeft = isPressedOrDown;
+                    IsMovingLeft = isPressed;
                     break;
                 case MovementDirection.Right:
-                    _isMovingRight = isPressedOrDown;
+                    IsMovingRight = isPressed;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-
-            if (state == KeyState.Released)
-            {
-                switch (direction)
-                {
-                    case MovementDirection.Forward:
-                        _isMovingForward = false;
-                        break;
-                    case MovementDirection.Back:
-                        _isMovingBack = false;
-                        break;
-                    case MovementDirection.Left:
-                        _isMovingLeft = false;
-                        break;
-                    case MovementDirection.Right:
-                        _isMovingRight = false;
-                        break;
-                }
             }
         }
 
@@ -125,22 +106,22 @@ namespace Animation.Scripts.Player
             var cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
             var cameraRightFlat = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
 
-            if (_isMovingForward)
+            if (IsMovingForward)
             {
                 transform.position += cameraForwardFlat * (Speed * Time.fixedDeltaTime);
             }
 
-            if (_isMovingBack)
+            if (IsMovingBack)
             {
                 transform.position += -cameraForwardFlat * (Speed * Time.fixedDeltaTime);
             }
 
-            if (_isMovingLeft)
+            if (IsMovingLeft)
             {
                 transform.position += -cameraRightFlat * (Speed * Time.fixedDeltaTime);
             }
 
-            if (_isMovingRight)
+            if (IsMovingRight)
             {
                 transform.position += cameraRightFlat * (Speed * Time.fixedDeltaTime);
             }
@@ -204,7 +185,7 @@ namespace Animation.Scripts.Player
         /// </summary>
         public bool IsMoving()
         {
-            return _isMovingForward || _isMovingBack || _isMovingLeft || _isMovingRight;
+            return IsMovingForward || IsMovingBack || IsMovingLeft || IsMovingRight;
         }
     }
 }

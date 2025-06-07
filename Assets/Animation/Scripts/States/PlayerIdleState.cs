@@ -1,6 +1,5 @@
 ﻿using Animation.Scripts.Constants;
 using Animation.Scripts.Interfaces;
-// Добавлено для MovementDirection и KeyState
 
 namespace Animation.Scripts.States
 {
@@ -13,25 +12,17 @@ namespace Animation.Scripts.States
         public override void EnterState()
         {
             Context.PlayerAnimation.PlayAnimation(PlayerAnimationNames.Idle);
-            Context.PlayerController.OnMovementIntent += OnMovementIntent;
             Context.PlayerController.OnSpacePressed += OnSpacePressed;
         }
 
         public override void ExitState()
         {
-            Context.PlayerController.OnMovementIntent -= OnMovementIntent;
             Context.PlayerController.OnSpacePressed -= OnSpacePressed;
         }
 
-        /// <summary>
-        /// Обрабатывает абстрактное событие намерения движения.
-        /// Если игрок начинает движение (клавиша нажата), переключается в состояние бега.
-        /// </summary>
-        /// <param name="direction">Направление движения.</param>
-        /// <param name="state">Состояние клавиши (нажата/отпущена/удерживается).</param>
-        private void OnMovementIntent(MovementDirection direction, KeyState state)
+        public override void UpdateState()
         {
-            if (state == KeyState.Down)
+            if (Context.PlayerMovement.IsMoving())
             {
                 Context.ChangeState(Context.GetState<PlayerRunState>());
             }

@@ -14,6 +14,10 @@ namespace Animation.Scripts.Interfaces
         void RotationToTarget();
         void RotateTowardsCamera();
         IEnumerator MoveToTarget(Vector3 targetPosition, float stopDistance);
+        bool IsMovingForward { get; }
+        bool IsMovingBack { get; }
+        bool IsMovingLeft { get; }
+        bool IsMovingRight { get; }
         bool IsMoving();
     }
 }
