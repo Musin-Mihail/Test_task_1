@@ -1,31 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using Animation.Scripts.Interfaces;
-using Animation.Scripts.Player;
 using UnityEngine;
+using Zenject;
 
 namespace Animation.Scripts.States
 {
     public class PlayerStateMachine : MonoBehaviour, IPlayerStateContext
     {
-        [SerializeField] private PlayerComponentRegistry componentRegistry;
         private PlayerState CurrentState { get; set; }
         private Dictionary<Type, PlayerState> _states;
 
-        public IPlayerAnimation PlayerAnimation => componentRegistry.PlayerAnimationInstance;
-        public IPlayerMovement PlayerMovement => componentRegistry.PlayerMovementInstance;
-        public IPlayerRotator PlayerRotator => componentRegistry.PlayerRotatorInstance;
-        public IPlayerFinisher PlayerFinisher => componentRegistry.PlayerFinisherInstance;
-        public IPlayerController PlayerController => componentRegistry.PlayerControllerInstance;
-        public IEnemyFinishingTrigger EnemyFinishingTrigger => componentRegistry.EnemyFinishingTriggerInstance;
+        public IPlayerAnimation PlayerAnimation { get; private set; }
 
-        private void Awake()
+        public IPlayerMovement PlayerMovement { get; private set; }
+
+        public IPlayerRotator PlayerRotator { get; private set; }
+
+        public IPlayerFinisher PlayerFinisher { get; private set; }
+
+        public IPlayerController PlayerController { get; private set; }
+
+        public IEnemyFinishingTrigger EnemyFinishingTrigger { get; private set; }
+
+        [Inject]
+        public void Construct(
+            IPlayerAnimation playerAnimation,
+            IPlayerMovement playerMovement,
+            IPlayerRotator playerRotator,
+            IPlayerFinisher playerFinisher,
+            IPlayerController playerController,
+            IEnemyFinishingTrigger enemyFinishingTrigger)
         {
-            if (!componentRegistry)
-            {
-                Debug.LogError("PlayerComponentRegistry не назначен в инспекторе PlayerStateMachine. Пожалуйста, назначьте его.");
-                return;
-            }
+            PlayerAnimation = playerAnimation;
+            PlayerMovement = playerMovement;
+            PlayerRotator = playerRotator;
+            PlayerFinisher = playerFinisher;
+            PlayerController = playerController;
+            EnemyFinishingTrigger = enemyFinishingTrigger;
 
             _states = new Dictionary<Type, PlayerState>();
 

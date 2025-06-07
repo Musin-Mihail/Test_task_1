@@ -1,5 +1,6 @@
 ﻿using Animation.Scripts.Interfaces;
 using UnityEngine;
+using Zenject;
 
 namespace Animation.Scripts.Player
 {
@@ -14,21 +15,12 @@ namespace Animation.Scripts.Player
         private IPlayerFinisher _playerFinisher;
         private Camera _camera;
 
-        public void Initialize(IPlayerController playerController, IPlayerFinisher playerFinisher)
+        [Inject]
+        public void Construct(IPlayerController playerController, IPlayerFinisher playerFinisher)
         {
             _playerController = playerController;
             _playerFinisher = playerFinisher;
             _camera = Camera.main;
-
-            if (_playerController == null)
-            {
-                Debug.LogError("PlayerController не был внедрен в PlayerRotator.");
-            }
-
-            if (_playerFinisher == null)
-            {
-                Debug.LogError("PlayerFinisher не был внедрен в PlayerRotator.");
-            }
         }
 
         public void RotationToMouse()

@@ -1,5 +1,6 @@
 ﻿using Animation.Scripts.Interfaces;
 using UnityEngine;
+using Zenject;
 
 namespace Animation.Scripts.Player
 {
@@ -12,8 +13,10 @@ namespace Animation.Scripts.Player
         private IPlayerFinisher _playerFinisher;
         private Vector3 _currentTarget;
 
-        public void Initialize(IPlayerFinisher playerFinisher)
+        [Inject]
+        public void Construct(IPlayerFinisher playerFinisher)
         {
+            Debug.Log("EnemyFinishingTrigger::Construct");
             _playerFinisher = playerFinisher;
         }
 

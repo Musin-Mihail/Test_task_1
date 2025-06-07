@@ -15,15 +15,6 @@ namespace Animation.Scripts.Interfaces
         bool IsFinishing();
 
         /// <summary>
-        /// Метод инициализации для внедрения зависимостей.
-        /// </summary>
-        /// <param name="playerCollider">Ссылка на Collider игрока.</param>
-        /// <param name="playerAnimation">Ссылка на IPlayerAnimation.</param>
-        /// <param name="playerEquipment">Ссылка на IPlayerEquipment.</param>
-        /// <param name="playerRotator">Ссылка на IPlayerEquipment.</param>
-        void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator);
-
-        /// <summary>
         /// Запуск процесса добивания.
         /// </summary>
         void StartFinishingSequence();

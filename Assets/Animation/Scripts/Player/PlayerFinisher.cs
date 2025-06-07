@@ -4,6 +4,7 @@ using Animation.Scripts.Constants;
 using Animation.Scripts.Interfaces;
 using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
+using Zenject;
 
 namespace Animation.Scripts.Player
 {
@@ -12,7 +13,6 @@ namespace Animation.Scripts.Player
     /// </summary>
     public class PlayerFinisher : MonoBehaviour, IPlayerFinisher
     {
-        [SerializeField] private PlayerConfig playerConfig;
         [SerializeField] private Transform player;
 
         public event Action OnFinisherSequenceCompleted;
@@ -21,6 +21,7 @@ namespace Animation.Scripts.Player
         public Vector3 TargetPosition { get; set; }
         public bool IsFinishing() => _isFinishing;
 
+        private PlayerConfig _playerConfig;
         private IPlayerAnimation _playerAnimation;
         private IPlayerEquipment _playerEquipment;
         private IPlayerRotator _playerRotator;
@@ -30,25 +31,21 @@ namespace Animation.Scripts.Player
         private bool _isImpactPointReached;
         private bool _isAnimationCompleted;
 
-        public void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator)
+        [Inject]
+        public void Construct(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator, PlayerConfig playerConfig)
         {
             _playerCollider = playerCollider;
             _playerAnimation = playerAnimation;
             _playerEquipment = playerEquipment;
             _playerRotator = playerRotator;
+            _playerConfig = playerConfig;
             _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, false);
-
-            if (!playerConfig)
-            {
-                Debug.LogError("PlayerConfig не назначен в инспекторе PlayerFinisher. Пожалуйста, назначьте его.");
-                enabled = false;
-            }
         }
 
         public void StartFinishingSequence()
         {
-            if (!playerConfig) return;
+            if (!_playerConfig) return;
 
             _isFinishing = true;
             _playerCollider.enabled = false;
@@ -83,16 +80,16 @@ namespace Animation.Scripts.Player
 
         private IEnumerator FinishingCoroutine()
         {
-            if (!playerConfig) yield break;
+            if (!_playerConfig) yield break;
 
-            yield return StartCoroutine(MoveToTarget(player, TargetPosition, playerConfig.finishingStartDistance, playerConfig.finishingMovementSpeed));
+            yield return StartCoroutine(MoveToTarget(player, TargetPosition, _playerConfig.finishingStartDistance, _playerConfig.finishingMovementSpeed));
             yield return StartCoroutine(PerformFinishingAnimation());
             yield return StartCoroutine(ResetFinisherState());
         }
 
         private IEnumerator PerformFinishingAnimation()
         {
-            if (!playerConfig) yield break;
+            if (!_playerConfig) yield break;
 
             _playerAnimation.SetBool("IsMoving", false);
             _playerEquipment.SetWeaponActive(WeaponType.Gun, false);

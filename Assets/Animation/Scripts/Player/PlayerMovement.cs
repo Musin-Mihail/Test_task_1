@@ -1,6 +1,7 @@
 ﻿using Animation.Scripts.Interfaces;
 using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
+using Zenject;
 
 namespace Animation.Scripts.Player
 {
@@ -10,43 +11,22 @@ namespace Animation.Scripts.Player
     /// </summary>
     public class PlayerMovement : MonoBehaviour, IPlayerMovement
     {
-        [SerializeField] private PlayerConfig playerConfig;
-
-        private IPlayerController _playerController;
+        private PlayerConfig _playerConfig;
         private IPlayerAnimationController _playerAnimationController;
         private PlayerMovementState _playerMovementState;
         private Camera _camera;
 
         public Vector3 CurrentMovementInput => _playerMovementState.CurrentMovementInput;
 
-        public void Initialize(IPlayerController controller, IPlayerAnimationController animationController, PlayerMovementState movementState)
+
+        [Inject]
+        public void Construct(IPlayerAnimationController animationController, PlayerMovementState movementState, PlayerConfig config)
         {
-            _playerController = controller;
             _playerAnimationController = animationController;
             _playerMovementState = movementState;
+            _playerConfig = config;
+
             _camera = Camera.main;
-
-            if (!playerConfig)
-            {
-                Debug.LogError("PlayerConfig не назначен в инспекторе PlayerMovement. Пожалуйста, назначьте его.");
-                enabled = false;
-                return;
-            }
-
-            if (_playerController == null)
-            {
-                Debug.LogError("PlayerController не был внедрен в PlayerMovement.");
-            }
-
-            if (_playerAnimationController == null)
-            {
-                Debug.LogError("PlayerAnimationController не был внедрен в PlayerMovement.");
-            }
-
-            if (_playerMovementState == null)
-            {
-                Debug.LogError("PlayerMovementState не был внедрен в PlayerMovement.");
-            }
         }
 
         private void OnDisable()
@@ -56,13 +36,13 @@ namespace Animation.Scripts.Player
 
         public void Move()
         {
-            if (!_camera) return;
+            if (!_camera || !_playerConfig) return;
 
             var cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
             var cameraRightFlat = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
 
             var moveDirection = cameraForwardFlat * CurrentMovementInput.z + cameraRightFlat * CurrentMovementInput.x;
-            transform.position += moveDirection * (playerConfig.speed * Time.fixedDeltaTime);
+            transform.position += moveDirection * (_playerConfig.speed * Time.fixedDeltaTime);
         }
 
         /// <summary>

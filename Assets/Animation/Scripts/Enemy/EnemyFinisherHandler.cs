@@ -1,47 +1,34 @@
 ﻿using System.Collections;
 using Animation.Scripts.Interfaces;
 using UnityEngine;
+using Zenject;
 using Random = UnityEngine.Random;
 
 namespace Animation.Scripts.Enemy
 {
     /// <summary>
     /// Отвечает за логику обработки добивания противника.
-    /// Реализует интерфейс IEnemyFinisherHandler.
     /// </summary>
-    public class EnemyFinisherHandler : MonoBehaviour, IEnemyFinisherHandler
+    public class EnemyFinisherHandler : MonoBehaviour
     {
         public GameObject enemy;
 
         private Animator _enemyAnimator;
         private IPlayerFinisher _playerFinisher;
 
-        private void Awake()
-        {
-            _enemyAnimator = enemy.GetComponent<Animator>();
-        }
-
-        public void Initialize(IPlayerFinisher playerFinisher)
+        [Inject]
+        public void Construct(IPlayerFinisher playerFinisher)
         {
             _playerFinisher = playerFinisher;
-            if (_playerFinisher != null)
-            {
-                _playerFinisher.OnFinisherSequenceCompleted += HandleFinisherImpact;
-                _playerFinisher.OnFinisherAnimationFullyCompleted += HandleFinisherAnimationComplete;
-            }
-            else
-            {
-                Debug.LogError("PlayerFinisher is null in EnemyFinisherHandler.Initialize.");
-            }
+            _playerFinisher.OnFinisherSequenceCompleted += HandleFinisherImpact;
+            _playerFinisher.OnFinisherAnimationFullyCompleted += HandleFinisherAnimationComplete;
+            _enemyAnimator = enemy.GetComponent<Animator>();
         }
 
         private void OnDestroy()
         {
-            if (_playerFinisher != null)
-            {
-                _playerFinisher.OnFinisherSequenceCompleted -= HandleFinisherImpact;
-                _playerFinisher.OnFinisherAnimationFullyCompleted -= HandleFinisherAnimationComplete;
-            }
+            _playerFinisher.OnFinisherSequenceCompleted -= HandleFinisherImpact;
+            _playerFinisher.OnFinisherAnimationFullyCompleted -= HandleFinisherAnimationComplete;
         }
 
         /// <summary>

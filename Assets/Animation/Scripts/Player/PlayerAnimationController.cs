@@ -1,6 +1,8 @@
 ﻿using Animation.Scripts.Interfaces;
 using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
+using Zenject;
+
 // Добавляем using для доступа к PlayerConfig
 
 namespace Animation.Scripts.Player
@@ -19,27 +21,11 @@ namespace Animation.Scripts.Player
         private IPlayerMovement _playerMovement;
         private IPlayerAnimation _playerAnimation;
 
-        public void Initialize(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation)
+        [Inject]
+        public void Construct(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation)
         {
             _playerMovement = playerMovement;
             _playerAnimation = playerAnimation;
-
-            if (!playerConfig)
-            {
-                Debug.LogError("PlayerConfig не назначен в инспекторе PlayerAnimationController. Пожалуйста, назначьте его.");
-                enabled = false;
-                return;
-            }
-
-            if (_playerMovement == null)
-            {
-                Debug.LogError("PlayerMovement не был внедрен в PlayerAnimationController.");
-            }
-
-            if (_playerAnimation == null)
-            {
-                Debug.LogError("PlayerAnimation не был внедрен в PlayerAnimationController.");
-            }
         }
 
         public void UpdateAndPlayMovementAnimation()
