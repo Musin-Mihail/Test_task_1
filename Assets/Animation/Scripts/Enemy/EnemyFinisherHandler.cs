@@ -50,6 +50,9 @@ namespace Animation.Scripts.Enemy
             StartCoroutine(RepositionEnemyCoroutine());
         }
 
+        /// <summary>
+        /// Корутина для перемещения врага в новую случайную позицию.
+        /// </summary>
         private IEnumerator RepositionEnemyCoroutine()
         {
             if (_enemyAnimator)
@@ -66,19 +69,10 @@ namespace Animation.Scripts.Enemy
 
             yield return new WaitForSeconds(4.0f);
 
-            while (true)
-            {
-                var randomVector = Random.insideUnitCircle * 10;
-                var newVector = new Vector3(randomVector.x + transform.position.x, 0, randomVector.y + transform.position.z);
-                var distance = Vector3.Distance(transform.position, newVector);
-                if (distance > 6)
-                {
-                    transform.position = newVector;
-                    break;
-                }
+            var randomDirection = Random.insideUnitCircle.normalized;
+            var newPosition = transform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * 6f;
 
-                yield return new WaitForSeconds(0.1f);
-            }
+            transform.position = newPosition;
 
             if (enemy)
             {
