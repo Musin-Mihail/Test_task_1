@@ -1,5 +1,4 @@
-﻿using Animation.Scripts.Constants;
-using Animation.Scripts.Interfaces;
+﻿using Animation.Scripts.Interfaces;
 
 namespace Animation.Scripts.States
 {
@@ -12,7 +11,7 @@ namespace Animation.Scripts.States
         public override void EnterState()
         {
             Context.PlayerController.OnSpacePressed += OnSpacePressed;
-            UpdateAndPlayMovementAnimation();
+            Context.PlayerMovement.UpdateMovementAndAnimation();
         }
 
         public override void ExitState()
@@ -28,7 +27,7 @@ namespace Animation.Scripts.States
                 return;
             }
 
-            UpdateAndPlayMovementAnimation();
+            Context.PlayerMovement.UpdateMovementAndAnimation();
         }
 
         public override void FixedUpdateState()
@@ -39,58 +38,6 @@ namespace Animation.Scripts.States
         public override void LateUpdateState()
         {
             Context.PlayerMovement.RotationToMouse();
-        }
-
-        /// <summary>
-        /// Определяет доминирующее направление движения и воспроизводит соответствующую анимацию,
-        /// получая данные напрямую из PlayerMovement.
-        /// </summary>
-        private void UpdateAndPlayMovementAnimation()
-        {
-            var isMovingForward = Context.PlayerMovement.IsMovingForward;
-            var isMovingBack = Context.PlayerMovement.IsMovingBack;
-            var isMovingLeft = Context.PlayerMovement.IsMovingLeft;
-            var isMovingRight = Context.PlayerMovement.IsMovingRight;
-
-            var animationName = "";
-
-            if (isMovingForward && isMovingBack && isMovingLeft && isMovingRight)
-            {
-                animationName = PlayerAnimationNames.Idle;
-            }
-            else if (isMovingForward && isMovingRight || isMovingForward && isMovingLeft)
-            {
-                animationName = PlayerAnimationNames.RunRifle;
-            }
-            else if (isMovingBack && isMovingRight || isMovingBack && isMovingLeft)
-            {
-                animationName = PlayerAnimationNames.BackRunRifle;
-            }
-            else if (isMovingForward && !isMovingBack)
-            {
-                animationName = PlayerAnimationNames.RunRifle;
-            }
-            else if (isMovingBack && !isMovingForward)
-            {
-                animationName = PlayerAnimationNames.BackRunRifle;
-            }
-            else if (isMovingLeft && !isMovingRight)
-            {
-                animationName = PlayerAnimationNames.RunLeftRifle;
-            }
-            else if (isMovingRight && !isMovingLeft)
-            {
-                animationName = PlayerAnimationNames.RunRightRifle;
-            }
-            else
-            {
-                animationName = PlayerAnimationNames.Idle;
-            }
-
-            if (!string.IsNullOrEmpty(animationName))
-            {
-                Context.PlayerAnimation.PlayAnimation(animationName);
-            }
         }
 
         /// <summary>

@@ -20,6 +20,7 @@ namespace Animation.Scripts.Player
         public bool IsMovingRight { get; private set; }
         private IPlayerController _playerController;
         private IPlayerFinisher _playerFinisher;
+        private IPlayerAnimationController _playerAnimationController;
         private const float Speed = 10f;
         private Camera _camera;
 
@@ -28,10 +29,12 @@ namespace Animation.Scripts.Player
         /// </summary>
         /// <param name="controller">Ссылка на PlayerController.</param>
         /// <param name="finisher">Ссылка на PlayerFinisher.</param>
-        public void Initialize(IPlayerController controller, IPlayerFinisher finisher)
+        /// <param name="animationController">Ссылка на PlayerAnimationController.</param>
+        public void Initialize(IPlayerController controller, IPlayerFinisher finisher, IPlayerAnimationController animationController)
         {
             _playerController = controller;
             _playerFinisher = finisher;
+            _playerAnimationController = animationController;
             _camera = Camera.main;
 
             if (_playerController != null)
@@ -41,6 +44,11 @@ namespace Animation.Scripts.Player
             else
             {
                 Debug.LogError("PlayerController не был внедрен в PlayerMovement.");
+            }
+
+            if (_playerAnimationController == null)
+            {
+                Debug.LogError("PlayerAnimationController не был внедрен в PlayerMovement.");
             }
         }
 
@@ -186,6 +194,14 @@ namespace Animation.Scripts.Player
         public bool IsMoving()
         {
             return IsMovingForward || IsMovingBack || IsMovingLeft || IsMovingRight;
+        }
+
+        /// <summary>
+        /// Обновляет анимацию движения игрока через PlayerAnimationController.
+        /// </summary>
+        public void UpdateMovementAndAnimation()
+        {
+            _playerAnimationController?.UpdateAndPlayMovementAnimation();
         }
     }
 }

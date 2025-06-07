@@ -13,7 +13,7 @@ namespace Animation.Scripts.Player
         [SerializeField] private EnemyFinishingTrigger enemyFinishingTrigger;
         [SerializeField] private PlayerEquipment playerEquipment;
         [SerializeField] private EnemyFinisherHandler enemyFinisherHandler;
-
+        [SerializeField] private PlayerAnimationController animationController;
         public IPlayerAnimation PlayerAnimationInstance => playerAnimation;
         public IPlayerMovement PlayerMovementInstance => playerMovement;
         public IPlayerFinisher PlayerFinisherInstance => playerFinisher;
@@ -21,6 +21,7 @@ namespace Animation.Scripts.Player
         public IEnemyFinishingTrigger EnemyFinishingTriggerInstance => enemyFinishingTrigger;
         private IPlayerEquipment PlayerEquipmentInstance => playerEquipment;
         private IEnemyFinisherHandler EnemyFinisherHandlerInstance => enemyFinisherHandler;
+        private IPlayerAnimationController PlayerAnimationControllerInstance => animationController;
 
         private Collider _playerCollider;
 
@@ -32,9 +33,18 @@ namespace Animation.Scripts.Player
                 Debug.LogError("Collider не найден на GameObject PlayerComponentRegistry.");
             }
 
+            if (PlayerAnimationControllerInstance != null)
+            {
+                PlayerAnimationControllerInstance.Initialize(PlayerMovementInstance, PlayerAnimationInstance);
+            }
+            else
+            {
+                Debug.LogError("PlayerAnimationControllerInstance не назначен в инспекторе PlayerComponentRegistry.");
+            }
+
             if (PlayerMovementInstance != null)
             {
-                PlayerMovementInstance.Initialize(playerController, playerFinisher);
+                PlayerMovementInstance.Initialize(PlayerControllerInstance, PlayerFinisherInstance, PlayerAnimationControllerInstance);
             }
             else
             {
@@ -45,7 +55,7 @@ namespace Animation.Scripts.Player
             {
                 if (_playerCollider)
                 {
-                    PlayerFinisherInstance.Initialize(_playerCollider, playerAnimation, PlayerMovementInstance, PlayerEquipmentInstance);
+                    PlayerFinisherInstance.Initialize(_playerCollider, PlayerAnimationInstance, PlayerMovementInstance, PlayerEquipmentInstance);
                 }
                 else
                 {
@@ -59,7 +69,7 @@ namespace Animation.Scripts.Player
 
             if (EnemyFinishingTriggerInstance != null)
             {
-                EnemyFinishingTriggerInstance.Initialize(playerFinisher);
+                EnemyFinishingTriggerInstance.Initialize(PlayerFinisherInstance);
             }
             else
             {
@@ -68,7 +78,7 @@ namespace Animation.Scripts.Player
 
             if (EnemyFinisherHandlerInstance != null)
             {
-                EnemyFinisherHandlerInstance.Initialize(playerFinisher);
+                EnemyFinisherHandlerInstance.Initialize(PlayerFinisherInstance);
             }
             else
             {
