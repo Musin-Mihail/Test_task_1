@@ -12,6 +12,15 @@ namespace Animation.Scripts.Player
     /// </summary>
     public class PlayerFinisher : MonoBehaviour, IPlayerFinisher
     {
+        [SerializeField, Tooltip("Дистанция до цели для начала добивания")]
+        private float finishingStartDistance = 2.5f;
+
+        [SerializeField, Tooltip("Время анимации до удара")]
+        private float timeBeforeImpact = 0.4f;
+
+        [SerializeField, Tooltip("Время на выполнение анимации удара")]
+        private float finishingStrikeDuration = 1.2f;
+
         public event Action OnFinisherSequenceCompleted;
 
         public Vector3 TargetPosition { get; set; }
@@ -50,7 +59,7 @@ namespace Animation.Scripts.Player
 
         private IEnumerator FinishingCoroutine()
         {
-            yield return StartCoroutine(_playerMovement.MoveToTarget(TargetPosition, 2.5f));
+            yield return StartCoroutine(_playerMovement.MoveToTarget(TargetPosition, finishingStartDistance));
             yield return StartCoroutine(PerformFinishingAnimation());
             yield return StartCoroutine(ResetFinisherState());
         }
@@ -60,9 +69,9 @@ namespace Animation.Scripts.Player
             _playerEquipment.SetWeaponActive(WeaponType.Gun, false);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, true);
             _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(timeBeforeImpact);
             OnFinisherSequenceCompleted?.Invoke();
-            yield return new WaitForSeconds(1.2f);
+            yield return new WaitForSeconds(finishingStrikeDuration);
             _playerCollider.enabled = true;
         }
 
