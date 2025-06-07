@@ -36,9 +36,9 @@ namespace Animation.Scripts.Player
         /// Метод инициализации для внедрения зависимостей.
         /// </summary>
         /// <param name="playerCollider">Ссылка на Collider игрока.</param>
-        /// <param name="playerAnimation">Ссылка на PlayerAnimation.</param>
-        /// <param name="playerMovement">Ссылка на PlayerMovement.</param>
-        /// <param name="playerEquipment">Ссылка на PlayerEquipment (теперь IPlayerEquipment).</param>
+        /// <param name="playerAnimation">Ссылка на IPlayerAnimation.</param>
+        /// <param name="playerMovement">Ссылка на IPlayerMovement.</param>
+        /// <param name="playerEquipment">Ссылка на IPlayerEquipment.</param>
         public void Initialize(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerMovement playerMovement, IPlayerEquipment playerEquipment)
         {
             _playerCollider = playerCollider;
@@ -53,7 +53,8 @@ namespace Animation.Scripts.Player
         {
             _isFinishing = true;
             _playerCollider.enabled = false;
-            _playerAnimation.PlayAnimation(PlayerAnimationNames.RunRifle);
+            _playerAnimation.SetBool("IsMoving", true);
+
             StartCoroutine(FinishingCoroutine());
         }
 
@@ -66,13 +67,15 @@ namespace Animation.Scripts.Player
 
         private IEnumerator PerformFinishingAnimation()
         {
+            _playerAnimation.SetBool("IsMoving", false);
             _playerEquipment.SetWeaponActive(WeaponType.Gun, false);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, true);
-            _playerAnimation.PlayAnimation(PlayerAnimationNames.Finishing);
+            _playerAnimation.SetBool("Finisher", true);
             yield return new WaitForSeconds(timeBeforeImpact);
             OnFinisherSequenceCompleted?.Invoke();
             yield return new WaitForSeconds(finishingStrikeDuration);
             _playerCollider.enabled = true;
+            _playerAnimation.SetBool("Finisher", false);
         }
 
         private IEnumerator ResetFinisherState()

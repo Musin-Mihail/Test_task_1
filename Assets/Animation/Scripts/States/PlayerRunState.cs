@@ -10,12 +10,14 @@ namespace Animation.Scripts.States
 
         public override void EnterState()
         {
+            Context.PlayerAnimation.SetBool("IsMoving", true);
             Context.PlayerController.OnSpacePressed += OnSpacePressed;
             Context.PlayerMovement.UpdateMovementAndAnimation();
         }
 
         public override void ExitState()
         {
+            Context.PlayerAnimation.SetBool("IsMoving", false);
             Context.PlayerController.OnSpacePressed -= OnSpacePressed;
         }
 

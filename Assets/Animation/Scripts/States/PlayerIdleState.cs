@@ -1,5 +1,6 @@
-﻿using Animation.Scripts.Constants;
-using Animation.Scripts.Interfaces;
+﻿using Animation.Scripts.Interfaces;
+
+// Не забудьте добавить, если его нет
 
 namespace Animation.Scripts.States
 {
@@ -11,7 +12,6 @@ namespace Animation.Scripts.States
 
         public override void EnterState()
         {
-            Context.PlayerAnimation.PlayAnimation(PlayerAnimationNames.Idle);
             Context.PlayerController.OnSpacePressed += OnSpacePressed;
         }
 

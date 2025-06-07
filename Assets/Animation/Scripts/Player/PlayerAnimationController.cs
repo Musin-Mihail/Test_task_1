@@ -1,24 +1,27 @@
-﻿using Animation.Scripts.Constants;
-using Animation.Scripts.Interfaces;
+﻿using Animation.Scripts.Interfaces;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
     /// <summary>
-    /// Отвечает за логику выбора и воспроизведения анимации движения игрока.
-    /// Запрашивает данные о движении у PlayerMovement и передает команды в PlayerAnimation.
+    /// Отвечает за логику определения состояния движения игрока
+    /// и установки соответствующих параметров в Animator.
     /// </summary>
     public class PlayerAnimationController : MonoBehaviour, IPlayerAnimationController
     {
+        private static readonly int MoveX = Animator.StringToHash("MoveX");
+        private static readonly int MoveZ = Animator.StringToHash("MoveZ");
         private IPlayerMovement _playerMovement;
         private IPlayerAnimation _playerAnimation;
+
+        public float animationSmoothTime = 0.1f;
 
         /// <summary>
         /// Метод инициализации для внедрения зависимостей.
         /// </summary>
         /// <param name="playerMovement">Ссылка на IPlayerMovement.</param>
-        /// <param name="playerAnimation">Ссылка на IPlayerAnimation.</param>
-        public void Initialize(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation)
+        /// <param name="playerAnimation">Ссылка на PlayerAnimation.</param>
+        public void Initialize(IPlayerMovement playerMovement, IPlayerAnimation playerAnimation) // Изменили тип
         {
             _playerMovement = playerMovement;
             _playerAnimation = playerAnimation;
@@ -34,64 +37,35 @@ namespace Animation.Scripts.Player
         }
 
         /// <summary>
-        /// Определяет доминирующее направление движения и воспроизводит соответствующую анимацию,
-        /// получая данные напрямую из PlayerMovement.
+        /// Обновляет параметры аниматора в зависимости от движения игрока.
         /// </summary>
         public void UpdateAndPlayMovementAnimation()
         {
-            if (_playerMovement == null || _playerAnimation == null)
+            if (_playerMovement == null || _playerAnimation == null || !_playerAnimation.Animator)
             {
                 return;
             }
 
-            var isMovingForward = _playerMovement.IsMovingForward;
-            var isMovingBack = _playerMovement.IsMovingBack;
-            var isMovingLeft = _playerMovement.IsMovingLeft;
-            var isMovingRight = _playerMovement.IsMovingRight;
+            var currentMoveDirection = Vector3.zero;
+            if (_playerMovement.IsMovingForward) currentMoveDirection += Vector3.forward;
+            if (_playerMovement.IsMovingBack) currentMoveDirection += Vector3.back;
+            if (_playerMovement.IsMovingLeft) currentMoveDirection += Vector3.left;
+            if (_playerMovement.IsMovingRight) currentMoveDirection += Vector3.right;
 
-            var animationName = "";
+            currentMoveDirection.Normalize();
 
-            if (_playerMovement.IsMoving())
-            {
-                if (isMovingForward && isMovingRight || isMovingForward && isMovingLeft)
-                {
-                    animationName = PlayerAnimationNames.RunRifle;
-                }
-                else if (isMovingBack && isMovingRight || isMovingBack && isMovingLeft)
-                {
-                    animationName = PlayerAnimationNames.BackRunRifle;
-                }
-                else if (isMovingForward && !isMovingBack)
-                {
-                    animationName = PlayerAnimationNames.RunRifle;
-                }
-                else if (isMovingBack && !isMovingForward)
-                {
-                    animationName = PlayerAnimationNames.BackRunRifle;
-                }
-                else if (isMovingLeft && !isMovingRight)
-                {
-                    animationName = PlayerAnimationNames.RunLeftRifle;
-                }
-                else if (isMovingRight && !isMovingLeft)
-                {
-                    animationName = PlayerAnimationNames.RunRightRifle;
-                }
-                else
-                {
-                    animationName = PlayerAnimationNames.Idle;
-                }
-            }
-            else
-            {
-                animationName = PlayerAnimationNames.Idle;
-            }
+            var targetMoveX = currentMoveDirection.x;
+            var targetMoveZ = currentMoveDirection.z;
 
+            var currentMoveX = _playerAnimation.Animator.GetFloat(MoveX);
+            var currentMoveZ = _playerAnimation.Animator.GetFloat(MoveZ);
 
-            if (!string.IsNullOrEmpty(animationName))
-            {
-                _playerAnimation.PlayAnimation(animationName);
-            }
+            currentMoveX = Mathf.Lerp(currentMoveX, targetMoveX, Time.deltaTime / animationSmoothTime);
+            currentMoveZ = Mathf.Lerp(currentMoveZ, targetMoveZ, Time.deltaTime / animationSmoothTime);
+
+            _playerAnimation.SetFloat("MoveX", currentMoveX);
+            _playerAnimation.SetFloat("MoveZ", currentMoveZ);
+            _playerAnimation.SetBool("IsMoving", _playerMovement.IsMoving());
         }
     }
 }

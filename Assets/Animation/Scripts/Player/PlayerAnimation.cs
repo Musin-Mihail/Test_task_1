@@ -5,24 +5,37 @@ namespace Animation.Scripts.Player
 {
     /// <summary>
     /// Отвечает за управление аниматором игрока.
-    /// Реализует интерфейс IPlayerAnimation.
+    /// Предоставляет методы для установки параметров аниматора.
     /// </summary>
     public class PlayerAnimation : MonoBehaviour, IPlayerAnimation
     {
-        public Animator animator;
+        [SerializeField] private Animator animator;
+
+        public Animator Animator => animator;
 
         /// <summary>
-        /// Проигрывает указанную анимацию.
+        /// Устанавливает параметр булевого типа в аниматоре.
         /// </summary>
-        /// <param name="animationName">Название анимации для проигрывания.</param>
-        public void PlayAnimation(string animationName)
+        /// <param name="paramName">Имя параметра.</param>
+        /// <param name="value">Значение параметра.</param>
+        public void SetBool(string paramName, bool value)
         {
-            if (animator)
+            if (Animator)
             {
-                if (!animator.GetCurrentAnimatorStateInfo(0).IsName(animationName))
-                {
-                    animator.Play(animationName);
-                }
+                Animator.SetBool(paramName, value);
+            }
+        }
+
+        /// <summary>
+        /// Устанавливает параметр float типа в аниматоре.
+        /// </summary>
+        /// <param name="paramName">Имя параметра.</param>
+        /// <param name="value">Значение параметра.</param>
+        public void SetFloat(string paramName, float value)
+        {
+            if (Animator)
+            {
+                Animator.SetFloat(paramName, value);
             }
         }
     }
