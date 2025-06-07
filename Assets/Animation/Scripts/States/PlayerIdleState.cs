@@ -1,7 +1,5 @@
 ﻿using Animation.Scripts.Interfaces;
 
-// Не забудьте добавить, если его нет
-
 namespace Animation.Scripts.States
 {
     public class PlayerIdleState : PlayerState
@@ -24,7 +22,7 @@ namespace Animation.Scripts.States
         {
             if (Context.PlayerMovement.IsMoving())
             {
-                Context.ChangeState(Context.GetState<PlayerRunState>());
+                Context.ChangeState<PlayerRunState>();
             }
         }
 
@@ -35,7 +33,7 @@ namespace Animation.Scripts.States
         {
             if (Context.EnemyFinishingTrigger.TryStartFinishing())
             {
-                Context.ChangeState(Context.GetState<PlayerFinishingState>());
+                Context.ChangeState<PlayerFinishingState>();
             }
         }
 
