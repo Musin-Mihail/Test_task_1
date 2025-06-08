@@ -61784,15 +61784,15 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.41666666
-    functionName: AnimationEvent_FinisherImpactPoint
-    data: 
+    functionName: TriggerEvent
+    data: FinisherImpactPoint
     objectReferenceParameter: {fileID: 1031639627062256720, guid: e344f8f6380eab64993c410b6c49ee36, type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 1.6666666
-    functionName: AnimationEvent_FinisherComplete
-    data: 
+    functionName: TriggerEvent
+    data: FinisherComplete
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0

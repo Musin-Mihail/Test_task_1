@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4482c35ffacf4cd89983988e2215a766, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  speed: 10
-  animationSmoothTime: 0.1
-  finishingStartDistance: 2.5
-  timeBeforeImpact: 0.4
-  finishingStrikeDuration: 1.2
-  finishingMovementSpeed: 5
-  cameraOffset: {x: 6, y: 10, z: -6}
+  movementConfig: {fileID: 11400000, guid: afd30def37d14d642a80c51523423b65, type: 2}
+  finisherConfig: {fileID: 11400000, guid: 2ded5c02eac326246880cd1390ad46a6, type: 2}
+  cameraConfig: {fileID: 11400000, guid: bd81076f6340e6b48926d9bf47f5e1f7, type: 2}

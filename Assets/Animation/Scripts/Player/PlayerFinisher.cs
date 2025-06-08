@@ -1,55 +1,47 @@
 ﻿using System;
 using Animation.Scripts.Interfaces;
+using Animation.Scripts.Signals;
 using UnityEngine;
 using Zenject;
 
 namespace Animation.Scripts.Player
 {
-    /// <summary>
-    /// Отвечает за логику добивания игрока.
-    /// Теперь реализует IAnimationEventHandler для обработки событий анимации.
-    /// </summary>
     public class PlayerFinisher : IPlayerFinisher
     {
-        public event Action OnFinisherSequenceCompleted;
-        public event Action OnFinisherAnimationFullyCompleted;
         public event Action OnFinisherStateReset;
 
         public Vector3 TargetPosition { get; set; }
         public bool IsFinishing() => _isFinishing;
 
         private readonly Collider _playerCollider;
+        private readonly SignalBus _signalBus;
         private bool _isFinishing;
 
         private const string FinisherImpactPointEvent = "FinisherImpactPoint";
         private const string FinisherCompleteEvent = "FinisherComplete";
 
         [Inject]
-        public PlayerFinisher(Collider playerCollider)
+        public PlayerFinisher(Collider playerCollider, SignalBus signalBus)
         {
             _playerCollider = playerCollider;
+            _signalBus = signalBus;
         }
 
         public void SetFinishing(bool isFinishing)
         {
             _isFinishing = isFinishing;
-            _playerCollider.enabled = !isFinishing; // Отключаем коллайдер игрока во время добивания
+            _playerCollider.enabled = !isFinishing;
         }
 
-        /// <summary>
-        /// Универсальный метод для обработки событий анимации.
-        /// Вызывается AnimationEventBridge.
-        /// </summary>
-        /// <param name="eventName">Имя события из Animation Event.</param>
         public void HandleAnimationEvent(string eventName)
         {
             switch (eventName)
             {
                 case FinisherImpactPointEvent:
-                    OnFinisherSequenceCompleted?.Invoke();
+                    _signalBus.Fire<FinisherImpactSignal>();
                     break;
                 case FinisherCompleteEvent:
-                    OnFinisherAnimationFullyCompleted?.Invoke();
+                    _signalBus.Fire<FinisherAnimationCompleteSignal>();
                     break;
                 default:
                     Debug.LogWarning($"Unhandled animation event: {eventName}");
@@ -61,7 +53,6 @@ namespace Animation.Scripts.Player
         {
             _isFinishing = false;
             OnFinisherStateReset?.Invoke();
-            Debug.Log("Finisher state reset.");
         }
     }
 }

@@ -1,43 +1,36 @@
 using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
+using Zenject;
 
 namespace Animation.Scripts
 {
-    /// <summary>
-    /// Отвечает за позиционирование камеры относительно игрока.
-    /// </summary>
     public class CameraController : MonoBehaviour
     {
         public Transform playerTransform;
-        [SerializeField] private PlayerConfig playerConfig;
-
+        private CameraConfig _cameraConfig;
         private Camera _camera;
+
+        [Inject]
+        public void Construct(PlayerConfig playerConfig)
+        {
+            _cameraConfig = playerConfig.cameraConfig;
+        }
 
         private void Start()
         {
             _camera = Camera.main;
-            if (!_camera)
+            if (!_camera || !playerTransform || !_cameraConfig)
             {
                 enabled = false;
-            }
-
-            if (!playerTransform)
-            {
-                enabled = false;
-            }
-
-            if (!playerConfig)
-            {
-                Debug.LogError("PlayerConfig не назначен в инспекторе CameraController. Пожалуйста, назначьте его.");
-                enabled = false;
+                Debug.LogError("CameraController не смог инициализироваться. Проверьте все зависимости.");
             }
         }
 
         private void LateUpdate()
         {
-            if (playerTransform && _camera && playerConfig)
+            if (playerTransform && _camera && _cameraConfig)
             {
-                _camera.transform.position = playerTransform.position + playerConfig.cameraOffset;
+                _camera.transform.position = playerTransform.position + _cameraConfig.cameraOffset;
             }
         }
     }

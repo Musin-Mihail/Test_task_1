@@ -1,21 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Animation.Scripts.Constants;
 using Animation.Scripts.Interfaces;
 using Animation.Scripts.ScriptableObjects;
+using Animation.Scripts.Signals;
 using UnityEngine;
 using Zenject;
 
 namespace Animation.Scripts.States
 {
-    public class PlayerFinishingState : PlayerState
+    public class PlayerFinishingState : PlayerState, IDisposable
     {
         private readonly IPlayerEquipment _playerEquipment;
         private readonly IPlayerAnimation _playerAnimation;
         private readonly ITargetMover _targetMover;
         private readonly ICoroutineRunner _coroutineRunner;
-        private readonly PlayerConfig _playerConfig;
+        private readonly FinisherConfig _finisherConfig;
         private readonly Transform _playerTransform;
         private readonly IPlayerFinisher _playerFinisher;
+        private readonly SignalBus _signalBus;
 
         private bool _hasImpactPointReached;
         private bool _hasAnimationFullyCompleted;
@@ -26,24 +29,25 @@ namespace Animation.Scripts.States
             IPlayerAnimation playerAnimation,
             ITargetMover targetMover,
             ICoroutineRunner coroutineRunner,
-            PlayerConfig playerConfig,
+            FinisherConfig finisherConfig,
             [Inject(Id = "PlayerTransform")] Transform playerTransform,
-            IPlayerFinisher playerFinisher
-        )
+            IPlayerFinisher playerFinisher,
+            SignalBus signalBus)
         {
             _playerEquipment = playerEquipment;
             _playerAnimation = playerAnimation;
             _targetMover = targetMover;
             _coroutineRunner = coroutineRunner;
-            _playerConfig = playerConfig;
+            _finisherConfig = finisherConfig;
             _playerTransform = playerTransform;
             _playerFinisher = playerFinisher;
+            _signalBus = signalBus;
         }
 
         public override void EnterState()
         {
-            _playerFinisher.OnFinisherSequenceCompleted += HandleFinisherImpactPoint;
-            _playerFinisher.OnFinisherAnimationFullyCompleted += HandleFinisherAnimationComplete;
+            _signalBus.Subscribe<FinisherImpactSignal>(HandleFinisherImpactPoint);
+            _signalBus.Subscribe<FinisherAnimationCompleteSignal>(HandleFinisherAnimationComplete);
             _playerFinisher.OnFinisherStateReset += ResetFinisherStateFlags;
 
             _hasImpactPointReached = false;
@@ -56,9 +60,14 @@ namespace Animation.Scripts.States
 
         public override void ExitState()
         {
-            _playerFinisher.OnFinisherSequenceCompleted -= HandleFinisherImpactPoint;
-            _playerFinisher.OnFinisherAnimationFullyCompleted -= HandleFinisherAnimationComplete;
+            _signalBus.Unsubscribe<FinisherImpactSignal>(HandleFinisherImpactPoint);
+            _signalBus.Unsubscribe<FinisherAnimationCompleteSignal>(HandleFinisherAnimationComplete);
             _playerFinisher.OnFinisherStateReset -= ResetFinisherStateFlags;
+        }
+
+        public void Dispose()
+        {
+            ExitState();
         }
 
         public override void UpdateState()
@@ -72,7 +81,7 @@ namespace Animation.Scripts.States
         private IEnumerator FinishingSequenceCoroutine()
         {
             _playerAnimation.SetBool("IsMoving", true);
-            yield return _coroutineRunner.StartCoroutine(_targetMover.MoveToTarget(_playerTransform, Context.PlayerFinisher.TargetPosition, _playerConfig.finishingStartDistance, _playerConfig.finishingMovementSpeed));
+            yield return _coroutineRunner.StartCoroutine(_targetMover.MoveToTarget(_playerTransform, Context.PlayerFinisher.TargetPosition, _finisherConfig.finishingStartDistance, _finisherConfig.finishingMovementSpeed));
 
             _playerAnimation.SetBool("IsMoving", false);
             _playerEquipment.SetWeaponActive(WeaponType.Gun, false);

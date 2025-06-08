@@ -506,7 +506,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 539450013}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24a03dae6af34722b570f18c4190aa40, type: 3}
+  m_Script: {fileID: 11500000, guid: 1666546efb2842179aad2347abd50456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &556377277
@@ -725,6 +725,8 @@ MonoBehaviour:
   playerTransform: {fileID: 584555202}
   coroutineRunner: {fileID: 584555217}
   playerStateMachine: {fileID: 584555209}
+  animationEventBridge: {fileID: 539450020}
+  cameraController: {fileID: 2073030324}
 --- !u!114 &584555217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1811,7 +1813,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 584555202}
-  playerConfig: {fileID: 11400000, guid: bba373debeef54c4594b86b3497a676d, type: 2}
 --- !u!114 &2073030325
 MonoBehaviour:
   m_ObjectHideFlags: 0

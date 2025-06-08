@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Animation.Scripts.Interfaces;
+﻿using Animation.Scripts.Interfaces;
 using UnityEngine;
 using Zenject;
 
@@ -9,9 +7,7 @@ namespace Animation.Scripts.States
     public class PlayerStateMachine : MonoBehaviour, IPlayerStateContext
     {
         private PlayerState CurrentState { get; set; }
-        private Dictionary<Type, PlayerState> _states;
-        private DiContainer _container;
-
+        private StateFactory _stateFactory;
         public IPlayerAnimation PlayerAnimation { get; private set; }
         public IPlayerMovement PlayerMovement { get; private set; }
         public IPlayerRotator PlayerRotator { get; private set; }
@@ -29,7 +25,7 @@ namespace Animation.Scripts.States
             IPlayerController playerController,
             IEnemyFinishingTrigger enemyFinishingTrigger,
             IPlayerAnimationController playerAnimationController,
-            DiContainer container)
+            StateFactory stateFactory)
         {
             PlayerAnimation = playerAnimation;
             PlayerMovement = playerMovement;
@@ -38,30 +34,7 @@ namespace Animation.Scripts.States
             PlayerController = playerController;
             EnemyFinishingTrigger = enemyFinishingTrigger;
             PlayerAnimationController = playerAnimationController;
-            _container = container;
-
-            _states = new Dictionary<Type, PlayerState>();
-
-            RegisterState(_container.Resolve<PlayerIdleState>());
-            RegisterState(_container.Resolve<PlayerRunState>());
-            RegisterState(_container.Resolve<PlayerFinishingState>());
-        }
-
-        private void RegisterState<TState>(TState state) where TState : PlayerState
-        {
-            state.Initialize(this);
-            _states.Add(typeof(TState), state);
-        }
-
-        private T GetState<T>() where T : PlayerState
-        {
-            if (_states.TryGetValue(typeof(T), out var state))
-            {
-                return (T)state;
-            }
-
-            Debug.LogError($"Состояние типа {typeof(T).Name} не найдено в машине состояний. Убедитесь, что оно существует и имеет конструктор с IPlayerStateContext.");
-            return null;
+            _stateFactory = stateFactory;
         }
 
         private void Start()
@@ -69,41 +42,19 @@ namespace Animation.Scripts.States
             ChangeState<PlayerIdleState>();
         }
 
-        private void Update()
-        {
-            CurrentState?.UpdateState();
-        }
-
-        private void FixedUpdate()
-        {
-            CurrentState?.FixedUpdateState();
-        }
-
-        private void LateUpdate()
-        {
-            CurrentState?.LateUpdateState();
-        }
-
-        private void ChangeState(PlayerState newState)
-        {
-            if (newState == null)
-            {
-                Debug.LogError("Попытка изменить состояние на null. Переход отменен.");
-                return;
-            }
-
-            CurrentState?.ExitState();
-            CurrentState = newState;
-            CurrentState.EnterState();
-        }
+        private void Update() => CurrentState?.UpdateState();
+        private void FixedUpdate() => CurrentState?.FixedUpdateState();
+        private void LateUpdate() => CurrentState?.LateUpdateState();
 
         public void ChangeState<TState>() where TState : PlayerState
         {
-            PlayerState newState = GetState<TState>();
-            if (newState != null)
-            {
-                ChangeState(newState);
-            }
+            CurrentState?.ExitState();
+
+            PlayerState newState = _stateFactory.CreateState<TState>();
+            newState.Initialize(this);
+
+            CurrentState = newState;
+            CurrentState.EnterState();
         }
     }
 }
