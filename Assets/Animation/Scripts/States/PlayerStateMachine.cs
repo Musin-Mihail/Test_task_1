@@ -22,6 +22,7 @@ namespace Animation.Scripts.States
         public IPlayerController PlayerController { get; private set; }
 
         public IEnemyFinishingTrigger EnemyFinishingTrigger { get; private set; }
+        public IPlayerAnimationController PlayerAnimationController { get; private set; }
 
         [Inject]
         public void Construct(
@@ -30,7 +31,8 @@ namespace Animation.Scripts.States
             IPlayerRotator playerRotator,
             IPlayerFinisher playerFinisher,
             IPlayerController playerController,
-            IEnemyFinishingTrigger enemyFinishingTrigger)
+            IEnemyFinishingTrigger enemyFinishingTrigger,
+            IPlayerAnimationController playerAnimationController)
         {
             PlayerAnimation = playerAnimation;
             PlayerMovement = playerMovement;
@@ -38,6 +40,7 @@ namespace Animation.Scripts.States
             PlayerFinisher = playerFinisher;
             PlayerController = playerController;
             EnemyFinishingTrigger = enemyFinishingTrigger;
+            PlayerAnimationController = playerAnimationController;
 
             _states = new Dictionary<Type, PlayerState>();
 

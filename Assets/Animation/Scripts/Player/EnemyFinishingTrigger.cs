@@ -16,7 +16,6 @@ namespace Animation.Scripts.Player
         [Inject]
         public void Construct(IPlayerFinisher playerFinisher)
         {
-            Debug.Log("EnemyFinishingTrigger::Construct");
             _playerFinisher = playerFinisher;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Animation.Scripts.Interfaces;
 using UnityEngine;
 using Zenject;
@@ -9,23 +10,33 @@ namespace Animation.Scripts.Enemy
     /// <summary>
     /// Отвечает за логику обработки добивания противника.
     /// </summary>
-    public class EnemyFinisherHandler : MonoBehaviour
+    public class EnemyFinisherHandler : IDisposable
     {
-        public GameObject enemy;
-
-        private Animator _enemyAnimator;
-        private IPlayerFinisher _playerFinisher;
+        private readonly Animator _enemyAnimator;
+        private readonly IPlayerFinisher _playerFinisher;
+        private readonly GameObject _enemy;
+        private readonly Transform _playerTransform;
+        private readonly ICoroutineRunner _coroutineRunner;
 
         [Inject]
-        public void Construct(IPlayerFinisher playerFinisher)
+        public EnemyFinisherHandler(
+            IPlayerFinisher playerFinisher,
+            [Inject(Id = "EnemyGameObject")] GameObject enemy,
+            [Inject(Id = "PlayerTransform")] Transform playerTransform,
+            ICoroutineRunner coroutineRunner
+        )
         {
+            _enemy = enemy;
             _playerFinisher = playerFinisher;
+            _playerTransform = playerTransform;
+            _coroutineRunner = coroutineRunner;
+
             _playerFinisher.OnFinisherSequenceCompleted += HandleFinisherImpact;
             _playerFinisher.OnFinisherAnimationFullyCompleted += HandleFinisherAnimationComplete;
-            _enemyAnimator = enemy.GetComponent<Animator>();
+            _enemyAnimator = _enemy.GetComponent<Animator>();
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
             _playerFinisher.OnFinisherSequenceCompleted -= HandleFinisherImpact;
             _playerFinisher.OnFinisherAnimationFullyCompleted -= HandleFinisherAnimationComplete;
@@ -50,7 +61,7 @@ namespace Animation.Scripts.Enemy
         /// </summary>
         private void HandleFinisherAnimationComplete()
         {
-            StartCoroutine(RepositionEnemyCoroutine());
+            _coroutineRunner.StartCoroutine(RepositionEnemyCoroutine());
         }
 
         /// <summary>
@@ -58,21 +69,21 @@ namespace Animation.Scripts.Enemy
         /// </summary>
         private IEnumerator RepositionEnemyCoroutine()
         {
-            if (enemy)
+            if (_enemy)
             {
-                enemy.SetActive(false);
+                _enemy.SetActive(false);
             }
 
             yield return new WaitForSeconds(4.0f);
 
             var randomDirection = Random.insideUnitCircle.normalized;
-            var newPosition = transform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * 6f;
+            var newPosition = _playerTransform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * 6f;
 
-            transform.position = newPosition;
+            _playerTransform.position = newPosition;
 
-            if (enemy)
+            if (_enemy)
             {
-                enemy.SetActive(true);
+                _enemy.SetActive(true);
             }
 
             if (_enemyAnimator)

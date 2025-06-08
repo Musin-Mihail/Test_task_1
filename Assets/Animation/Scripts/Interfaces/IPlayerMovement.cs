@@ -15,10 +15,5 @@ namespace Animation.Scripts.Interfaces
         /// Возвращает, движется ли игрок в данный момент.
         /// </summary>
         bool IsMoving();
-
-        /// <summary>
-        /// Обновляет анимацию движения игрока через PlayerAnimationController.
-        /// </summary>
-        void UpdateMovementAndAnimation();
     }
 }

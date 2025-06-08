@@ -10,6 +10,7 @@ namespace Animation.Scripts.Interfaces
     {
         event Action OnFinisherSequenceCompleted;
         event Action OnFinisherAnimationFullyCompleted;
+        event Action OnFinisherStateReset;
 
         Vector3 TargetPosition { get; set; }
         bool IsFinishing();

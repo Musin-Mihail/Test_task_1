@@ -12,7 +12,7 @@ namespace Animation.Scripts.States
         {
             Context.PlayerAnimation.SetBool("IsMoving", true);
             Context.PlayerController.OnSpacePressed += OnSpacePressed;
-            Context.PlayerMovement.UpdateMovementAndAnimation();
+            Context.PlayerAnimationController.UpdateAndPlayMovementAnimation();
         }
 
         public override void ExitState()
@@ -29,7 +29,7 @@ namespace Animation.Scripts.States
                 return;
             }
 
-            Context.PlayerMovement.UpdateMovementAndAnimation();
+            Context.PlayerAnimationController.UpdateAndPlayMovementAnimation();
         }
 
         public override void FixedUpdateState()

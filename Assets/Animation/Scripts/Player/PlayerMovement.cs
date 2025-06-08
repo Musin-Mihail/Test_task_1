@@ -1,4 +1,5 @@
-﻿using Animation.Scripts.Interfaces;
+﻿using System;
+using Animation.Scripts.Interfaces;
 using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
 using Zenject;
@@ -9,27 +10,26 @@ namespace Animation.Scripts.Player
     /// Отвечает за логику перемещения игрока.
     /// Теперь отделен от логики состояния движения и перемещения к цели.
     /// </summary>
-    public class PlayerMovement : MonoBehaviour, IPlayerMovement
+    public class PlayerMovement : IPlayerMovement, IDisposable
     {
-        private PlayerConfig _playerConfig;
-        private IPlayerAnimationController _playerAnimationController;
-        private PlayerMovementState _playerMovementState;
-        private Camera _camera;
+        private readonly PlayerConfig _playerConfig;
+        private readonly PlayerMovementState _playerMovementState;
+        private readonly Camera _camera;
+        private readonly Transform _playerTransform;
 
         public Vector3 CurrentMovementInput => _playerMovementState.CurrentMovementInput;
 
-
         [Inject]
-        public void Construct(IPlayerAnimationController animationController, PlayerMovementState movementState, PlayerConfig config)
+        public PlayerMovement(PlayerMovementState movementState, PlayerConfig config, [Inject(Id = "PlayerTransform")] Transform playerTransform)
         {
-            _playerAnimationController = animationController;
             _playerMovementState = movementState;
             _playerConfig = config;
+            _playerTransform = playerTransform;
 
             _camera = Camera.main;
         }
 
-        private void OnDisable()
+        public void Dispose()
         {
             _playerMovementState?.Dispose();
         }
@@ -42,7 +42,7 @@ namespace Animation.Scripts.Player
             var cameraRightFlat = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
 
             var moveDirection = cameraForwardFlat * CurrentMovementInput.z + cameraRightFlat * CurrentMovementInput.x;
-            transform.position += moveDirection * (_playerConfig.speed * Time.fixedDeltaTime);
+            _playerTransform.position += moveDirection * (_playerConfig.speed * Time.fixedDeltaTime);
         }
 
         /// <summary>
@@ -51,11 +51,6 @@ namespace Animation.Scripts.Player
         public bool IsMoving()
         {
             return _playerMovementState.IsMoving();
-        }
-
-        public void UpdateMovementAndAnimation()
-        {
-            _playerAnimationController?.UpdateAndPlayMovementAnimation();
         }
     }
 }

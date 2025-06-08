@@ -7,39 +7,49 @@ namespace Animation.Scripts.Player
     /// <summary>
     /// Отвечает за логику вращения игрока.
     /// </summary>
-    public class PlayerRotator : MonoBehaviour, IPlayerRotator
+    public class PlayerRotator : IPlayerRotator
     {
-        [SerializeField] private Transform chest;
-
-        private IPlayerController _playerController;
-        private IPlayerFinisher _playerFinisher;
-        private Camera _camera;
+        private readonly Transform _chest;
+        private readonly IPlayerController _playerController;
+        private readonly Camera _camera;
+        private readonly Transform _playerTransform;
 
         [Inject]
-        public void Construct(IPlayerController playerController, IPlayerFinisher playerFinisher)
+        public PlayerRotator(
+            IPlayerController playerController,
+            [Inject(Id = "PlayerChestTransform")] Transform chest,
+            [Inject(Id = "PlayerTransform")] Transform playerTransform
+        )
         {
             _playerController = playerController;
-            _playerFinisher = playerFinisher;
+            _chest = chest;
+            _playerTransform = playerTransform;
+
             _camera = Camera.main;
+        }
+
+        [Inject]
+        public void PostConstruct(IPlayerFinisher playerFinisher)
+        {
+            playerFinisher.OnFinisherStateReset += RotateTowardsCamera;
         }
 
         public void RotationToMouse()
         {
-            if (_playerController == null || !chest) return;
+            if (_playerController == null || !_chest) return;
 
             var mouseWorldPosition = _playerController.GetMouseWorldPosition();
-            chest.rotation = Quaternion.LookRotation(Vector3.up, mouseWorldPosition - chest.position);
-            chest.transform.Rotate(-30, 90, 0);
+            _chest.rotation = Quaternion.LookRotation(Vector3.up, mouseWorldPosition - _chest.position);
+            _chest.transform.Rotate(-30, 90, 0);
         }
 
-        public void RotationToTarget()
+        public void RotationToTarget(Vector3 targetPosition)
         {
-            if (_playerFinisher == null || !chest) return;
-
-            chest.rotation = Quaternion.LookRotation(Vector3.up, _playerFinisher.TargetPosition - chest.position);
-            chest.transform.Rotate(-30, 90, 10);
-            transform.rotation = Quaternion.LookRotation(Vector3.up, _playerFinisher.TargetPosition - transform.position);
-            transform.transform.Rotate(270, 180, 0);
+            if (!_chest) return;
+            _chest.rotation = Quaternion.LookRotation(Vector3.up, targetPosition - _chest.position);
+            _chest.transform.Rotate(-30, 90, 10);
+            _playerTransform.rotation = Quaternion.LookRotation(Vector3.up, targetPosition - _playerTransform.position);
+            _playerTransform.transform.Rotate(270, 180, 0);
         }
 
         public void RotateTowardsCamera()
@@ -49,7 +59,7 @@ namespace Animation.Scripts.Player
             var cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
             if (cameraForwardFlat != Vector3.zero)
             {
-                transform.rotation = Quaternion.LookRotation(cameraForwardFlat);
+                _playerTransform.rotation = Quaternion.LookRotation(cameraForwardFlat);
             }
         }
     }

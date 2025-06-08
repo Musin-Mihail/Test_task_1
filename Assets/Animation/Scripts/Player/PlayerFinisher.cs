@@ -11,34 +11,41 @@ namespace Animation.Scripts.Player
     /// <summary>
     /// Отвечает за логику добивания игрока.
     /// </summary>
-    public class PlayerFinisher : MonoBehaviour, IPlayerFinisher
+    public class PlayerFinisher : IPlayerFinisher
     {
-        [SerializeField] private Transform player;
-
         public event Action OnFinisherSequenceCompleted;
         public event Action OnFinisherAnimationFullyCompleted;
+        public event Action OnFinisherStateReset;
 
         public Vector3 TargetPosition { get; set; }
         public bool IsFinishing() => _isFinishing;
 
-        private PlayerConfig _playerConfig;
-        private IPlayerAnimation _playerAnimation;
-        private IPlayerEquipment _playerEquipment;
-        private IPlayerRotator _playerRotator;
-        private Collider _playerCollider;
+        private readonly PlayerConfig _playerConfig;
+        private readonly IPlayerAnimation _playerAnimation;
+        private readonly IPlayerEquipment _playerEquipment;
+        private readonly Collider _playerCollider;
+        private readonly Transform _playerTransform;
+        private readonly ICoroutineRunner _coroutineRunner;
         private bool _isFinishing;
 
         private bool _isImpactPointReached;
         private bool _isAnimationCompleted;
 
         [Inject]
-        public void Construct(Collider playerCollider, IPlayerAnimation playerAnimation, IPlayerEquipment playerEquipment, IPlayerRotator playerRotator, PlayerConfig playerConfig)
+        public PlayerFinisher(
+            Collider playerCollider,
+            IPlayerAnimation playerAnimation,
+            IPlayerEquipment playerEquipment,
+            PlayerConfig playerConfig,
+            [Inject(Id = "PlayerTransform")] Transform playerTransform,
+            ICoroutineRunner coroutineRunner)
         {
             _playerCollider = playerCollider;
             _playerAnimation = playerAnimation;
             _playerEquipment = playerEquipment;
-            _playerRotator = playerRotator;
             _playerConfig = playerConfig;
+            _playerTransform = playerTransform;
+            _coroutineRunner = coroutineRunner;
             _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, false);
         }
@@ -54,7 +61,7 @@ namespace Animation.Scripts.Player
             _isImpactPointReached = false;
             _isAnimationCompleted = false;
 
-            StartCoroutine(FinishingCoroutine());
+            _coroutineRunner.StartCoroutine(FinishingCoroutine());
         }
 
         /// <summary>
@@ -82,9 +89,9 @@ namespace Animation.Scripts.Player
         {
             if (!_playerConfig) yield break;
 
-            yield return StartCoroutine(MoveToTarget(player, TargetPosition, _playerConfig.finishingStartDistance, _playerConfig.finishingMovementSpeed));
-            yield return StartCoroutine(PerformFinishingAnimation());
-            yield return StartCoroutine(ResetFinisherState());
+            yield return _coroutineRunner.StartCoroutine(MoveToTarget(_playerTransform, TargetPosition, _playerConfig.finishingStartDistance, _playerConfig.finishingMovementSpeed));
+            yield return _coroutineRunner.StartCoroutine(PerformFinishingAnimation());
+            yield return _coroutineRunner.StartCoroutine(ResetFinisherState());
         }
 
         private IEnumerator PerformFinishingAnimation()
@@ -111,7 +118,7 @@ namespace Animation.Scripts.Player
             _playerEquipment.SetWeaponActive(WeaponType.Gun, true);
             _playerEquipment.SetWeaponActive(WeaponType.Sword, false);
             _isFinishing = false;
-            _playerRotator.RotateTowardsCamera();
+            OnFinisherStateReset?.Invoke();
             yield return null;
         }
 

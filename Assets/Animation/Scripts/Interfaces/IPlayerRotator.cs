@@ -1,4 +1,6 @@
-﻿namespace Animation.Scripts.Interfaces
+﻿using UnityEngine;
+
+namespace Animation.Scripts.Interfaces
 {
     /// <summary>
     /// Интерфейс для управления вращением игрока.
@@ -13,7 +15,8 @@
         /// <summary>
         /// Поворачивает объект игрока в сторону цели.
         /// </summary>
-        void RotationToTarget();
+        ///  <param name="targetPosition">Цель для разворота.</param>
+        void RotationToTarget(Vector3 targetPosition);
 
         /// <summary>
         /// Поворачивает объект игрока в сторону, куда смотрит камера, по горизонтальной плоскости.
