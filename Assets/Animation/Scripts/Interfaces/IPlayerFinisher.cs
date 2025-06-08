@@ -14,13 +14,10 @@ namespace Animation.Scripts.Interfaces
 
         Vector3 TargetPosition { get; set; }
         bool IsFinishing();
-
-        /// <summary>
-        /// Запуск процесса добивания.
-        /// </summary>
-        void StartFinishingSequence();
+        void SetFinishing(bool isFinishing);
 
         void AnimationEvent_FinisherImpactPoint();
         void AnimationEvent_FinisherComplete();
+        void ResetFinisherState();
     }
 }

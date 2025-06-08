@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Animation.Scripts.Interfaces;
+using Animation.Scripts.ScriptableObjects;
 using UnityEngine;
 using Zenject;
 
@@ -12,17 +13,18 @@ namespace Animation.Scripts.States
         private Dictionary<Type, PlayerState> _states;
 
         public IPlayerAnimation PlayerAnimation { get; private set; }
-
         public IPlayerMovement PlayerMovement { get; private set; }
-
         public IPlayerRotator PlayerRotator { get; private set; }
-
         public IPlayerFinisher PlayerFinisher { get; private set; }
-
         public IPlayerController PlayerController { get; private set; }
-
         public IEnemyFinishingTrigger EnemyFinishingTrigger { get; private set; }
         public IPlayerAnimationController PlayerAnimationController { get; private set; }
+
+        private IPlayerEquipment _playerEquipment;
+        private ITargetMover _targetMover;
+        private ICoroutineRunner _coroutineRunner;
+        private PlayerConfig _playerConfig;
+        private Transform _playerTransform;
 
         [Inject]
         public void Construct(
@@ -32,7 +34,12 @@ namespace Animation.Scripts.States
             IPlayerFinisher playerFinisher,
             IPlayerController playerController,
             IEnemyFinishingTrigger enemyFinishingTrigger,
-            IPlayerAnimationController playerAnimationController)
+            IPlayerAnimationController playerAnimationController,
+            IPlayerEquipment playerEquipment,
+            ITargetMover targetMover,
+            ICoroutineRunner coroutineRunner,
+            PlayerConfig playerConfig,
+            [Inject(Id = "PlayerTransform")] Transform playerTransform)
         {
             PlayerAnimation = playerAnimation;
             PlayerMovement = playerMovement;
@@ -42,11 +49,26 @@ namespace Animation.Scripts.States
             EnemyFinishingTrigger = enemyFinishingTrigger;
             PlayerAnimationController = playerAnimationController;
 
+            _playerEquipment = playerEquipment;
+            _targetMover = targetMover;
+            _coroutineRunner = coroutineRunner;
+            _playerConfig = playerConfig;
+            _playerTransform = playerTransform;
+
             _states = new Dictionary<Type, PlayerState>();
 
             RegisterState(new PlayerIdleState(this));
             RegisterState(new PlayerRunState(this));
-            RegisterState(new PlayerFinishingState(this));
+            RegisterState(new PlayerFinishingState(
+                this,
+                _playerEquipment,
+                PlayerAnimation,
+                _targetMover,
+                _coroutineRunner,
+                _playerConfig,
+                _playerTransform,
+                PlayerFinisher
+            ));
         }
 
         private void RegisterState(PlayerState state)

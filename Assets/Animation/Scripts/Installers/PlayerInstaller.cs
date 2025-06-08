@@ -1,4 +1,5 @@
-﻿using Animation.Scripts.Enemy;
+﻿// D:\Repositories\Test_task_1\Assets\Animation\Scripts\Installers\PlayerInstaller.cs
+using Animation.Scripts.Enemy;
 using Animation.Scripts.Interfaces;
 using Animation.Scripts.Player;
 using Animation.Scripts.ScriptableObjects;
@@ -41,10 +42,12 @@ namespace Animation.Scripts.Installers
             Container.BindInterfacesAndSelfTo<PlayerAnimationController>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerRotator>().AsSingle();
             Container.BindInterfacesAndSelfTo<EnemyFinisherHandler>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<TargetMover>().AsSingle();
 
             // PlayerConfig остаётся FromInstance, так как это ScriptableObject
             Container.Bind<PlayerConfig>().FromInstance(playerConfig).AsSingle();
             Container.Bind<PlayerMovementState>().AsSingle();
+            Container.Bind<PlayerFinishingState>().AsSingle();
 
             // Collider также остаётся FromInstance, так как он прикреплен к GameObject
             Container.Bind<Collider>().FromInstance(GetComponent<Collider>()).AsSingle();

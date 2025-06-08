@@ -51,8 +51,6 @@ namespace Animation.Scripts.Enemy
             {
                 _enemyAnimator.enabled = false;
             }
-
-            Debug.Log("EnemyFinisherHandler: Player finisher impact received!");
         }
 
         /// <summary>
