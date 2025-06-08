@@ -12,6 +12,7 @@ namespace Animation.Scripts.States
         public override void EnterState()
         {
             Context.PlayerController.OnSpacePressed += OnSpacePressed;
+            Context.PlayerRotator.RotateTowardsCamera();
         }
 
         public override void ExitState()

@@ -28,12 +28,6 @@ namespace Animation.Scripts.Player
             _camera = Camera.main;
         }
 
-        [Inject]
-        public void PostConstruct(IPlayerFinisher playerFinisher)
-        {
-            playerFinisher.OnFinisherStateReset += RotateTowardsCamera;
-        }
-
         public void RotationToMouse()
         {
             if (_playerController == null || !_chest) return;

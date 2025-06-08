@@ -38,14 +38,14 @@ namespace Animation.Scripts.States
             _playerConfig = playerConfig;
             _playerTransform = playerTransform;
             _playerFinisher = playerFinisher;
-
-            _playerFinisher.OnFinisherSequenceCompleted += HandleFinisherImpactPoint;
-            _playerFinisher.OnFinisherAnimationFullyCompleted += HandleFinisherAnimationComplete;
-            _playerFinisher.OnFinisherStateReset += ResetFinisherStateFlags;
         }
 
         public override void EnterState()
         {
+            _playerFinisher.OnFinisherSequenceCompleted += HandleFinisherImpactPoint;
+            _playerFinisher.OnFinisherAnimationFullyCompleted += HandleFinisherAnimationComplete;
+            _playerFinisher.OnFinisherStateReset += ResetFinisherStateFlags;
+
             _hasImpactPointReached = false;
             _hasAnimationFullyCompleted = false;
 

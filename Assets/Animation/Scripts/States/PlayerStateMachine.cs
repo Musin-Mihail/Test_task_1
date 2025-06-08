@@ -66,7 +66,6 @@ namespace Animation.Scripts.States
 
         private void Start()
         {
-            PlayerRotator.RotateTowardsCamera();
             ChangeState<PlayerIdleState>();
         }
 
