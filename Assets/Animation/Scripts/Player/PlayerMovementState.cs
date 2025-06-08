@@ -1,6 +1,4 @@
-﻿// D:\Repositories\Test_task_1\Assets\Animation\Scripts\Player\PlayerMovementState.cs
-
-using System;
+﻿using System;
 using Animation.Scripts.Interfaces;
 using UnityEngine;
 

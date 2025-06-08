@@ -1,12 +1,18 @@
 ﻿using Animation.Scripts.Interfaces;
+using Zenject;
 
 namespace Animation.Scripts.States
 {
     public abstract class PlayerState
     {
-        protected readonly IPlayerStateContext Context;
+        protected IPlayerStateContext Context;
 
-        protected PlayerState(IPlayerStateContext context)
+        [Inject]
+        public PlayerState()
+        {
+        }
+
+        public void Initialize(IPlayerStateContext context)
         {
             Context = context;
         }

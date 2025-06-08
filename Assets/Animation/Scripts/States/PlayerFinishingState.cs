@@ -22,14 +22,14 @@ namespace Animation.Scripts.States
 
         [Inject]
         public PlayerFinishingState(
-            IPlayerStateContext context,
             IPlayerEquipment playerEquipment,
             IPlayerAnimation playerAnimation,
             ITargetMover targetMover,
             ICoroutineRunner coroutineRunner,
             PlayerConfig playerConfig,
             [Inject(Id = "PlayerTransform")] Transform playerTransform,
-            IPlayerFinisher playerFinisher) : base(context)
+            IPlayerFinisher playerFinisher
+        )
         {
             _playerEquipment = playerEquipment;
             _playerAnimation = playerAnimation;

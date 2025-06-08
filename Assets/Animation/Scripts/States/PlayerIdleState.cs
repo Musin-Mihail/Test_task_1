@@ -1,10 +1,11 @@
-﻿using Animation.Scripts.Interfaces;
+﻿using Zenject;
 
 namespace Animation.Scripts.States
 {
     public class PlayerIdleState : PlayerState
     {
-        public PlayerIdleState(IPlayerStateContext context) : base(context)
+        [Inject]
+        public PlayerIdleState()
         {
         }
 

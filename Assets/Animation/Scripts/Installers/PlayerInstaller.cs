@@ -1,5 +1,4 @@
-﻿// D:\Repositories\Test_task_1\Assets\Animation\Scripts\Installers\PlayerInstaller.cs
-using Animation.Scripts.Enemy;
+﻿using Animation.Scripts.Enemy;
 using Animation.Scripts.Interfaces;
 using Animation.Scripts.Player;
 using Animation.Scripts.ScriptableObjects;
@@ -24,11 +23,12 @@ namespace Animation.Scripts.Installers
 
         public override void InstallBindings()
         {
+            // Привязки для Transform
             Container.Bind<Transform>().WithId("PlayerChestTransform").FromInstance(chestTransform).AsCached();
             Container.Bind<Transform>().WithId("PlayerTransform").FromInstance(playerTransform).AsCached();
             Container.Bind<GameObject>().WithId("EnemyGameObject").FromInstance(enemyGameObject).AsSingle();
 
-            // Binding для MonoBehaviour классов, которые должны быть на сцене
+            // Привязки для MonoBehaviour классов, которые должны быть на сцене
             Container.BindInterfacesAndSelfTo<PlayerAnimation>().FromInstance(playerAnimation).AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerController>().FromInstance(playerController).AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerEquipment>().FromInstance(playerEquipment).AsSingle();
@@ -36,7 +36,7 @@ namespace Animation.Scripts.Installers
             Container.BindInterfacesAndSelfTo<ICoroutineRunner>().FromInstance(coroutineRunner).AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerStateMachine>().FromInstance(playerStateMachine).AsSingle();
 
-            // Binding для POCO классов - Zenject будет создавать их сам
+            // Привязки для POCO классов - Zenject будет создавать их сам
             Container.BindInterfacesAndSelfTo<PlayerMovement>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerFinisher>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerAnimationController>().AsSingle();
@@ -46,8 +46,12 @@ namespace Animation.Scripts.Installers
 
             // PlayerConfig остаётся FromInstance, так как это ScriptableObject
             Container.Bind<PlayerConfig>().FromInstance(playerConfig).AsSingle();
+
+            // Привязка состояний игрока Zenject'ом
             Container.Bind<PlayerMovementState>().AsSingle();
-            Container.Bind<PlayerFinishingState>().AsSingle();
+            Container.Bind<PlayerIdleState>().AsTransient();
+            Container.Bind<PlayerRunState>().AsTransient();
+            Container.Bind<PlayerFinishingState>().AsTransient();
 
             // Collider также остаётся FromInstance, так как он прикреплен к GameObject
             Container.Bind<Collider>().FromInstance(GetComponent<Collider>()).AsSingle();
