@@ -1,5 +1,4 @@
 ﻿using System;
-using Animation.Scripts.Constants;
 using Animation.Scripts.Interfaces;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,7 +11,7 @@ namespace Animation.Scripts.Player
     public class PlayerController : MonoBehaviour, IPlayerController
     {
         public LayerMask mouseWorldPositionLayerMask;
-        public event Action<MovementDirection, KeyState> OnMovementIntent;
+        public event Action<Vector2> OnMovementInput;
         public event Action OnSpacePressed;
 
         private Camera _camera;
@@ -22,20 +21,10 @@ namespace Animation.Scripts.Player
         {
             _playerInputActions = new PlayerInputActions();
 
-            _playerInputActions.Player.MoveForward.performed += ctx => OnMovementIntent?.Invoke(MovementDirection.Forward, KeyState.Pressed);
-            _playerInputActions.Player.MoveForward.canceled += ctx => OnMovementIntent?.Invoke(MovementDirection.Forward, KeyState.Released);
-
-            _playerInputActions.Player.MoveBack.performed += ctx => OnMovementIntent?.Invoke(MovementDirection.Back, KeyState.Pressed);
-            _playerInputActions.Player.MoveBack.canceled += ctx => OnMovementIntent?.Invoke(MovementDirection.Back, KeyState.Released);
-
-            _playerInputActions.Player.MoveLeft.performed += ctx => OnMovementIntent?.Invoke(MovementDirection.Left, KeyState.Pressed);
-            _playerInputActions.Player.MoveLeft.canceled += ctx => OnMovementIntent?.Invoke(MovementDirection.Left, KeyState.Released);
-
-            _playerInputActions.Player.MoveRight.performed += ctx => OnMovementIntent?.Invoke(MovementDirection.Right, KeyState.Pressed);
-            _playerInputActions.Player.MoveRight.canceled += ctx => OnMovementIntent?.Invoke(MovementDirection.Right, KeyState.Released);
+            _playerInputActions.Player.Move.performed += ctx => OnMovementInput?.Invoke(ctx.ReadValue<Vector2>());
+            _playerInputActions.Player.Move.canceled += ctx => OnMovementInput?.Invoke(Vector2.zero);
 
             _playerInputActions.Player.Finishing.performed += ctx => OnSpacePressed?.Invoke();
-
             _playerInputActions.Player.Quit.performed += ctx => Application.Quit();
         }
 

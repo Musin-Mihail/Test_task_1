@@ -71,7 +71,6 @@ namespace Animation.Scripts.Player
         {
             _isImpactPointReached = true;
             OnFinisherSequenceCompleted?.Invoke();
-            Debug.Log("Animation Event: Finisher Impact Point reached!");
         }
 
         /// <summary>
@@ -81,7 +80,6 @@ namespace Animation.Scripts.Player
         {
             _isAnimationCompleted = true;
             OnFinisherAnimationFullyCompleted?.Invoke();
-            Debug.Log("Animation Event: Finisher animation completed!");
         }
 
 

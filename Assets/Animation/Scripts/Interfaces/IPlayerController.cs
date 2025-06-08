@@ -1,5 +1,4 @@
 ﻿using System;
-using Animation.Scripts.Constants;
 using UnityEngine;
 
 namespace Animation.Scripts.Interfaces
@@ -9,7 +8,7 @@ namespace Animation.Scripts.Interfaces
     /// </summary>
     public interface IPlayerController
     {
-        public event Action<MovementDirection, KeyState> OnMovementIntent;
+        public event Action<Vector2> OnMovementInput;
         public event Action OnSpacePressed;
 
         /// <summary>

@@ -1,5 +1,6 @@
-﻿using System;
-using Animation.Scripts.Constants;
+﻿// D:\Repositories\Test_task_1\Assets\Animation\Scripts\Player\PlayerMovementState.cs
+
+using System;
 using Animation.Scripts.Interfaces;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace Animation.Scripts.Player
     /// Отвечает за инкапсуляцию состояния движения игрока на основе ввода.
     /// Предоставляет чистое направление движения (Vector3).
     /// </summary>
-    public class PlayerMovementState
+    public class PlayerMovementState : IDisposable
     {
         private readonly IPlayerController _playerController;
         private Vector3 _currentMovementInput;
@@ -27,7 +28,7 @@ namespace Animation.Scripts.Player
         /// </summary>
         private void SubscribeToControllerEvents()
         {
-            _playerController.OnMovementIntent += OnMovementIntentHandler;
+            _playerController.OnMovementInput += OnMovementInputHandler;
         }
 
         /// <summary>
@@ -35,37 +36,18 @@ namespace Animation.Scripts.Player
         /// </summary>
         public void Dispose()
         {
-            _playerController.OnMovementIntent -= OnMovementIntentHandler;
+            _playerController.OnMovementInput -= OnMovementInputHandler;
         }
 
         /// <summary>
-        /// Обработчик абстрактного события намерения движения.
+        /// Обработчик события ввода движения.
         /// Обновляет текущее направление движения.
         /// </summary>
-        /// <param name="direction">Направление движения.</param>
-        /// <param name="state">Состояние клавиши (нажата/отпущена/удерживается).</param>
-        private void OnMovementIntentHandler(MovementDirection direction, KeyState state)
+        /// <param name="movementInput">Вектор2 движения, полученный из Input System.</param>
+        private void OnMovementInputHandler(Vector2 movementInput)
         {
-            var isPressed = state is KeyState.Pressed or KeyState.Down;
-
-            switch (direction)
-            {
-                case MovementDirection.Forward:
-                    _currentMovementInput.z = isPressed ? 1f : 0f;
-                    break;
-                case MovementDirection.Back:
-                    _currentMovementInput.z = isPressed ? -1f : 0f;
-                    break;
-                case MovementDirection.Left:
-                    _currentMovementInput.x = isPressed ? -1f : 0f;
-                    break;
-                case MovementDirection.Right:
-                    _currentMovementInput.x = isPressed ? 1f : 0f;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-
+            _currentMovementInput.x = movementInput.x;
+            _currentMovementInput.z = movementInput.y;
             if (_currentMovementInput.magnitude > 1f)
             {
                 _currentMovementInput.Normalize();
