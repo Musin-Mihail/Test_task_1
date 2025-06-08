@@ -20,6 +20,7 @@ namespace Animation.Scripts.Installers
         [SerializeField] private Transform playerTransform;
         [SerializeField] private CoroutineRunner coroutineRunner;
         [SerializeField] private PlayerStateMachine playerStateMachine;
+        [SerializeField] private AnimationEventBridge animationEventBridge;
 
         public override void InstallBindings()
         {
@@ -35,10 +36,11 @@ namespace Animation.Scripts.Installers
             Container.BindInterfacesAndSelfTo<EnemyFinishingTrigger>().FromInstance(enemyFinishingTrigger).AsSingle();
             Container.BindInterfacesAndSelfTo<ICoroutineRunner>().FromInstance(coroutineRunner).AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerStateMachine>().FromInstance(playerStateMachine).AsSingle();
+            Container.BindInterfacesAndSelfTo<AnimationEventBridge>().FromInstance(animationEventBridge).AsSingle();
 
             // Привязки для POCO классов - Zenject будет создавать их сам
             Container.BindInterfacesAndSelfTo<PlayerMovement>().AsSingle();
-            Container.BindInterfacesAndSelfTo<PlayerFinisher>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlayerFinisher>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<PlayerAnimationController>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerRotator>().AsSingle();
             Container.BindInterfacesAndSelfTo<EnemyFinisherHandler>().AsSingle().NonLazy();

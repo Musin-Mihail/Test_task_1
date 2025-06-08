@@ -5,8 +5,9 @@ namespace Animation.Scripts.Interfaces
 {
     /// <summary>
     /// Интерфейс для управления логикой добивания игрока.
+    /// Теперь наследует IAnimationEventHandler для универсальной обработки событий анимации.
     /// </summary>
-    public interface IPlayerFinisher
+    public interface IPlayerFinisher : IAnimationEventHandler
     {
         event Action OnFinisherSequenceCompleted;
         event Action OnFinisherAnimationFullyCompleted;
@@ -15,9 +16,6 @@ namespace Animation.Scripts.Interfaces
         Vector3 TargetPosition { get; set; }
         bool IsFinishing();
         void SetFinishing(bool isFinishing);
-
-        void AnimationEvent_FinisherImpactPoint();
-        void AnimationEvent_FinisherComplete();
         void ResetFinisherState();
     }
 }
