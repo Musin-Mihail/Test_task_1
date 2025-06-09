@@ -17,16 +17,15 @@ public class PlayerInput : MonoBehaviour, IPlayerInput
     private PlayerInputActions _playerInputActions;
 
     [Inject]
-    public void Construct(SignalBus signalBus)
+    public void Construct(SignalBus signalBus, Camera camera)
     {
         _signalBus = signalBus;
+        _camera = camera;
     }
 
     private void Awake()
     {
-        _camera = Camera.main;
         _playerInputActions = new PlayerInputActions();
-
         _playerInputActions.Player.Move.performed += ctx => _signalBus.Fire(new MovementInputSignal { InputValue = ctx.ReadValue<Vector2>() });
         _playerInputActions.Player.Move.canceled += ctx => _signalBus.Fire(new MovementInputSignal { InputValue = Vector2.zero });
         _playerInputActions.Player.Finishing.performed += ctx => _signalBus.Fire<FinisherButtonSignal>();

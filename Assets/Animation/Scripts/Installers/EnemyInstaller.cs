@@ -11,7 +11,8 @@ namespace Animation.Scripts.Installers
 
         public override void InstallBindings()
         {
-            Container.Bind<PlayerFacade>().FromInstance(playerFacade).AsSingle();
+            Container.Bind<Transform>().WithId("PlayerTransform").FromInstance(playerFacade.transform).AsCached();
+
             // --- COMPONENTS ---
             Container.Bind<Animator>().FromComponentInHierarchy().AsSingle();
             Container.Bind<Transform>().FromComponentInHierarchy().AsSingle();

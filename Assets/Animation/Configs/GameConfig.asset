@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4482c35ffacf4cd89983988e2215a766, type: 3}
-  m_Name: PlayerConfig
+  m_Name: GameConfig
   m_EditorClassIdentifier: 
   movementConfig: {fileID: 11400000, guid: afd30def37d14d642a80c51523423b65, type: 2}
   finisherConfig: {fileID: 11400000, guid: 2ded5c02eac326246880cd1390ad46a6, type: 2}
   cameraConfig: {fileID: 11400000, guid: bd81076f6340e6b48926d9bf47f5e1f7, type: 2}
+  enemyConfig: {fileID: 11400000, guid: d736ebbb0cc2a254b81a93616e4e883d, type: 2}

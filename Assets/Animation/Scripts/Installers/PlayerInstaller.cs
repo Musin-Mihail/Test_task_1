@@ -1,5 +1,4 @@
-﻿using Animation.Scripts.Configs;
-using Animation.Scripts.FSM;
+﻿using Animation.Scripts.FSM;
 using Animation.Scripts.Player;
 using UnityEngine;
 using Zenject;
@@ -9,20 +8,15 @@ namespace Animation.Scripts.Installers
     public class PlayerInstaller : MonoInstaller
     {
         [SerializeField] private PlayerFacade playerFacade;
-        [SerializeField] private PlayerConfig playerConfig;
+
 
         public override void InstallBindings()
         {
-            // --- CONFIGS ---
-            Container.Bind<PlayerConfig>().FromInstance(playerConfig).AsSingle();
-            Container.Bind<MovementConfig>().FromInstance(playerConfig.movementConfig).AsSingle();
-            Container.Bind<FinisherConfig>().FromInstance(playerConfig.finisherConfig).AsSingle();
-            Container.Bind<CameraConfig>().FromInstance(playerConfig.cameraConfig).AsSingle();
-
             // --- FACADE & COMPONENTS ---
             Container.Bind<PlayerFacade>().FromInstance(playerFacade).AsSingle();
-            Container.Bind<Transform>().FromInstance(playerFacade.transform).AsCached();
+            Container.Bind<Transform>().FromInstance(playerFacade.transform).AsSingle();
             Container.Bind<Animator>().FromInstance(playerFacade.Animator).AsSingle();
+
             Container.Bind<Transform>().WithId("ChestTransform").FromInstance(playerFacade.ChestTransform).AsCached();
 
             // --- MONOBEHAVIOURS ---
@@ -30,7 +24,7 @@ namespace Animation.Scripts.Installers
             Container.Bind<IPlayerEquipment>().To<PlayerEquipment>().FromInstance(playerFacade.PlayerEquipment).AsSingle();
             Container.Bind<ICameraController>().To<CameraController>().FromComponentInHierarchy().AsSingle();
 
-            // --- POCO (Plain Old C# Object) SERVICES ---
+            // --- POCO SERVICES ---
             Container.BindInterfacesAndSelfTo<PlayerAnimation>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerMovement>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerRotator>().AsSingle();

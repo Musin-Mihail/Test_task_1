@@ -17,12 +17,12 @@ namespace Animation.Scripts.Player
         private readonly IPlayerInput _playerInput;
         private readonly Camera _camera;
 
-        public PlayerRotator(Transform playerTransform, [Inject(Id = "ChestTransform")] Transform chestTransform, IPlayerInput playerInput)
+        public PlayerRotator(Transform playerTransform, [Inject(Id = "ChestTransform")] Transform chestTransform, IPlayerInput playerInput, Camera camera)
         {
             _playerTransform = playerTransform;
             _chestTransform = chestTransform;
             _playerInput = playerInput;
-            _camera = Camera.main;
+            _camera = camera;
         }
 
         public void RotateToMouse()
@@ -34,7 +34,6 @@ namespace Animation.Scripts.Player
 
         public void RotateToTarget(Vector3 targetPosition)
         {
-            // Логика поворота к цели
             var playerLookDir = new Vector3(targetPosition.x, _playerTransform.position.y, targetPosition.z) - _playerTransform.position;
             if (playerLookDir != Vector3.zero)
             {

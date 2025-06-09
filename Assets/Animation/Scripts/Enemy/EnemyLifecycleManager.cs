@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using Animation.Scripts.Common;
-using Animation.Scripts.Player;
+using Animation.Scripts.Configs;
 using UnityEngine;
 using Zenject;
 
@@ -13,14 +13,16 @@ namespace Animation.Scripts.Enemy
         private readonly Animator _enemyAnimator;
         private readonly ICoroutineRunner _coroutineRunner;
         private readonly Transform _playerTransform;
+        private readonly EnemyConfig _config;
 
-        public EnemyLifecycleManager(GameObject enemyObject, Transform enemyTransform, Animator enemyAnimator, ICoroutineRunner coroutineRunner, [Inject] PlayerFacade playerFacade)
+        public EnemyLifecycleManager(GameObject enemyObject, Transform enemyTransform, Animator enemyAnimator, ICoroutineRunner coroutineRunner, [Inject(Id = "PlayerTransform")] Transform playerTransform, EnemyConfig config)
         {
             _enemyObject = enemyObject;
             _enemyTransform = enemyTransform;
             _enemyAnimator = enemyAnimator;
             _coroutineRunner = coroutineRunner;
-            _playerTransform = playerFacade.transform;
+            _playerTransform = playerTransform;
+            _config = config;
         }
 
         public void Respawn()
@@ -31,10 +33,10 @@ namespace Animation.Scripts.Enemy
         private IEnumerator RespawnCoroutine()
         {
             _enemyObject.SetActive(false);
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(_config.respawnDelay);
 
             var randomDirection = Random.insideUnitCircle.normalized;
-            var newPosition = _playerTransform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * 6f;
+            var newPosition = _playerTransform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * _config.respawnDistance; // Используем значение из конфига
 
             _enemyTransform.position = newPosition;
             _enemyObject.SetActive(true);
