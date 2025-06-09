@@ -10,10 +10,10 @@ using Zenject;
 
 namespace Animation.Scripts.Player
 {
-    public class PlayerFinisher : IInitializable, IDisposable
+    public class FinisherExecutionService : IInitializable, IDisposable
     {
         private readonly SignalBus _signalBus;
-        private readonly GameObject _text;
+        private readonly FinisherAvailabilityService _availabilityService;
         private readonly ICoroutineRunner _coroutineRunner;
         private readonly ITargetMover _targetMover;
         private readonly IPlayerAnimation _animation;
@@ -22,16 +22,23 @@ namespace Animation.Scripts.Player
         private readonly FinisherConfig _config;
         private readonly Transform _playerTransform;
 
-        private bool _canStartFinisher;
-        private Transform FinisherTarget { get; set; }
         private bool _isFinishing;
         private bool _hasImpactPointReached;
         private bool _hasAnimationCompleted;
 
-        public PlayerFinisher(SignalBus signalBus, PlayerFacade playerFacade, ICoroutineRunner coroutineRunner, ITargetMover targetMover, IPlayerAnimation animation, IPlayerEquipment equipment, IPlayerRotator rotator, FinisherConfig config, Transform playerTransform)
+        public FinisherExecutionService(
+            SignalBus signalBus,
+            FinisherAvailabilityService availabilityService,
+            ICoroutineRunner coroutineRunner,
+            ITargetMover targetMover,
+            IPlayerAnimation animation,
+            IPlayerEquipment equipment,
+            IPlayerRotator rotator,
+            FinisherConfig config,
+            Transform playerTransform)
         {
             _signalBus = signalBus;
-            _text = playerFacade.Text;
+            _availabilityService = availabilityService;
             _coroutineRunner = coroutineRunner;
             _targetMover = targetMover;
             _animation = animation;
@@ -43,31 +50,31 @@ namespace Animation.Scripts.Player
 
         public void Initialize()
         {
-            _signalBus.Subscribe<EnemyReadyForFinisherSignal>(OnEnemyReady);
-            _signalBus.Subscribe<EnemyExitedFinisherRangeSignal>(OnEnemyExited);
             _signalBus.Subscribe<FinisherButtonSignal>(OnFinisherButtonPressed);
-            _signalBus.Subscribe<FinisherImpactPointReachedSignal>(() => _hasImpactPointReached = true);
-            _signalBus.Subscribe<FinisherAnimationCompleteSignal>(() => _hasAnimationCompleted = true);
+            _signalBus.Subscribe<FinisherImpactPointReachedSignal>(OnFinisherImpact);
+            _signalBus.Subscribe<FinisherAnimationCompleteSignal>(OnFinisherAnimationComplete);
         }
 
         public void Dispose()
         {
-            _signalBus.TryUnsubscribe<EnemyReadyForFinisherSignal>(OnEnemyReady);
-            _signalBus.TryUnsubscribe<EnemyExitedFinisherRangeSignal>(OnEnemyExited);
-            _signalBus.TryUnsubscribe<FinisherButtonSignal>(OnFinisherButtonPressed);
-            _signalBus.TryUnsubscribe<FinisherImpactPointReachedSignal>(() => _hasImpactPointReached = true);
-            _signalBus.TryUnsubscribe<FinisherAnimationCompleteSignal>(() => _hasAnimationCompleted = true);
+            _signalBus.Unsubscribe<FinisherButtonSignal>(OnFinisherButtonPressed);
+            _signalBus.Unsubscribe<FinisherImpactPointReachedSignal>(OnFinisherImpact);
+            _signalBus.Unsubscribe<FinisherAnimationCompleteSignal>(OnFinisherAnimationComplete);
         }
+        
+        private void OnFinisherImpact() => _hasImpactPointReached = true;
+        private void OnFinisherAnimationComplete() => _hasAnimationCompleted = true;
 
         private void OnFinisherButtonPressed()
         {
-            if (_canStartFinisher && !_isFinishing && FinisherTarget)
+            if (_availabilityService.IsFinisherAvailable && !_isFinishing)
             {
                 _signalBus.Fire(new GameStateSignals.RequestStateChangeSignal { StateType = typeof(PlayerFinishingState) });
+                StartFinishingSequence();
             }
         }
 
-        public void StartFinishingSequence()
+        private void StartFinishingSequence()
         {
             if (_isFinishing) return;
             _coroutineRunner.StartCoroutine(FinishingSequenceCoroutine());
@@ -76,57 +83,35 @@ namespace Animation.Scripts.Player
         private IEnumerator FinishingSequenceCoroutine()
         {
             _isFinishing = true;
-            _text.gameObject.SetActive(false);
+            _availabilityService.SetFinisherInProgress(true);
             _hasImpactPointReached = false;
             _hasAnimationCompleted = false;
 
-            _rotator.RotateToTarget(FinisherTarget.position);
+            _rotator.RotateToTarget(_availabilityService.FinisherTarget.position);
 
-            // Движение к цели
             _animation.SetBool(AnimationConstants.IsMoving, true);
             yield return _targetMover.MoveToTarget(
                 _playerTransform,
-                FinisherTarget.position,
+                _availabilityService.FinisherTarget.position,
                 _config.finishingStartDistance,
                 _config.finishingMovementSpeed
             );
             _animation.SetBool(AnimationConstants.IsMoving, false);
 
-            // Анимация добивания
             _equipment.SetWeaponActive(WeaponType.Gun, false);
             _equipment.SetWeaponActive(WeaponType.Sword, true);
             _animation.SetBool(AnimationConstants.Finisher, true);
 
-            // Ожидание ключевых точек анимации
             yield return new WaitUntil(() => _hasImpactPointReached);
             yield return new WaitUntil(() => _hasAnimationCompleted);
 
-            // Завершение
             _animation.SetBool(AnimationConstants.Finisher, false);
             _equipment.SetWeaponActive(WeaponType.Sword, false);
             _equipment.SetWeaponActive(WeaponType.Gun, true);
-
+            
             _isFinishing = false;
-            FinisherTarget = null;
-
+            
             _signalBus.Fire(new GameStateSignals.RequestStateChangeSignal { StateType = typeof(PlayerIdleState) });
-        }
-
-
-        private void OnEnemyReady(EnemyReadyForFinisherSignal signal)
-        {
-            if (_isFinishing) return;
-            _canStartFinisher = true;
-            FinisherTarget = signal.EnemyTransform;
-            _text.gameObject.SetActive(true);
-        }
-
-        private void OnEnemyExited()
-        {
-            if (_isFinishing) return;
-            _canStartFinisher = false;
-            FinisherTarget = null;
-            _text.gameObject.SetActive(false);
         }
     }
 }

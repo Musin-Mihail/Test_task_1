@@ -1,33 +1,49 @@
-﻿using Animation.Scripts.Constants;
+﻿using System;
+using System.Collections.Generic;
+using Animation.Scripts.Constants;
 using UnityEngine;
 
 namespace Animation.Scripts.Player
 {
     public interface IPlayerEquipment
     {
-        /// <summary>
-        /// Устанавливает активность указанного типа оружия.
-        /// </summary>
-        /// <param name="weaponType">Тип оружия.</param>
-        /// <param name="isActive">Будет ли оружие активно.</param>
         void SetWeaponActive(WeaponType weaponType, bool isActive);
+    }
+
+    [Serializable]
+    public class WeaponMapping
+    {
+        public WeaponType type;
+        public GameObject weaponObject;
     }
 
     public class PlayerEquipment : MonoBehaviour, IPlayerEquipment
     {
-        [SerializeField] private GameObject gun;
-        [SerializeField] private GameObject sword;
+        [SerializeField] private List<WeaponMapping> weaponMappings;
+
+        private Dictionary<WeaponType, GameObject> _weaponDictionary;
+
+        private void Awake()
+        {
+            _weaponDictionary = new Dictionary<WeaponType, GameObject>();
+            foreach (var mapping in weaponMappings)
+            {
+                if (mapping.weaponObject)
+                {
+                    _weaponDictionary[mapping.type] = mapping.weaponObject;
+                }
+            }
+        }
 
         public void SetWeaponActive(WeaponType weaponType, bool isActive)
         {
-            switch (weaponType)
+            if (_weaponDictionary.TryGetValue(weaponType, out var weaponObject))
             {
-                case WeaponType.Gun:
-                    if (gun) gun.SetActive(isActive);
-                    break;
-                case WeaponType.Sword:
-                    if (sword) sword.SetActive(isActive);
-                    break;
+                weaponObject.SetActive(isActive);
+            }
+            else
+            {
+                Debug.LogWarning($"Weapon of type {weaponType} is not registered in PlayerEquipment.");
             }
         }
     }

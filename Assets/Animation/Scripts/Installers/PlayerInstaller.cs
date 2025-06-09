@@ -9,7 +9,6 @@ namespace Animation.Scripts.Installers
     {
         [SerializeField] private PlayerFacade playerFacade;
 
-
         public override void InstallBindings()
         {
             // --- FACADE & COMPONENTS ---
@@ -28,8 +27,11 @@ namespace Animation.Scripts.Installers
             Container.BindInterfacesAndSelfTo<PlayerAnimation>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerMovement>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerRotator>().AsSingle();
-            Container.BindInterfacesAndSelfTo<PlayerFinisher>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<AnimationEventBridge>().AsSingle().NonLazy();
+
+            // --- НОВЫЕ СЕРВИСЫ ДЛЯ ДОБИВАНИЯ ---
+            Container.BindInterfacesAndSelfTo<FinisherAvailabilityService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<FinisherExecutionService>().AsSingle().NonLazy();
 
             // --- STATE MACHINE ---
             InstallFSM();
