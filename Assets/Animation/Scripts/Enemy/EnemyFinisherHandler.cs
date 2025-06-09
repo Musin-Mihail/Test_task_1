@@ -5,50 +5,39 @@ using Zenject;
 
 namespace Animation.Scripts.Enemy
 {
-    public class EnemyFinisherHandler : IDisposable
+    public class EnemyFinisherHandler : IInitializable, IDisposable
     {
-        private readonly Animator _enemyAnimator;
         private readonly SignalBus _signalBus;
-        private readonly EnemyLifecycleManager _enemyLifecycleManager;
+        private readonly Animator _animator;
+        private readonly EnemyLifecycleManager _lifecycleManager;
 
-        [Inject]
-        public EnemyFinisherHandler(
-            [Inject(Id = "EnemyGameObject")] GameObject enemy,
-            SignalBus signalBus,
-            EnemyLifecycleManager enemyLifecycleManager
-        )
+        public EnemyFinisherHandler(SignalBus signalBus, Animator animator, EnemyLifecycleManager lifecycleManager)
         {
             _signalBus = signalBus;
-            _enemyLifecycleManager = enemyLifecycleManager;
-            _enemyAnimator = enemy.GetComponent<Animator>();
+            _animator = animator;
+            _lifecycleManager = lifecycleManager;
+        }
 
-            _signalBus.Subscribe<FinisherImpactSignal>(HandleFinisherImpact);
-            _signalBus.Subscribe<FinisherAnimationCompleteSignal>(HandleFinisherAnimationComplete);
+        public void Initialize()
+        {
+            _signalBus.Subscribe<FinisherImpactPointReachedSignal>(OnFinisherImpact);
+            _signalBus.Subscribe<FinisherAnimationCompleteSignal>(OnFinisherAnimationComplete);
         }
 
         public void Dispose()
         {
-            _signalBus.Unsubscribe<FinisherImpactSignal>(HandleFinisherImpact);
-            _signalBus.Unsubscribe<FinisherAnimationCompleteSignal>(HandleFinisherAnimationComplete);
+            _signalBus.Unsubscribe<FinisherImpactPointReachedSignal>(OnFinisherImpact);
+            _signalBus.Unsubscribe<FinisherAnimationCompleteSignal>(OnFinisherAnimationComplete);
         }
 
-        /// <summary>
-        /// Метод, вызываемый при достижении точки удара в последовательности добивания игроком.
-        /// </summary>
-        private void HandleFinisherImpact()
+        private void OnFinisherImpact()
         {
-            if (_enemyAnimator)
-            {
-                _enemyAnimator.enabled = false;
-            }
+            if (_animator) _animator.enabled = false;
         }
 
-        /// <summary>
-        /// Метод, вызываемый при полном завершении анимации добивания игроком.
-        /// </summary>
-        private void HandleFinisherAnimationComplete()
+        private void OnFinisherAnimationComplete()
         {
-            _enemyLifecycleManager.RespawnEnemy();
+            _lifecycleManager.Respawn();
         }
     }
 }

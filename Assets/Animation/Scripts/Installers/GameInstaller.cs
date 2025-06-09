@@ -1,4 +1,4 @@
-﻿using Animation.Scripts.Managers;
+﻿using Animation.Scripts.Common;
 using Zenject;
 
 namespace Animation.Scripts.Installers

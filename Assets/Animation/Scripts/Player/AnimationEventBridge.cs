@@ -1,42 +1,39 @@
-﻿using Animation.Scripts.Interfaces;
+﻿using Animation.Scripts.Constants;
+using Animation.Scripts.Signals;
 using UnityEngine;
 using Zenject;
 
 namespace Animation.Scripts.Player
 {
-    /// <summary>
-    /// Компонент MonoBehaviour, который принимает вызовы событий анимации
-    /// и перенаправляет их зарегистрированному обработчику IAnimationEventHandler.
-    /// Этот компонент должен быть прикреплен к тому же GameObject, что и Animator.
-    /// </summary>
-    public class AnimationEventBridge : MonoBehaviour
+    public class AnimationEventBridge
     {
-        private IAnimationEventHandler _animationEventHandler;
+        private readonly SignalBus _signalBus;
 
-        /// <summary>
-        /// Метод Construct для инъекции зависимостей с использованием Zenject.
-        /// </summary>
-        /// <param name="animationEventHandler">Обработчик событий анимации.</param>
-        [Inject]
-        public void Construct(IAnimationEventHandler animationEventHandler)
+        public AnimationEventBridge(SignalBus signalBus, PlayerFacade playerFacade)
         {
-            _animationEventHandler = animationEventHandler;
+            _signalBus = signalBus;
+            var bridgeComponent = playerFacade.Animator.GetComponent<AnimationEventReceiver>();
+            if (!bridgeComponent)
+            {
+                bridgeComponent = playerFacade.Animator.gameObject.AddComponent<AnimationEventReceiver>();
+            }
+
+            bridgeComponent.OnAnimationEvent += HandleAnimationEvent;
         }
 
-        /// <summary>
-        /// Этот метод будет вызываться из Animation Event в редакторе Unity.
-        /// Он передает имя события зарегистрированному обработчику.
-        /// </summary>
-        /// <param name="eventName">Имя события (строка), определенное в Animation Event.</param>
-        public void TriggerEvent(string eventName)
+        private void HandleAnimationEvent(string eventName)
         {
-            if (_animationEventHandler != null)
+            switch (eventName)
             {
-                _animationEventHandler.HandleAnimationEvent(eventName);
-            }
-            else
-            {
-                Debug.LogError($"AnimationEventBridge: No IAnimationEventHandler assigned for event '{eventName}' on GameObject {gameObject.name}.");
+                case EventNames.FinisherImpactPoint:
+                    _signalBus.Fire<FinisherImpactPointReachedSignal>();
+                    break;
+                case EventNames.FinisherComplete:
+                    _signalBus.Fire<FinisherAnimationCompleteSignal>();
+                    break;
+                default:
+                    Debug.LogWarning($"Unhandled animation event: {eventName}");
+                    break;
             }
         }
     }

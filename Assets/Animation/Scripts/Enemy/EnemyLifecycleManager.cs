@@ -1,59 +1,43 @@
 ﻿using System.Collections;
-using Animation.Scripts.Interfaces;
+using Animation.Scripts.Common;
+using Animation.Scripts.Player;
 using UnityEngine;
 using Zenject;
 
 namespace Animation.Scripts.Enemy
 {
-    /// <summary>
-    /// Управляет жизненным циклом врага, включая его респаун.
-    /// </summary>
     public class EnemyLifecycleManager
     {
-        private readonly GameObject _enemy;
-        private readonly Transform _playerTransform;
-        private readonly ICoroutineRunner _coroutineRunner;
+        private readonly GameObject _enemyObject;
+        private readonly Transform _enemyTransform;
         private readonly Animator _enemyAnimator;
+        private readonly ICoroutineRunner _coroutineRunner;
+        private readonly Transform _playerTransform;
 
-        [Inject]
-        public EnemyLifecycleManager(
-            [Inject(Id = "EnemyGameObject")] GameObject enemy,
-            [Inject(Id = "PlayerTransform")] Transform playerTransform,
-            ICoroutineRunner coroutineRunner
-        )
+        public EnemyLifecycleManager(GameObject enemyObject, Transform enemyTransform, Animator enemyAnimator, ICoroutineRunner coroutineRunner, [Inject] PlayerFacade playerFacade)
         {
-            _enemy = enemy;
-            _playerTransform = playerTransform;
+            _enemyObject = enemyObject;
+            _enemyTransform = enemyTransform;
+            _enemyAnimator = enemyAnimator;
             _coroutineRunner = coroutineRunner;
-            _enemyAnimator = _enemy.GetComponent<Animator>();
+            _playerTransform = playerFacade.transform;
         }
 
-        /// <summary>
-        /// Запускает процесс респауна врага.
-        /// </summary>
-        public void RespawnEnemy()
+        public void Respawn()
         {
-            _coroutineRunner.StartCoroutine(RepositionEnemyCoroutine());
+            _coroutineRunner.StartCoroutine(RespawnCoroutine());
         }
 
-        private IEnumerator RepositionEnemyCoroutine()
+        private IEnumerator RespawnCoroutine()
         {
-            if (_enemy)
-            {
-                _enemy.SetActive(false);
-            }
-
-            yield return new WaitForSeconds(4.0f);
+            _enemyObject.SetActive(false);
+            yield return new WaitForSeconds(3.0f);
 
             var randomDirection = Random.insideUnitCircle.normalized;
             var newPosition = _playerTransform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * 6f;
 
-            if (_enemy)
-            {
-                _enemy.transform.position = newPosition;
-                _enemy.SetActive(true);
-            }
-
+            _enemyTransform.position = newPosition;
+            _enemyObject.SetActive(true);
             if (_enemyAnimator)
             {
                 _enemyAnimator.enabled = true;

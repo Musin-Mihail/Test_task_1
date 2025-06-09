@@ -1,48 +1,34 @@
-﻿using System;
-using Animation.Scripts.Interfaces;
-using Animation.Scripts.ScriptableObjects;
+﻿using Animation.Scripts.Configs;
 using UnityEngine;
-using Zenject;
 
 namespace Animation.Scripts.Player
 {
-    public class PlayerMovement : IPlayerMovement, IDisposable
+    public interface IPlayerMovement
     {
-        private readonly MovementConfig _movementConfig;
-        private readonly PlayerMovementState _playerMovementState;
-        private readonly Camera _camera;
+        void Move(Vector3 direction);
+    }
+
+    public class PlayerMovement : IPlayerMovement
+    {
         private readonly Transform _playerTransform;
+        private readonly MovementConfig _movementConfig;
+        private readonly Camera _camera;
 
-        public Vector3 CurrentMovementInput => _playerMovementState.CurrentMovementInput;
-
-        [Inject]
-        public PlayerMovement(PlayerMovementState movementState, MovementConfig config, [Inject(Id = "PlayerTransform")] Transform playerTransform)
+        public PlayerMovement(Transform playerTransform, MovementConfig movementConfig)
         {
-            _playerMovementState = movementState;
-            _movementConfig = config;
             _playerTransform = playerTransform;
+            _movementConfig = movementConfig;
             _camera = Camera.main;
         }
 
-        public void Dispose()
+        public void Move(Vector3 moveInput)
         {
-            _playerMovementState?.Dispose();
-        }
+            var cameraForward = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var cameraRight = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
 
-        public void Move()
-        {
-            if (!_camera || !_movementConfig) return;
+            var moveDirection = (cameraForward * moveInput.z + cameraRight * moveInput.x).normalized;
 
-            var cameraForwardFlat = Vector3.Scale(_camera.transform.forward, new Vector3(1, 0, 1)).normalized;
-            var cameraRightFlat = Vector3.Scale(_camera.transform.right, new Vector3(1, 0, 1)).normalized;
-
-            var moveDirection = cameraForwardFlat * CurrentMovementInput.z + cameraRightFlat * CurrentMovementInput.x;
             _playerTransform.position += moveDirection * (_movementConfig.speed * Time.fixedDeltaTime);
-        }
-
-        public bool IsMoving()
-        {
-            return _playerMovementState.IsMoving();
         }
     }
 }

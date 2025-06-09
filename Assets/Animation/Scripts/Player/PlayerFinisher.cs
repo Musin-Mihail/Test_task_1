@@ -1,58 +1,67 @@
 ﻿using System;
-using Animation.Scripts.Interfaces;
+using Animation.Scripts.FSM;
 using Animation.Scripts.Signals;
 using UnityEngine;
 using Zenject;
 
 namespace Animation.Scripts.Player
 {
-    public class PlayerFinisher : IPlayerFinisher
+    public class PlayerFinisher : IDisposable
     {
-        public event Action OnFinisherStateReset;
+        private bool CanStartFinisher { get; set; }
+        public Transform FinisherTarget { get; private set; }
+        private bool IsFinishing { get; set; }
 
-        public Vector3 TargetPosition { get; set; }
-        public bool IsFinishing() => _isFinishing;
-
-        private readonly Collider _playerCollider;
         private readonly SignalBus _signalBus;
-        private bool _isFinishing;
+        private readonly GameObject _text;
 
-        private const string FinisherImpactPointEvent = "FinisherImpactPoint";
-        private const string FinisherCompleteEvent = "FinisherComplete";
-
-        [Inject]
-        public PlayerFinisher(Collider playerCollider, SignalBus signalBus)
+        public PlayerFinisher(SignalBus signalBus, [Inject] PlayerFacade playerFacade)
         {
-            _playerCollider = playerCollider;
             _signalBus = signalBus;
+            _text = playerFacade.Text;
+
+            _signalBus.Subscribe<EnemyReadyForFinisherSignal>(OnEnemyReady);
+            _signalBus.Subscribe<EnemyExitedFinisherRangeSignal>(OnEnemyExited);
+            _signalBus.Subscribe<FinisherButtonSignal>(OnFinisherButtonPressed);
+        }
+
+        public void Dispose()
+        {
+            _signalBus.Unsubscribe<EnemyReadyForFinisherSignal>(OnEnemyReady);
+            _signalBus.Unsubscribe<EnemyExitedFinisherRangeSignal>(OnEnemyExited);
+            _signalBus.Unsubscribe<FinisherButtonSignal>(OnFinisherButtonPressed);
         }
 
         public void SetFinishing(bool isFinishing)
         {
-            _isFinishing = isFinishing;
-            _playerCollider.enabled = !isFinishing;
-        }
-
-        public void HandleAnimationEvent(string eventName)
-        {
-            switch (eventName)
+            IsFinishing = isFinishing;
+            _text.gameObject.SetActive(false);
+            if (!isFinishing)
             {
-                case FinisherImpactPointEvent:
-                    _signalBus.Fire<FinisherImpactSignal>();
-                    break;
-                case FinisherCompleteEvent:
-                    _signalBus.Fire<FinisherAnimationCompleteSignal>();
-                    break;
-                default:
-                    Debug.LogWarning($"Unhandled animation event: {eventName}");
-                    break;
+                FinisherTarget = null;
             }
         }
 
-        public void ResetFinisherState()
+        private void OnEnemyReady(EnemyReadyForFinisherSignal signal)
         {
-            _isFinishing = false;
-            OnFinisherStateReset?.Invoke();
+            CanStartFinisher = true;
+            FinisherTarget = signal.EnemyTransform;
+            _text.gameObject.SetActive(true);
+        }
+
+        private void OnEnemyExited()
+        {
+            CanStartFinisher = false;
+            FinisherTarget = null;
+            _text.gameObject.SetActive(false);
+        }
+
+        private void OnFinisherButtonPressed()
+        {
+            if (CanStartFinisher && !IsFinishing && FinisherTarget)
+            {
+                _signalBus.Fire(new GameStateSignals.RequestStateChangeSignal { StateType = typeof(PlayerFinishingState) });
+            }
         }
     }
 }
