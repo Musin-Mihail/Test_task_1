@@ -15,7 +15,6 @@ namespace Animation.Scripts.Installers
             Container.Bind<PlayerFacade>().FromInstance(playerFacade).AsSingle();
             Container.Bind<Transform>().FromInstance(playerFacade.transform).AsSingle();
             Container.Bind<Animator>().FromInstance(playerFacade.Animator).AsSingle();
-
             Container.Bind<Transform>().WithId("ChestTransform").FromInstance(playerFacade.ChestTransform).AsCached();
 
             // --- MONOBEHAVIOURS ---
@@ -28,10 +27,7 @@ namespace Animation.Scripts.Installers
             Container.BindInterfacesAndSelfTo<PlayerMovement>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerRotator>().AsSingle();
             Container.BindInterfacesAndSelfTo<AnimationEventBridge>().AsSingle().NonLazy();
-
-            // --- НОВЫЕ СЕРВИСЫ ДЛЯ ДОБИВАНИЯ ---
             Container.BindInterfacesAndSelfTo<FinisherAvailabilityService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<FinisherExecutionService>().AsSingle().NonLazy();
 
             // --- STATE MACHINE ---
             InstallFSM();
@@ -45,6 +41,7 @@ namespace Animation.Scripts.Installers
             // States
             Container.Bind<PlayerIdleState>().AsTransient();
             Container.Bind<PlayerRunState>().AsTransient();
+            Container.Bind<PlayerApproachingState>().AsTransient();
             Container.Bind<PlayerFinishingState>().AsTransient();
         }
     }

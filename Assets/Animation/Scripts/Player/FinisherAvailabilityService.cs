@@ -1,4 +1,5 @@
 ﻿using System;
+using Animation.Scripts.FSM;
 using Animation.Scripts.Signals;
 using UnityEngine;
 using Zenject;
@@ -9,14 +10,17 @@ namespace Animation.Scripts.Player
     {
         private readonly SignalBus _signalBus;
         private readonly GameObject _finisherPromptText;
+        private readonly PlayerStateMachine _stateMachine;
 
         public bool IsFinisherAvailable { get; private set; }
         public Transform FinisherTarget { get; private set; }
 
-        public FinisherAvailabilityService(SignalBus signalBus, PlayerFacade playerFacade)
+        public FinisherAvailabilityService(SignalBus signalBus, PlayerFacade playerFacade, PlayerStateMachine stateMachine)
         {
+            Debug.Log("FinisherAvailabilityService");
             _signalBus = signalBus;
             _finisherPromptText = playerFacade.Text;
+            _stateMachine = stateMachine;
         }
 
         public void Initialize()
@@ -43,6 +47,8 @@ namespace Animation.Scripts.Player
 
         private void OnEnemyReady(EnemyReadyForFinisherSignal signal)
         {
+            if (_stateMachine.IsFinisherRequested) return;
+
             IsFinisherAvailable = true;
             FinisherTarget = signal.EnemyTransform;
             _finisherPromptText.SetActive(true);
@@ -51,7 +57,7 @@ namespace Animation.Scripts.Player
         private void OnEnemyExited()
         {
             IsFinisherAvailable = false;
-
+            FinisherTarget = null;
             _finisherPromptText.SetActive(false);
         }
     }

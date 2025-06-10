@@ -1,5 +1,4 @@
-﻿using System;
-using Zenject;
+﻿using Zenject;
 
 namespace Animation.Scripts.FSM
 {
@@ -12,9 +11,11 @@ namespace Animation.Scripts.FSM
             _container = container;
         }
 
-        public PlayerState Create(Type stateType)
+        public T Create<T>() where T : PlayerState
         {
-            return _container.Instantiate(stateType) as PlayerState;
+            var state = _container.Instantiate<T>();
+            state.Initialize(_container.Resolve<PlayerStateMachine>());
+            return state;
         }
     }
 }

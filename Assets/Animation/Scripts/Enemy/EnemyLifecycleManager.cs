@@ -1,49 +1,46 @@
 ﻿using System.Collections;
-using Animation.Scripts.Common;
 using Animation.Scripts.Configs;
 using UnityEngine;
 using Zenject;
 
 namespace Animation.Scripts.Enemy
 {
-    public class EnemyLifecycleManager
+    public class EnemyLifecycleManager : MonoBehaviour
     {
-        private readonly GameObject _enemyObject;
-        private readonly Transform _enemyTransform;
-        private readonly Animator _enemyAnimator;
-        private readonly ICoroutineRunner _coroutineRunner;
-        private readonly Transform _playerTransform;
-        private readonly EnemyConfig _config;
+        private Transform _playerTransform;
+        private EnemyConfig _config;
+        private Animator _enemyAnimator;
+        private Collider _enemyCollider;
 
-        public EnemyLifecycleManager(GameObject enemyObject, Transform enemyTransform, Animator enemyAnimator, ICoroutineRunner coroutineRunner, [Inject(Id = "PlayerTransform")] Transform playerTransform, EnemyConfig config)
+        [Inject]
+        public void Construct([Inject(Id = "PlayerTransform")] Transform playerTransform, EnemyConfig config, Animator enemyAnimator)
         {
-            _enemyObject = enemyObject;
-            _enemyTransform = enemyTransform;
-            _enemyAnimator = enemyAnimator;
-            _coroutineRunner = coroutineRunner;
             _playerTransform = playerTransform;
             _config = config;
+            _enemyAnimator = enemyAnimator;
+            _enemyCollider = GetComponent<Collider>();
         }
 
         public void Respawn()
         {
-            _coroutineRunner.StartCoroutine(RespawnCoroutine());
+            StartCoroutine(RespawnCoroutine());
         }
 
         private IEnumerator RespawnCoroutine()
         {
-            _enemyObject.SetActive(false);
+            _enemyCollider.enabled = false;
             yield return new WaitForSeconds(_config.respawnDelay);
 
             var randomDirection = Random.insideUnitCircle.normalized;
-            var newPosition = _playerTransform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * _config.respawnDistance; // Используем значение из конфига
+            var newPosition = _playerTransform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * _config.respawnDistance;
 
-            _enemyTransform.position = newPosition;
-            _enemyObject.SetActive(true);
+            transform.position = newPosition;
             if (_enemyAnimator)
             {
                 _enemyAnimator.enabled = true;
             }
+
+            _enemyCollider.enabled = true;
         }
     }
 }

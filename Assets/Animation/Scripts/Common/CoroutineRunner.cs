@@ -9,5 +9,21 @@ namespace Animation.Scripts.Common
         {
             return base.StartCoroutine(coroutine);
         }
+
+        public void StopCoroutine(Coroutine coroutine)
+        {
+            if (coroutine != null)
+            {
+                base.StopCoroutine(coroutine);
+            }
+        }
+
+        public void StopCoroutine(IEnumerator coroutine)
+        {
+            if (coroutine != null)
+            {
+                base.StopCoroutine(coroutine);
+            }
+        }
     }
 }

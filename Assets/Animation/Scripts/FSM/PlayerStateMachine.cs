@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using Animation.Scripts.Player;
 using Animation.Scripts.Signals;
 using UnityEngine;
 using Zenject;
@@ -10,95 +10,86 @@ namespace Animation.Scripts.FSM
     {
         private readonly SignalBus _signalBus;
         private readonly StateFactory _stateFactory;
-        private readonly List<Transition> _transitions = new();
+        private readonly IPlayerRotator _rotator;
 
         private PlayerState _currentState;
-        public Vector3 CurrentMovementInput { get; private set; }
-        private bool IsMoving => CurrentMovementInput.magnitude > 0.01f;
 
-        public PlayerStateMachine(SignalBus signalBus, StateFactory stateFactory)
+        public Vector3 CurrentMovementInput { get; private set; }
+        public bool IsFinisherRequested { get; set; }
+        public bool IsTargetReached { get; set; }
+        public bool IsMoving => CurrentMovementInput.magnitude > 0.01f;
+
+        public PlayerStateMachine(SignalBus signalBus, StateFactory stateFactory, IPlayerRotator rotator)
         {
             _signalBus = signalBus;
             _stateFactory = stateFactory;
+            _rotator = rotator;
         }
 
         public void Initialize()
         {
             _signalBus.Subscribe<MovementInputSignal>(OnMovementInput);
-            _signalBus.Subscribe<GameStateSignals.RequestStateChangeSignal>(OnChangeStateRequested);
+            _signalBus.Subscribe<FinisherButtonSignal>(OnFinisherButton);
             _signalBus.Subscribe<QuitGameSignal>(() => Application.Quit());
 
-            CreateTransitions();
+            var idleState = _stateFactory.Create<PlayerIdleState>();
+            var runState = _stateFactory.Create<PlayerRunState>();
+            var approachingState = _stateFactory.Create<PlayerApproachingState>();
+            var finishingState = _stateFactory.Create<PlayerFinishingState>();
 
-            ChangeState(typeof(PlayerIdleState));
-        }
+            idleState.AddTransition(() => IsMoving, runState);
+            idleState.AddTransition(() => IsFinisherRequested, approachingState);
 
-        private void CreateTransitions()
-        {
-            AddTransition(typeof(PlayerIdleState), typeof(PlayerRunState), () => IsMoving);
-            AddTransition(typeof(PlayerRunState), typeof(PlayerIdleState), () => !IsMoving);
+            runState.AddTransition(() => !IsMoving, idleState);
+            runState.AddTransition(() => IsFinisherRequested, approachingState);
+
+            approachingState.AddTransition(() => IsTargetReached, finishingState);
+
+            finishingState.AddTransition(() => !IsFinisherRequested, idleState);
+
+            ChangeState(idleState);
         }
 
         public void Dispose()
         {
             _signalBus.Unsubscribe<MovementInputSignal>(OnMovementInput);
-            _signalBus.Unsubscribe<GameStateSignals.RequestStateChangeSignal>(OnChangeStateRequested);
+            _signalBus.Unsubscribe<FinisherButtonSignal>(OnFinisherButton);
         }
-
-        private void CheckForTransition()
-        {
-            foreach (var transition in _transitions)
-            {
-                if (transition.From == _currentState.GetType() && transition.Condition())
-                {
-                    ChangeState(transition.To);
-                    return;
-                }
-            }
-        }
-
-        private void ChangeState(Type newStateType)
-        {
-            if (_currentState?.GetType() == newStateType) return;
-
-            _currentState?.Exit();
-            _currentState = _stateFactory.Create(newStateType);
-            _currentState.Enter();
-        }
-
-        private void AddTransition(Type from, Type to, Func<bool> condition)
-        {
-            var transition = new Transition(from, to, condition);
-            _transitions.Add(transition);
-        }
-
-        private void OnMovementInput(MovementInputSignal signal) =>
-            CurrentMovementInput = new Vector3(signal.InputValue.x, 0, signal.InputValue.y).normalized;
-
-        private void OnChangeStateRequested(GameStateSignals.RequestStateChangeSignal signal) =>
-            ChangeState(signal.StateType);
 
         public void Tick()
         {
-            CheckForTransition();
+            var nextState = _currentState.GetNextState();
+            if (nextState != _currentState)
+            {
+                ChangeState(nextState);
+            }
+
             _currentState?.Update();
         }
 
         public void FixedTick() => _currentState?.FixedUpdate();
-        public void LateTick() => _currentState?.LateUpdate();
-    }
 
-    public class Transition
-    {
-        public Type From { get; }
-        public Type To { get; }
-        public Func<bool> Condition { get; }
-
-        public Transition(Type from, Type to, Func<bool> condition)
+        public void LateTick()
         {
-            From = from;
-            To = to;
-            Condition = condition;
+            // Общая логика вращения для состояний, где это применимо
+            if (_currentState is PlayerIdleState or PlayerRunState)
+            {
+                _rotator.RotateToMouse();
+            }
+
+            _currentState?.LateUpdate();
         }
+
+        private void ChangeState(PlayerState newState)
+        {
+            if (_currentState == newState) return;
+
+            _currentState?.Exit();
+            _currentState = newState;
+            _currentState.Enter();
+        }
+
+        private void OnMovementInput(MovementInputSignal signal) => CurrentMovementInput = new Vector3(signal.InputValue.x, 0, signal.InputValue.y).normalized;
+        private void OnFinisherButton() => IsFinisherRequested = true;
     }
 }

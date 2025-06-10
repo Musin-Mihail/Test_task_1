@@ -18,9 +18,9 @@ namespace Animation.Scripts.Installers
             Container.Bind<Transform>().FromComponentInHierarchy().AsSingle();
             Container.Bind<GameObject>().FromInstance(gameObject).AsSingle();
 
-            // --- POCO ---
+            // --- POCO & MONOBEHAVIOURS ---
             Container.BindInterfacesAndSelfTo<EnemyFinisherHandler>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<EnemyLifecycleManager>().AsSingle().NonLazy();
+            Container.Bind<EnemyLifecycleManager>().FromComponentInHierarchy().AsSingle();
         }
     }
 }

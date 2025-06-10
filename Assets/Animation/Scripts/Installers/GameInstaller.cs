@@ -18,7 +18,7 @@ namespace Animation.Scripts.Installers
             Container.Bind<CameraConfig>().FromInstance(gameConfig.cameraConfig).AsSingle();
             Container.Bind<EnemyConfig>().FromInstance(gameConfig.enemyConfig).AsSingle();
 
-            Container.BindInterfacesAndSelfTo<GameManager>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<GameManager>().FromComponentInHierarchy().AsSingle();
 
             Container.Bind<Camera>().FromInstance(Camera.main).AsSingle();
         }
