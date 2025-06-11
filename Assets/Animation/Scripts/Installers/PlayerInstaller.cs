@@ -11,25 +11,21 @@ namespace Animation.Scripts.Installers
 
         public override void InstallBindings()
         {
-            // --- FACADE & COMPONENTS ---
             Container.Bind<PlayerFacade>().FromInstance(playerFacade).AsSingle();
             Container.Bind<Transform>().FromInstance(playerFacade.transform).AsSingle();
             Container.Bind<Animator>().FromInstance(playerFacade.Animator).AsSingle();
             Container.Bind<Transform>().WithId("ChestTransform").FromInstance(playerFacade.ChestTransform).AsCached();
 
-            // --- MONOBEHAVIOURS ---
             Container.Bind<IPlayerInput>().To<PlayerInput>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IPlayerEquipment>().To<PlayerEquipment>().FromInstance(playerFacade.PlayerEquipment).AsSingle();
-            Container.Bind<ICameraController>().To<CameraController>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<CameraController>().FromComponentInHierarchy().AsSingle();
 
-            // --- POCO SERVICES ---
             Container.BindInterfacesAndSelfTo<PlayerAnimation>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerMovement>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerRotator>().AsSingle();
             Container.BindInterfacesAndSelfTo<AnimationEventBridge>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<FinisherAvailabilityService>().AsSingle().NonLazy();
 
-            // --- STATE MACHINE ---
             InstallFSM();
         }
 
@@ -38,7 +34,6 @@ namespace Animation.Scripts.Installers
             Container.BindInterfacesAndSelfTo<PlayerStateMachine>().AsSingle().NonLazy();
             Container.Bind<StateFactory>().AsSingle();
 
-            // States
             Container.Bind<PlayerIdleState>().AsTransient();
             Container.Bind<PlayerRunState>().AsTransient();
             Container.Bind<PlayerApproachingState>().AsTransient();

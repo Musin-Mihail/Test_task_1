@@ -4,33 +4,26 @@ using Zenject;
 
 namespace Animation.Scripts.Player
 {
-    public interface ICameraController
-    {
-    }
-
-    public class CameraController : MonoBehaviour, ICameraController
+    public class CameraController : MonoBehaviour
     {
         private Transform _playerTransform;
         private CameraConfig _cameraConfig;
         private Camera _camera;
 
         [Inject]
-        public void Construct(Transform playerTransform, CameraConfig cameraConfig)
+        public void Construct(Transform playerTransform, CameraConfig cameraConfig, Camera camera)
         {
             _playerTransform = playerTransform;
             _cameraConfig = cameraConfig;
-        }
-
-        private void Start()
-        {
-            _camera = Camera.main;
+            _camera = camera;
         }
 
         private void LateUpdate()
         {
             if (_playerTransform && _camera)
             {
-                _camera.transform.position = _playerTransform.position + _cameraConfig.cameraOffset;
+                var targetPosition = _playerTransform.position + _cameraConfig.cameraOffset;
+                _camera.transform.position = targetPosition;
             }
         }
     }

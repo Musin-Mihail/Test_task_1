@@ -1,12 +1,11 @@
-﻿using System;
-using Animation.Scripts.Constants;
+﻿using Animation.Scripts.Constants;
 using Animation.Scripts.Player;
 using Animation.Scripts.Signals;
 using Zenject;
 
 namespace Animation.Scripts.FSM
 {
-    public class PlayerFinishingState : PlayerState, IDisposable
+    public class PlayerFinishingState : PlayerState
     {
         private readonly SignalBus _signalBus;
         private readonly IPlayerAnimation _animation;
@@ -25,20 +24,15 @@ namespace Animation.Scripts.FSM
             _availabilityService = availabilityService;
         }
 
-        public void Dispose()
-        {
-            _signalBus.Unsubscribe<FinisherAnimationCompleteSignal>(FinishingSequenceAfterImpact);
-        }
-
         public override void Enter()
         {
-            _signalBus.Subscribe<FinisherAnimationCompleteSignal>(FinishingSequenceAfterImpact);
+            _signalBus.Subscribe<FinisherAnimationCompleteSignal>(OnFinisherAnimationComplete);
             FinishingSequenceBeforeImpact();
         }
 
         public override void Exit()
         {
-            Dispose();
+            _signalBus.TryUnsubscribe<FinisherAnimationCompleteSignal>(OnFinisherAnimationComplete);
         }
 
         private void FinishingSequenceBeforeImpact()
@@ -48,11 +42,12 @@ namespace Animation.Scripts.FSM
             _animation.SetBool(AnimationConstants.Finisher, true);
         }
 
-        private void FinishingSequenceAfterImpact()
+        private void OnFinisherAnimationComplete()
         {
             _animation.SetBool(AnimationConstants.Finisher, false);
             _equipment.SetWeaponActive(WeaponType.Sword, false);
             _equipment.SetWeaponActive(WeaponType.Gun, true);
+
             _availabilityService.SetFinisherInProgress(false);
             StateMachine.IsFinisherRequested = false;
         }

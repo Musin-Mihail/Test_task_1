@@ -30,8 +30,12 @@ namespace Animation.Scripts.FSM
         {
             _signalBus.Subscribe<MovementInputSignal>(OnMovementInput);
             _signalBus.Subscribe<FinisherButtonSignal>(OnFinisherButton);
-            _signalBus.Subscribe<QuitGameSignal>(() => Application.Quit());
 
+            SetupStates();
+        }
+
+        private void SetupStates()
+        {
             var idleState = _stateFactory.Create<PlayerIdleState>();
             var runState = _stateFactory.Create<PlayerRunState>();
             var approachingState = _stateFactory.Create<PlayerApproachingState>();
@@ -52,8 +56,8 @@ namespace Animation.Scripts.FSM
 
         public void Dispose()
         {
-            _signalBus.Unsubscribe<MovementInputSignal>(OnMovementInput);
-            _signalBus.Unsubscribe<FinisherButtonSignal>(OnFinisherButton);
+            _signalBus.TryUnsubscribe<MovementInputSignal>(OnMovementInput);
+            _signalBus.TryUnsubscribe<FinisherButtonSignal>(OnFinisherButton);
         }
 
         public void Tick()
@@ -71,12 +75,6 @@ namespace Animation.Scripts.FSM
 
         public void LateTick()
         {
-            // Общая логика вращения для состояний, где это применимо
-            if (_currentState is PlayerIdleState or PlayerRunState)
-            {
-                _rotator.RotateToMouse();
-            }
-
             _currentState?.LateUpdate();
         }
 

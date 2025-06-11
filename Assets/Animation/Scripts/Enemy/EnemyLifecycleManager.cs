@@ -31,16 +31,21 @@ namespace Animation.Scripts.Enemy
             _enemyCollider.enabled = false;
             yield return new WaitForSeconds(_config.respawnDelay);
 
-            var randomDirection = Random.insideUnitCircle.normalized;
-            var newPosition = _playerTransform.position + new Vector3(randomDirection.x, 0, randomDirection.y) * _config.respawnDistance;
+            transform.position = CalculateRespawnPosition();
 
-            transform.position = newPosition;
             if (_enemyAnimator)
             {
                 _enemyAnimator.enabled = true;
             }
 
             _enemyCollider.enabled = true;
+        }
+
+        private Vector3 CalculateRespawnPosition()
+        {
+            var randomDirection = Random.insideUnitCircle.normalized;
+            var offset = new Vector3(randomDirection.x, 0, randomDirection.y) * _config.respawnDistance;
+            return _playerTransform.position + offset;
         }
     }
 }

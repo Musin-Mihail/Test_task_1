@@ -16,5 +16,10 @@ namespace Animation.Scripts.FSM
             _rotator.RotateTowardsCamera();
             StateMachine.IsFinisherRequested = false;
         }
+
+        public override void LateUpdate()
+        {
+            _rotator.RotateToMouse();
+        }
     }
 }

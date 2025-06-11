@@ -17,7 +17,6 @@ namespace Animation.Scripts.Player
 
         public FinisherAvailabilityService(SignalBus signalBus, PlayerFacade playerFacade, PlayerStateMachine stateMachine)
         {
-            Debug.Log("FinisherAvailabilityService");
             _signalBus = signalBus;
             _finisherPromptText = playerFacade.Text;
             _stateMachine = stateMachine;

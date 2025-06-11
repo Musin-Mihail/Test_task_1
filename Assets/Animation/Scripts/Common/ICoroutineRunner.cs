@@ -7,6 +7,6 @@ namespace Animation.Scripts.Common
     {
         Coroutine StartCoroutine(IEnumerator coroutine);
         void StopCoroutine(Coroutine coroutine);
-        void StopCoroutine(IEnumerator coroutine); 
+        void StopCoroutine(IEnumerator coroutine);
     }
 }

@@ -12,18 +12,12 @@ namespace Animation.Scripts.Common
 
         public void StopCoroutine(Coroutine coroutine)
         {
-            if (coroutine != null)
-            {
-                base.StopCoroutine(coroutine);
-            }
+            base.StopCoroutine(coroutine);
         }
 
         public void StopCoroutine(IEnumerator coroutine)
         {
-            if (coroutine != null)
-            {
-                base.StopCoroutine(coroutine);
-            }
+            base.StopCoroutine(coroutine);
         }
     }
 }
